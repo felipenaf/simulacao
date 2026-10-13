@@ -1,6 +1,8 @@
 package com.example.simulacao.controller;
 
 import com.example.simulacao.dto.ClienteRequest;
+import com.example.simulacao.dto.ErrorResponse;
+import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.service.ClienteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,8 +27,22 @@ public class ClienteController {
     public ResponseEntity<?> save(@Valid @RequestBody ClienteRequest request){
         log.info("Criando novo cliente: {}", request.toString());
 
-        clienteService.save(request);
+        try {
+            clienteService.save(request);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+            return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .build();
+        } catch (CpfJaCadastradoException e) {
+            return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Erro ao criar novo cliente: {}", request, e);
+
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .build();
+        }
     }
 }

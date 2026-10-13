@@ -3,6 +3,7 @@ package com.example.simulacao.service;
 import com.example.simulacao.dto.ClienteRequest;
 import com.example.simulacao.entity.Cliente;
 import com.example.simulacao.entity.Endereco;
+import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.repository.ClienteRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,10 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public void save(ClienteRequest request) {
+        if (clienteRepository.findByCpf(request.cpf()).isPresent()) {
+            throw new CpfJaCadastradoException("CPF já cadastrado");
+        }
+
         Endereco endereco = Endereco.builder()
             .rua(request.endereco().rua())
             .numero(request.endereco().numero())
