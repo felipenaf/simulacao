@@ -1,13 +1,18 @@
 package com.example.simulacao.service;
 
 import com.example.simulacao.dto.ClienteRequest;
+import com.example.simulacao.dto.ClienteResponse;
 import com.example.simulacao.entity.Cliente;
 import com.example.simulacao.entity.Endereco;
+import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.repository.ClienteRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -45,5 +50,48 @@ public class ClienteServiceImpl implements ClienteService {
         log.info(cliente.toString());
 
         clienteRepository.save(cliente);
+    }
+
+    @Override
+    public ClienteResponse findById(Long id) {
+        Cliente cliente = clienteRepository.findById(id)
+            .orElseThrow(() ->
+                new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
+            );
+
+        return toResponse(cliente);
+    }
+
+    @Override
+    public List<ClienteResponse> findAll(Pageable pageable) {
+        return List.of();
+    }
+
+    @Override
+    public void update(Long id, ClienteRequest request) {
+
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
+
+    private ClienteResponse toResponse(Cliente cliente) {
+        ClienteResponse.EnderecoResponse enderecoResponse =
+            new ClienteResponse.EnderecoResponse(
+                cliente.getEndereco().getRua(),
+                cliente.getEndereco().getNumero(),
+                cliente.getEndereco().getBairro(),
+                cliente.getEndereco().getCep(),
+                cliente.getEndereco().getCidade(),
+                cliente.getEndereco().getEstado()
+            );
+
+        return new ClienteResponse(
+            cliente.getCpf(),
+            cliente.getNome(),
+            enderecoResponse
+        );
     }
 }

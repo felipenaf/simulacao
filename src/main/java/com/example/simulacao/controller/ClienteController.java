@@ -1,16 +1,15 @@
 package com.example.simulacao.controller;
 
 import com.example.simulacao.dto.ClienteRequest;
+import com.example.simulacao.dto.ClienteResponse;
 import com.example.simulacao.dto.ErrorResponse;
+import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.service.ClienteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @Slf4j
@@ -23,7 +22,7 @@ public class ClienteController {
         this.clienteService = clienteService;
     }
 
-    @PostMapping
+   @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody ClienteRequest request){
         log.info("Criando novo cliente: {}", request.toString());
 
@@ -44,5 +43,39 @@ public class ClienteController {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .build();
         }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteResponse> findById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(clienteService.findById(id));
+        } catch (ClienteNaoEncontradoException e) {
+            log.error(e.getMessage());
+
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .build();
+        } catch (Exception e) {
+            log.error("Erro ao obter o cliente: {}", id, e);
+
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .build();
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> update(
+        @PathVariable Long id,
+        @Valid @RequestBody ClienteRequest request) {
+
+        clienteService.update(id, request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        clienteService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
