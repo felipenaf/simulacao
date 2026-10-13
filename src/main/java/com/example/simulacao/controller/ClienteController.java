@@ -6,11 +6,17 @@ import com.example.simulacao.dto.ErrorResponse;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.service.ClienteService;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -35,7 +41,7 @@ public class ClienteController {
         } catch (CpfJaCadastradoException e) {
             return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(new ErrorResponse(e.getMessage()));
+                .body(new ErrorResponse(List.of(e.getMessage())));
         } catch (Exception e) {
             log.error("Erro ao criar novo cliente: {}", request, e);
 
@@ -64,11 +70,40 @@ public class ClienteController {
         }
     }
 
+    @GetMapping()
+    public ResponseEntity<?> findAll(
+        @RequestParam(defaultValue = "1")
+        @Min(value = 1, message = "A página deve ser maior ou igual a 1")
+        int pagina,
+
+        @RequestParam(name = "quantidade_por_pagina", defaultValue = "10")
+        @Min(value = 1, message = "A quantidade por página deve ser maior ou igual a 1")
+        @Max(value = 100, message = "A quantidade máxima por página é 100")
+        int quantidadePorPagina
+    ) {
+        try {
+            // O índice da paginação inicia em zero
+            int paginaCorrigida = pagina - 1;
+
+            Page<ClienteResponse> list = clienteService.findAll(
+                PageRequest.of(paginaCorrigida, quantidadePorPagina)
+            );
+
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            log.error("Erro ao obter lista de clientes: ", e);
+
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .build();
+        }
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<Void> update(
         @PathVariable Long id,
-        @Valid @RequestBody ClienteRequest request) {
-
+        @Valid @RequestBody ClienteRequest request
+    ) {
         clienteService.update(id, request);
         return ResponseEntity.noContent().build();
     }

@@ -1,4 +1,6 @@
 package com.example.simulacao.dto;
 
-public record ErrorResponse(String message) {
+import java.util.List;
+
+public record ErrorResponse(List<String> message) {
 }

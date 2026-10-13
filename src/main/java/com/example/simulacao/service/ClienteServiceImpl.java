@@ -9,10 +9,9 @@ import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.repository.ClienteRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -63,8 +62,10 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public List<ClienteResponse> findAll(Pageable pageable) {
-        return List.of();
+    public Page<ClienteResponse> findAll(Pageable pageable) {
+       return clienteRepository
+           .findAll(pageable)
+           .map(this::toResponse);
     }
 
     @Override

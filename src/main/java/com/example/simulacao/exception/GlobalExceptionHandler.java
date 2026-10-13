@@ -1,14 +1,17 @@
 package com.example.simulacao.exception;
 
-import org.hibernate.TypeMismatchException;
+import com.example.simulacao.dto.ErrorResponse;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -35,5 +38,21 @@ public class GlobalExceptionHandler {
             "error", "Invalid JSON",
             "message", e.getMessage()
         ));
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(
+        HandlerMethodValidationException ex
+    ) {
+        List<String> messages = ex.getParameterValidationResults()
+            .stream()
+            // flatMap transforma N listas em uma lista só
+            .flatMap(result -> result.getResolvableErrors().stream())
+            .map(MessageSourceResolvable::getDefaultMessage)
+            .toList();
+
+        return ResponseEntity
+            .badRequest()
+            .body(new ErrorResponse(messages));
     }
 }
