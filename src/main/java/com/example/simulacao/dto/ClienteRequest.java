@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 
 public record ClienteRequest(
     @NotBlank(message = "CPF inválido")
-    @ValidCPF
+    @Size(min = 11, max = 11, message = "CPF deve ter 11 caracteres")
     String cpf,
 
     @NotBlank(message = "Nome inválido")
@@ -21,6 +21,11 @@ public record ClienteRequest(
     @Valid
     EnderecoRequest endereco
 ) {
+    public ClienteRequest {
+        cpf = cpf == null ? null : cpf.replaceAll("[.-]", "").trim();
+        nome = nome == null ? null : nome.trim();
+    }
+
     public record EnderecoRequest(
         @NotBlank(message = "Rua inválida")
         @Size(max = 150, message = "Rua deve ter no máximo 150 caracteres")
@@ -44,5 +49,12 @@ public record ClienteRequest(
 
         @NotNull(message = "Estado inválido")
         Estado estado
-    ) {}
+    ) {
+        public EnderecoRequest {
+            rua = rua == null ? null : rua.trim();
+            bairro = bairro == null ? null : bairro.trim();
+            cep = cep == null ? null : cep.replace("-", "").trim();
+            cidade = cidade == null ? null : cidade.trim();
+        }
+    }
 }

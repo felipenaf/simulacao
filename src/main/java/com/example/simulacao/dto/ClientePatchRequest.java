@@ -1,13 +1,12 @@
 package com.example.simulacao.dto;
 
 import com.example.simulacao.entity.Estado;
-import com.example.simulacao.validation.ValidCPF;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public record ClientePatchRequest(
-    @ValidCPF
+    @Size(min = 11, max = 11, message = "CPF deve ter 11 caracteres")
     String cpf,
 
     @Size(max = 150, message = "Nome deve ter no máximo 150 caracteres")
@@ -16,6 +15,11 @@ public record ClientePatchRequest(
     @Valid
     EnderecoRequest endereco
 ) {
+    public ClientePatchRequest {
+        cpf = cpf == null ? null : cpf.replaceAll("[.-]", "").trim();
+        nome = nome == null ? null : nome.trim();
+    }
+
     public record EnderecoRequest(
         @Size(max = 150, message = "Rua deve ter no máximo 150 caracteres")
         String rua,
@@ -33,5 +37,12 @@ public record ClientePatchRequest(
         String cidade,
 
         Estado estado
-    ) {}
+    ) {
+        public EnderecoRequest {
+            rua = rua == null ? null : rua.trim();
+            bairro = bairro == null ? null : bairro.trim();
+            cep = cep == null ? null : cep.replace("-", "").trim();
+            cidade = cidade == null ? null : cidade.trim();
+        }
+    }
 }
