@@ -154,8 +154,22 @@ public class ClienteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        clienteService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        try {
+            clienteService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (ClienteNaoEncontradoException e) {
+            log.error(e.getMessage());
+
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .build();
+        } catch (Exception e) {
+            log.error("Erro ao remover cliente: {}", id, e);
+
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .build();
+        }
     }
 }

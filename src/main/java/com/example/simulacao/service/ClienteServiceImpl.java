@@ -153,8 +153,16 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
+        Cliente clienteExistente = clienteRepository.findById(id)
+            .orElseThrow(() ->
+                new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
+            );
 
+        //TODO: Consultar se o cliente possui simulações associadas a ele
+
+        clienteRepository.delete(clienteExistente);
     }
 
     private ClienteResponse toResponse(Cliente cliente) {
