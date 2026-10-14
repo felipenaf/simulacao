@@ -1,8 +1,6 @@
 package com.example.simulacao.controller;
 
-import com.example.simulacao.dto.ClienteRequest;
-import com.example.simulacao.dto.ClienteResponse;
-import com.example.simulacao.dto.ErrorResponse;
+import com.example.simulacao.dto.*;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.service.ClienteService;
@@ -28,20 +26,20 @@ public class ClienteController {
         this.clienteService = clienteService;
     }
 
-   @PostMapping
+    @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody ClienteRequest request){
-        log.info("Criando novo cliente: {}", request.toString());
+        log.info("Novo cliente: {}", request.toString());
 
         try {
-            clienteService.save(request);
+            ClienteResponse response = clienteService.save(request);
 
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .build();
+                .body(response);
         } catch (CpfJaCadastradoException e) {
             return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(new ErrorResponse(List.of(e.getMessage())));
+                .body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
             log.error("Erro ao criar novo cliente: {}", request, e);
 
@@ -82,14 +80,12 @@ public class ClienteController {
         int quantidadePorPagina
     ) {
         try {
-            // O índice da paginação inicia em zero
-            int paginaCorrigida = pagina - 1;
-
             Page<ClienteResponse> list = clienteService.findAll(
-                PageRequest.of(paginaCorrigida, quantidadePorPagina)
+                // O índice da paginação inicia em zero
+                PageRequest.of(pagina - 1, quantidadePorPagina)
             );
 
-            return ResponseEntity.ok(list);
+            return ResponseEntity.ok(PageResponse.from(list));
         } catch (Exception e) {
             log.error("Erro ao obter lista de clientes: ", e);
 
@@ -100,12 +96,61 @@ public class ClienteController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> update(
+    public ResponseEntity<?> patch(
+        @PathVariable Long id,
+        @Valid @RequestBody ClientePatchRequest request
+    ) {
+        try {
+            ClienteResponse response = clienteService.patch(id, request);
+            return ResponseEntity.ok().body(response);
+        } catch (ClienteNaoEncontradoException e) {
+            log.error(e.getMessage());
+
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .build();
+        } catch (CpfJaCadastradoException e) {
+            log.error(e.getMessage());
+
+            return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Erro ao criar novo cliente: {}", request, e);
+
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> put(
         @PathVariable Long id,
         @Valid @RequestBody ClienteRequest request
     ) {
-        clienteService.update(id, request);
-        return ResponseEntity.noContent().build();
+        try {
+            ClienteResponse response = clienteService.put(id, request);
+            return ResponseEntity.ok().body(response);
+        } catch (ClienteNaoEncontradoException e) {
+            log.error(e.getMessage());
+
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .build();
+        } catch (CpfJaCadastradoException e) {
+            log.error(e.getMessage());
+
+            return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Erro ao criar novo cliente: {}", request, e);
+
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .build();
+        }
     }
 
     @DeleteMapping("/{id}")
