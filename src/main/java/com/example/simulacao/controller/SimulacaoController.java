@@ -10,11 +10,15 @@ import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @RestController
@@ -27,7 +31,7 @@ public class SimulacaoController {
     }
 
     @PostMapping("/clientes/{clienteId}")
-    public ResponseEntity<?> criar(
+    public ResponseEntity<?> save(
         @PathVariable Long clienteId,
         @RequestBody
         @Valid
@@ -58,8 +62,12 @@ public class SimulacaoController {
     }
 
     @GetMapping("/clientes/{clienteId}")
-    public ResponseEntity<?> findById(
+    public ResponseEntity<?> findByClienteId(
         @PathVariable Long clienteId,
+
+        @RequestParam(defaultValue = "json")
+        String formato,
+
         @RequestParam(defaultValue = "1")
         @Min(value = 1, message = "A página deve ser maior ou igual a 1")
         int pagina,
@@ -76,7 +84,14 @@ public class SimulacaoController {
                 PageRequest.of(pagina - 1, quantidadePorPagina)
             );
 
-            return ResponseEntity.ok(PageResponse.from(simulacoes));
+            return switch (formato.toLowerCase(Locale.ROOT)) {
+                case "csv" -> exportar(simulacoes, clienteId, "csv");
+                case "txt" -> exportar(simulacoes, clienteId, "txt");
+                case "json" -> ResponseEntity.ok(PageResponse.from(simulacoes));
+                default -> ResponseEntity.badRequest().body(
+                    "Formato inválido. Utilize json, csv ou txt."
+                );
+            };
         } catch (ClienteNaoEncontradoException e) {
             log.error(e.getMessage());
 
@@ -90,5 +105,47 @@ public class SimulacaoController {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .build();
         }
+    }
+
+    private ResponseEntity<byte[]> exportar(
+        Page<SimulacaoResponse> simulacoes,
+        Long clienteId,
+        String formato
+    ) {
+        StringBuilder csv = new StringBuilder();
+
+        csv.append(
+            "data_hora;valor_solicitado;valor_garantia;"
+                + "quantidade_meses;taxa_juros_mensal\n"
+        );
+
+        for (SimulacaoResponse simulacao : simulacoes.getContent()) {
+            csv.append(simulacao.dataHora()).append(";")
+                .append(simulacao.valorSolicitado().toPlainString()).append(";")
+                .append(simulacao.valorGarantia().toPlainString()).append(";")
+                .append(simulacao.quantidadeMeses()).append(";")
+                .append(simulacao.taxaJurosMensal().toPlainString())
+                .append("\n");
+        }
+
+        byte[] arquivo = csv.toString().getBytes(StandardCharsets.UTF_8);
+
+        if (formato.equals("csv")) {
+            return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("text/csv;charset=UTF-8"))
+                .header(
+                    HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"simulacoes_cliente_" + clienteId + ".csv\""
+                )
+                .body(arquivo);
+        }
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType("text/plain;charset=UTF-8"))
+            .header(
+                HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"simulacoes_cliente_" + clienteId + ".txt\""
+            )
+            .body(arquivo);
     }
 }
