@@ -14,7 +14,7 @@ public record SimulacaoResponse(
 ) {
     public static SimulacaoResponse from(Simulacao simulacao) {
         return new SimulacaoResponse(
-            simulacao.getDataHora(),
+            simulacao.getDataHora().withNano(0),
             simulacao.getValorSolicitado(),
             simulacao.getValorGarantia(),
             simulacao.getQuantidadeMeses(),
