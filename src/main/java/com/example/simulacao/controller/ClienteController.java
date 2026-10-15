@@ -2,6 +2,7 @@ package com.example.simulacao.controller;
 
 import com.example.simulacao.dto.*;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
+import com.example.simulacao.exception.ClientePossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.service.ClienteService;
 import jakarta.validation.constraints.Max;
@@ -164,6 +165,12 @@ public class ClienteController {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .build();
+        } catch (ClientePossuiSimulacoesException e) {
+            log.error(e.getMessage());
+
+            return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
             log.error("Erro ao remover cliente: {}", id, e);
 

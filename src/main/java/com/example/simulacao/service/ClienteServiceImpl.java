@@ -6,11 +6,14 @@ import com.example.simulacao.dto.ClienteResponse;
 import com.example.simulacao.entity.Cliente;
 import com.example.simulacao.entity.Endereco;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
+import com.example.simulacao.exception.ClientePossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.repository.ClienteRepository;
+import com.example.simulacao.repository.SimulacaoRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +21,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClienteServiceImpl implements ClienteService {
     private final ClienteRepository clienteRepository;
+    private final SimulacaoRepository simulacaoRepository;
 
-    public ClienteServiceImpl(ClienteRepository clienteRepository) {
+    public ClienteServiceImpl(
+        ClienteRepository clienteRepository,
+        SimulacaoRepository simulacaoRepository
+    ) {
         this.clienteRepository = clienteRepository;
+        this.simulacaoRepository = simulacaoRepository;
     }
 
     @Override
@@ -51,7 +59,7 @@ public class ClienteServiceImpl implements ClienteService {
 
         clienteRepository.save(cliente);
 
-        return toResponse(cliente);
+        return ClienteResponse.from(cliente);
     }
 
     @Override
@@ -61,14 +69,14 @@ public class ClienteServiceImpl implements ClienteService {
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
             );
 
-        return toResponse(cliente);
+        return ClienteResponse.from(cliente);
     }
 
     @Override
     public Page<ClienteResponse> findAll(Pageable pageable) {
        return clienteRepository
            .findAll(pageable)
-           .map(this::toResponse);
+           .map(ClienteResponse::from);
     }
 
     @Override
@@ -122,7 +130,7 @@ public class ClienteServiceImpl implements ClienteService {
             }
         }
 
-        return toResponse(clienteExistente);
+        return ClienteResponse.from(clienteExistente);
     }
 
     @Override
@@ -149,7 +157,7 @@ public class ClienteServiceImpl implements ClienteService {
         clienteExistente.getEndereco().setCidade(request.endereco().cidade());
         clienteExistente.getEndereco().setEstado(request.endereco().estado());
 
-        return toResponse(clienteExistente);
+        return ClienteResponse.from(clienteExistente);
     }
 
     @Override
@@ -160,26 +168,10 @@ public class ClienteServiceImpl implements ClienteService {
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
             );
 
-        //TODO: Consultar se o cliente possui simulações associadas a ele
+        if (!simulacaoRepository.findByCliente(clienteExistente, PageRequest.of(0, 1)).isEmpty()) {
+            throw new ClientePossuiSimulacoesException("Cliente não pode ser removido pois possui simulações associadas a ele");
+        }
 
         clienteRepository.delete(clienteExistente);
-    }
-
-    private ClienteResponse toResponse(Cliente cliente) {
-        ClienteResponse.EnderecoResponse enderecoResponse =
-            new ClienteResponse.EnderecoResponse(
-                cliente.getEndereco().getRua(),
-                cliente.getEndereco().getNumero(),
-                cliente.getEndereco().getBairro(),
-                cliente.getEndereco().getCep(),
-                cliente.getEndereco().getCidade(),
-                cliente.getEndereco().getEstado()
-            );
-
-        return new ClienteResponse(
-            cliente.getCpf(),
-            cliente.getNome(),
-            enderecoResponse
-        );
     }
 }
