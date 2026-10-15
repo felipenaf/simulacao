@@ -1,7 +1,9 @@
 package com.example.simulacao.exception;
 
 import com.example.simulacao.dto.ErrorResponse;
+import com.example.simulacao.enums.FormatoExportacao;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +13,7 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,6 +30,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<?> handleValidation(MethodArgumentTypeMismatchException e) {
+        if (e.getRequiredType() == FormatoExportacao.class) {
+            String formatosPermitidos = Arrays.stream(FormatoExportacao.values())
+                .map(Enum::name)
+                .collect(Collectors.joining(", "));
+
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(
+                    "Formato inválido. Os formatos permitidos são: " + formatosPermitidos + "."
+                ));
+        }
+
         return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
     }
 

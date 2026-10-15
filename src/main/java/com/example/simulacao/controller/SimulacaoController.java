@@ -1,8 +1,10 @@
 package com.example.simulacao.controller;
 
 import com.example.simulacao.dto.*;
+import com.example.simulacao.enums.FormatoExportacao;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
-import com.example.simulacao.service.SimulacaoCsvExporter;
+import com.example.simulacao.service.ExportadorSimulacao;
+import com.example.simulacao.service.ExportadorSimulacaoFactory;
 import com.example.simulacao.service.SimulacaoService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -26,14 +28,14 @@ import java.util.Locale;
 @RequestMapping("/simulacoes")
 public class SimulacaoController {
     private final SimulacaoService simulacaoService;
-    private final SimulacaoCsvExporter simulacaoCsvExporter;
+    private final ExportadorSimulacaoFactory exportadorFactory;
 
     public SimulacaoController(
         SimulacaoService simulacaoService,
-        SimulacaoCsvExporter simulacaoCsvExporter
+        ExportadorSimulacaoFactory exportadorFactory
     ) {
         this.simulacaoService = simulacaoService;
-        this.simulacaoCsvExporter = simulacaoCsvExporter;
+        this.exportadorFactory = exportadorFactory;
     }
 
     @PostMapping("/clientes/{clienteId}")
@@ -71,8 +73,8 @@ public class SimulacaoController {
     public ResponseEntity<?> findByClienteId(
         @PathVariable Long clienteId,
 
-        @RequestParam(defaultValue = "json")
-        String formato,
+        @RequestParam(defaultValue = "JSON")
+        FormatoExportacao formato,
 
         @RequestParam(defaultValue = "1")
         @Min(value = 1, message = "A página deve ser maior ou igual a 1")
@@ -90,13 +92,17 @@ public class SimulacaoController {
                 PageRequest.of(pagina - 1, quantidadePorPagina)
             );
 
-            return switch (formato.toLowerCase(Locale.ROOT)) {
-                case "csv" -> exportar(simulacoes, clienteId, "csv");
-                case "txt" -> exportar(simulacoes, clienteId, "txt");
-                case "json" -> ResponseEntity.ok(PageResponse.from(simulacoes));
-                default -> ResponseEntity.badRequest().body(
-                    "Formato inválido. Utilize json, csv ou txt."
-                );
+            return switch (formato) {
+                case JSON -> ResponseEntity.ok(PageResponse.from(simulacoes));
+                case CSV, TXT -> exportadorFactory.buscar(formato)
+                    .map(exportador -> {
+                        try {
+                            return exportar(simulacoes, clienteId, exportador);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .orElseGet(() -> ResponseEntity.badRequest().build());
             };
         } catch (ClienteNaoEncontradoException e) {
             log.error(e.getMessage());
@@ -116,20 +122,17 @@ public class SimulacaoController {
     private ResponseEntity<byte[]> exportar(
         Page<SimulacaoResponse> simulacoes,
         Long clienteId,
-        String formato
+        ExportadorSimulacao exportador
     ) throws IOException {
-        byte[] arquivo = simulacaoCsvExporter.exportar(simulacoes.getContent());
+        byte[] arquivo = exportador.exportar(simulacoes.getContent());
 
-        String contentType = formato.equals("csv")
-            ? "text/csv;charset=UTF-8"
-            : "text/plain;charset=UTF-8";
+        String nomeArquivo = "simulacoes_cliente_" + clienteId + "." + exportador.formato();
 
         return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType(contentType))
+            .contentType(MediaType.parseMediaType(exportador.contentType()))
             .header(
                 HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"simulacoes_cliente_"
-                    + clienteId + "." + formato + "\""
+                "attachment; filename=\"" + nomeArquivo + "\""
             )
             .body(arquivo);
     }
