@@ -24,6 +24,12 @@ public class ExportadorSimulacaoTxt implements ExportadorSimulacao{
         return "text/plain;charset=UTF-8";
     }
 
+    @Override
+    public String nomeArquivo(Long clienteId) {
+        return "simulacoes_cliente_" + clienteId + "." +  this.formato();
+    }
+
+    @Override
     public byte[] exportar(
         List<SimulacaoResponse> simulacoes
     ) throws IOException {

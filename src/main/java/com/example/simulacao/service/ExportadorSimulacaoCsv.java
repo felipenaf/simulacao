@@ -28,6 +28,12 @@ public class ExportadorSimulacaoCsv implements ExportadorSimulacao{
         return "text/csv;charset=UTF-8";
     }
 
+    @Override
+    public String nomeArquivo(Long clienteId) {
+        return "simulacoes_cliente_" + clienteId + "." +  this.formato();
+    }
+
+    @Override
     public byte[] exportar(
         List<SimulacaoResponse> simulacoes
     ) throws IOException {

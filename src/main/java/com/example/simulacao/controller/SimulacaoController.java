@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -94,15 +94,7 @@ public class SimulacaoController {
 
             return switch (formato) {
                 case JSON -> ResponseEntity.ok(PageResponse.from(simulacoes));
-                case CSV, TXT -> exportadorFactory.buscar(formato)
-                    .map(exportador -> {
-                        try {
-                            return exportar(simulacoes, clienteId, exportador);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    })
-                    .orElseGet(() -> ResponseEntity.badRequest().build());
+                case CSV, TXT -> montaRespostaExportacao(simulacoes, clienteId, formato);
             };
         } catch (ClienteNaoEncontradoException e) {
             log.error(e.getMessage());
@@ -119,21 +111,25 @@ public class SimulacaoController {
         }
     }
 
-    private ResponseEntity<byte[]> exportar(
+    private ResponseEntity<byte[]> montaRespostaExportacao(
         Page<SimulacaoResponse> simulacoes,
         Long clienteId,
-        ExportadorSimulacao exportador
+        FormatoExportacao formato
     ) throws IOException {
-        byte[] arquivo = exportador.exportar(simulacoes.getContent());
+        Optional<ExportadorSimulacao> resultado = exportadorFactory.buscar(formato);
 
-        String nomeArquivo = "simulacoes_cliente_" + clienteId + "." + exportador.formato();
+        if (resultado.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        ExportadorSimulacao exportador = resultado.get();
 
         return ResponseEntity.ok()
             .contentType(MediaType.parseMediaType(exportador.contentType()))
             .header(
                 HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + nomeArquivo + "\""
+                "attachment; filename=\"" + exportador.nomeArquivo(clienteId) + "\""
             )
-            .body(arquivo);
+            .body(exportador.exportar(simulacoes.getContent()));
     }
 }

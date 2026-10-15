@@ -10,5 +10,7 @@ public interface ExportadorSimulacao {
 
     String contentType();
 
+    String nomeArquivo(Long clienteId);
+
     byte[] exportar(List<SimulacaoResponse> simulacoes) throws IOException;
 }
