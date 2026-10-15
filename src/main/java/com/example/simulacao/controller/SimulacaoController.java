@@ -2,6 +2,7 @@ package com.example.simulacao.controller;
 
 import com.example.simulacao.dto.*;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
+import com.example.simulacao.service.SimulacaoCsvExporter;
 import com.example.simulacao.service.SimulacaoService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -16,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,9 +26,14 @@ import java.util.Locale;
 @RequestMapping("/simulacoes")
 public class SimulacaoController {
     private final SimulacaoService simulacaoService;
+    private final SimulacaoCsvExporter simulacaoCsvExporter;
 
-    public SimulacaoController(SimulacaoService simulacaoService) {
+    public SimulacaoController(
+        SimulacaoService simulacaoService,
+        SimulacaoCsvExporter simulacaoCsvExporter
+    ) {
         this.simulacaoService = simulacaoService;
+        this.simulacaoCsvExporter = simulacaoCsvExporter;
     }
 
     @PostMapping("/clientes/{clienteId}")
@@ -111,40 +117,19 @@ public class SimulacaoController {
         Page<SimulacaoResponse> simulacoes,
         Long clienteId,
         String formato
-    ) {
-        StringBuilder csv = new StringBuilder();
+    ) throws IOException {
+        byte[] arquivo = simulacaoCsvExporter.exportar(simulacoes.getContent());
 
-        csv.append(
-            "data_hora;valor_solicitado;valor_garantia;"
-                + "quantidade_meses;taxa_juros_mensal\n"
-        );
-
-        for (SimulacaoResponse simulacao : simulacoes.getContent()) {
-            csv.append(simulacao.dataHora()).append(";")
-                .append(simulacao.valorSolicitado().toPlainString()).append(";")
-                .append(simulacao.valorGarantia().toPlainString()).append(";")
-                .append(simulacao.quantidadeMeses()).append(";")
-                .append(simulacao.taxaJurosMensal().toPlainString())
-                .append("\n");
-        }
-
-        byte[] arquivo = csv.toString().getBytes(StandardCharsets.UTF_8);
-
-        if (formato.equals("csv")) {
-            return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("text/csv;charset=UTF-8"))
-                .header(
-                    HttpHeaders.CONTENT_DISPOSITION,
-                    "attachment; filename=\"simulacoes_cliente_" + clienteId + ".csv\""
-                )
-                .body(arquivo);
-        }
+        String contentType = formato.equals("csv")
+            ? "text/csv;charset=UTF-8"
+            : "text/plain;charset=UTF-8";
 
         return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType("text/plain;charset=UTF-8"))
+            .contentType(MediaType.parseMediaType(contentType))
             .header(
                 HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"simulacoes_cliente_" + clienteId + ".txt\""
+                "attachment; filename=\"simulacoes_cliente_"
+                    + clienteId + "." + formato + "\""
             )
             .body(arquivo);
     }
