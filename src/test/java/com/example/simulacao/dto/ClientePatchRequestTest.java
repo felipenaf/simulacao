@@ -1,6 +1,5 @@
 package com.example.simulacao.dto;
 
-import com.example.simulacao.entity.Estado;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;

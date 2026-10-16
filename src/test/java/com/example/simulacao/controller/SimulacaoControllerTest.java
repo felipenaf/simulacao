@@ -1,16 +1,18 @@
 package com.example.simulacao.controller;
 
+import com.example.simulacao.dto.SimulacaoRequest;
 import com.example.simulacao.dto.SimulacaoResponse;
 import com.example.simulacao.enums.FormatoExportacao;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.service.*;
-import lombok.extern.slf4j.Slf4j;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,12 +22,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SimulacaoController.class)
@@ -66,17 +67,6 @@ class SimulacaoControllerTest {
             .andExpect(content().string(org.hamcrest.Matchers.containsString("taxaJurosMensal")));
 
         // Valida se a chamada feita ao service foi exatamente essa
-        verify(simulacaoService).findByClienteId(1L, PageRequest.of(0, 10));
-    }
-
-    @Test
-    void deveRetornarNotFound() throws Exception {
-        when(simulacaoService.findByClienteId(eq(1L), any(Pageable.class)))
-            .thenThrow(new ClienteNaoEncontradoException("Cliente não encontrado"));
-
-        mockMvc.perform(get("/simulacoes/clientes/1"))
-            .andExpect(status().isNotFound());
-
         verify(simulacaoService).findByClienteId(1L, PageRequest.of(0, 10));
     }
 
@@ -166,7 +156,6 @@ class SimulacaoControllerTest {
             ));
 
         mockMvc.perform(get("/simulacoes/clientes/1?pagina=1&quantidade_por_pagina=2"))
-            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content[0].dataHora").isNotEmpty())
             .andExpect(jsonPath("$.content[1].dataHora").isNotEmpty())
@@ -178,6 +167,75 @@ class SimulacaoControllerTest {
         verify(simulacaoService).findByClienteId(1L, PageRequest.of(0, 2));
     }
 
+    @Test
+    void deveRetornarNotFoundEmCasoDeClienteNaoExisteNoGet() throws Exception {
+        when(simulacaoService.findByClienteId(eq(1L), any(Pageable.class)))
+            .thenThrow(new ClienteNaoEncontradoException("Cliente não encontrado"));
+
+        mockMvc.perform(get("/simulacoes/clientes/1"))
+            .andExpect(status().isNotFound());
+
+        verify(simulacaoService).findByClienteId(1L, PageRequest.of(0, 10));
+    }
+
     // POST /simulacoes/clientes/{id}
 
+    @Test
+    void deveCadastrarSimulacoes() throws Exception {
+        List<SimulacaoResponse> simulacoes = IntStream.range(0, 3)
+            .mapToObj(i -> new SimulacaoResponse(
+                LocalDateTime.of(2024, 6, 15, 10, 30, 26).plusDays(i),
+                new BigDecimal("300000.00").add(new BigDecimal(i)),
+                new BigDecimal("1000000.00"),
+                150,
+                new BigDecimal("2.00")
+            ))
+            .toList();
+
+        List<SimulacaoRequest> requests = IntStream.range(0, 3)
+            .mapToObj(i -> new SimulacaoRequest(
+                new BigDecimal("300000.00").add(new BigDecimal(i)),
+                new BigDecimal("1000000.00"),
+                150,
+                new BigDecimal("2.00")
+            ))
+            .toList();
+
+        when(simulacaoService.save(eq(1L), anyList()))
+            .thenReturn(simulacoes);
+
+        mockMvc.perform(
+            post("/simulacoes/clientes/1")
+                .content(new ObjectMapper().writeValueAsString(requests))
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.[0].dataHora").isNotEmpty())
+            .andExpect(jsonPath("$.[1].dataHora").isNotEmpty())
+            .andExpect(jsonPath("$.[2].dataHora").isNotEmpty());
+
+        verify(simulacaoService).save(1L, requests);
+    }
+
+    @Test
+    void deveRetornarNotFoundEmCasoDeClienteNaoExisteNoPost() throws Exception {
+        List<SimulacaoRequest> requests = IntStream.range(0, 5)
+            .mapToObj(i -> new SimulacaoRequest(
+                new BigDecimal("300000.00").add(new BigDecimal(i)),
+                new BigDecimal("1000000.00"),
+                150,
+                new BigDecimal("2.00")
+            ))
+            .toList();
+
+        when(simulacaoService.save(eq(1L), anyList()))
+            .thenThrow(new ClienteNaoEncontradoException("Cliente não encontrado"));
+
+        mockMvc.perform(post("/simulacoes/clientes/1")
+            .content(new ObjectMapper().writeValueAsString(requests))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNotFound());
+
+        verify(simulacaoService).save(1L, requests);
+    }
 }
