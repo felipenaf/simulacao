@@ -5,6 +5,7 @@ import com.example.simulacao.dto.ClienteRequest;
 import com.example.simulacao.dto.ClienteResponse;
 import com.example.simulacao.entity.Estado;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
+import com.example.simulacao.exception.ClientePossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.service.ClienteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,7 +62,7 @@ public class ClienteControllerTest {
     }
 
     @Test
-    void deveRetornarNotFoundParaClienteNaoExisteNoGet() throws Exception {
+    void deveRetornarNotFoundAoListarCliente() throws Exception {
         when(clienteService.findById(1L))
             .thenThrow(ClienteNaoEncontradoException.class);
 
@@ -203,6 +204,50 @@ public class ClienteControllerTest {
     }
 
     @Test
+    void deveRetornarNotFoundAoAtualizarClientePatch() throws Exception {
+        ClientePatchRequest request = new ClientePatchRequest(
+            null,
+            "Felipe Teste",
+            null
+        );
+
+        when(clienteService.patch(eq(1L), any(ClientePatchRequest.class)))
+            .thenThrow(ClienteNaoEncontradoException.class);
+
+        mockMvc.perform(
+            patch("/clientes/1")
+                .content(new ObjectMapper().writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isNotFound())
+        ;
+
+        verify(clienteService, times(1)).patch(1L, request);
+    }
+
+    @Test
+    void deveRetornarConflictAoAtualizarClientePatch() throws Exception {
+        ClientePatchRequest request = new ClientePatchRequest(
+            null,
+            "Felipe Teste",
+            null
+        );
+
+        when(clienteService.patch(eq(1L), any(ClientePatchRequest.class)))
+            .thenThrow(CpfJaCadastradoException.class);
+
+        mockMvc.perform(
+            patch("/clientes/1")
+                .content(new ObjectMapper().writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isConflict())
+        ;
+
+        verify(clienteService, times(1)).patch(1L, request);
+    }
+
+    @Test
     void deveAtualizarClientePut() throws Exception {
         ClienteResponse response = new ClienteResponse(
             "12345678908",
@@ -242,5 +287,96 @@ public class ClienteControllerTest {
             .andExpect(jsonPath("$.cpf").value("12345678908"));
 
         verify(clienteService, times(1)).put(1L, request);
+    }
+
+    @Test
+    void deveRetornarNotFoundAoAtualizarClientePut() throws Exception {
+        ClienteRequest request = new ClienteRequest(
+            "12345678908",
+            "Felipe Ferreira",
+            new ClienteRequest.EnderecoRequest(
+                "Rua das Flores",
+                100,
+                "Centro",
+                "13330000",
+                "Indaiatuba",
+                Estado.SP
+            )
+        );
+
+        when(clienteService.put(eq(1L), any(ClienteRequest.class)))
+            .thenThrow(ClienteNaoEncontradoException.class);
+
+        mockMvc.perform(
+            put("/clientes/1")
+                .content(new ObjectMapper().writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isNotFound())
+        ;
+
+        verify(clienteService, times(1)).put(1L, request);
+    }
+
+    @Test
+    void deveRetornarConflictAoAtualizarClientePut() throws Exception {
+        ClienteRequest request = new ClienteRequest(
+            "12345678908",
+            "Felipe Ferreira",
+            new ClienteRequest.EnderecoRequest(
+                "Rua das Flores",
+                100,
+                "Centro",
+                "13330000",
+                "Indaiatuba",
+                Estado.SP
+            )
+        );
+
+        when(clienteService.put(eq(1L), any(ClienteRequest.class)))
+            .thenThrow(CpfJaCadastradoException.class);
+
+        mockMvc.perform(
+            put("/clientes/1")
+                .content(new ObjectMapper().writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isConflict())
+        ;
+
+        verify(clienteService, times(1)).put(1L, request);
+    }
+
+    @Test
+    void deveDeletarCliente() throws Exception {
+        doNothing()
+            .when(clienteService).delete(1L);
+
+        mockMvc.perform(delete("/clientes/1"))
+            .andExpect(status().isNoContent());
+
+        verify(clienteService, times(1)).delete(1L);
+    }
+
+    @Test
+    void deveRetornarConflictAoDeletarCliente() throws Exception {
+        doThrow(ClientePossuiSimulacoesException.class)
+            .when(clienteService).delete(1L);
+
+        mockMvc.perform(delete("/clientes/1"))
+            .andExpect(status().isConflict());
+
+        verify(clienteService, times(1)).delete(1L);
+    }
+
+    @Test
+    void deveRetornarNotFoundAoDeletarCliente() throws Exception {
+        doThrow(ClienteNaoEncontradoException.class)
+            .when(clienteService).delete(1L);
+
+        mockMvc.perform(delete("/clientes/1"))
+            .andExpect(status().isNotFound());
+
+        verify(clienteService, times(1)).delete(1L);
     }
 }
