@@ -145,8 +145,7 @@ class SimulacaoControllerTest {
                 new BigDecimal("1000000.00"),
                 150,
                 new BigDecimal("2.00")
-            ))
-            .toList();
+            )).toList();
 
         when(simulacaoService.findByClienteId(eq(1L), any(PageRequest.class)))
             .thenReturn(new PageImpl<>(
