@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClientePatchRequestTest {
-
     private static Validator validator;
     private static ValidatorFactory validatorFactory;
 
@@ -26,7 +25,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldRemoveDotsAndHyphensFromCpf() {
+    void deveRemoverPontosETracosDoCpf() {
         var request = new ClientePatchRequest(
             "123.456.789-03",
             null,
@@ -37,7 +36,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldKeepCpfWithoutFormatting() {
+    void deveManterCpfSemFormatacao() {
         var request = new ClientePatchRequest(
             "12345678903",
             null,
@@ -48,7 +47,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldPreserveNullCpf() {
+    void devePreservarCpfNulo() {
         var request = new ClientePatchRequest(
             null,
             null,
@@ -59,7 +58,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldTrimName() {
+    void deveRemoverEspacosDoNome() {
         var request = new ClientePatchRequest(
             null,
             "  Felipe Ferreira  ",
@@ -70,7 +69,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldPreserveNullName() {
+    void devePreservarNomeNulo() {
         var request = new ClientePatchRequest(
             null,
             null,
@@ -81,7 +80,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldTrimAddressFields() {
+    void deveRemoverEspacosDosCamposDoEndereco() {
         var endereco = new ClientePatchRequest.EnderecoRequest(
             "  Rua das Flores  ",
             null,
@@ -98,7 +97,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldRemoveHyphenFromCep() {
+    void deveRemoverHifenDoCep() {
         var endereco = new ClientePatchRequest.EnderecoRequest(
             null,
             null,
@@ -112,7 +111,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldPreserveNullAddressFields() {
+    void devePreservarCamposDoEnderecoNulos() {
         var endereco = new ClientePatchRequest.EnderecoRequest(
             null,
             null,
@@ -131,7 +130,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldAcceptNullCpf() {
+    void deveAceitarCpfNulo() {
         var request = new ClientePatchRequest(
             null,
             null,
@@ -142,7 +141,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldRejectCpfWithLessThan11Characters() {
+    void deveRejeitarCpfComMenosDe11Caracteres() {
         var request = new ClientePatchRequest(
             "1234567890",
             null,
@@ -157,7 +156,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldRejectCpfWithMoreThan11Characters() {
+    void deveRejeitarCpfComMaisDe11Caracteres() {
         var request = new ClientePatchRequest(
             "123456789012",
             null,
@@ -172,7 +171,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldAcceptNullName() {
+    void deveAceitarNomeNulo() {
         var request = new ClientePatchRequest(
             null,
             null,
@@ -183,7 +182,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldRejectNameExceeding150Characters() {
+    void deveRejeitarNomeComMaisDe150Caracteres() {
         var request = new ClientePatchRequest(
             null,
             "A".repeat(151),
@@ -198,7 +197,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldAcceptBlankName() {
+    void deveAceitarNomeEmBranco() {
         var request = new ClientePatchRequest(
             null,
             "   ",
@@ -209,7 +208,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldRejectStreetExceeding150Characters() {
+    void deveRejeitarRuaComMaisDe150Caracteres() {
         var endereco = new ClientePatchRequest.EnderecoRequest(
             "A".repeat(151),
             null,
@@ -229,7 +228,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldRejectNonPositiveNumero() {
+    void deveRejeitarNumeroNaoPositivo() {
         var endereco = new ClientePatchRequest.EnderecoRequest(
             null,
             0,
@@ -249,7 +248,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldAcceptNullNumero() {
+    void deveAceitarNumeroNulo() {
         var endereco = new ClientePatchRequest.EnderecoRequest(
             null,
             null,
@@ -267,7 +266,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldRejectBairroExceeding100Characters() {
+    void deveRejeitarBairroComMaisDe100Caracteres() {
         var endereco = new ClientePatchRequest.EnderecoRequest(
             null,
             null,
@@ -287,7 +286,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldRejectCepWithIncorrectLength() {
+    void deveRejeitarCepComTamanhoIncorreto() {
         var endereco = new ClientePatchRequest.EnderecoRequest(
             null,
             null,
@@ -307,7 +306,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldRejectCidadeExceeding100Characters() {
+    void deveRejeitarCidadeComMaisDe100Caracteres() {
         var endereco = new ClientePatchRequest.EnderecoRequest(
             null,
             null,
@@ -327,7 +326,7 @@ class ClientePatchRequestTest {
     }
 
     @Test
-    void shouldAcceptEmptyPatchRequest() {
+    void deveAceitarRequisicaoPatchVazia() {
         var request = new ClientePatchRequest(
             null,
             null,
