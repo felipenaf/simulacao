@@ -36,7 +36,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldAcceptValidRequest() {
+    void deveAceitarRequestValida() {
         var request = new ClienteRequest(
             "12345678903",
             "Felipe Ferreira",
@@ -49,7 +49,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRejectBlankCpf() {
+    void deveRejeitarCpfEmBranco() {
         var request = new ClienteRequest(
             "   ",
             "Felipe Ferreira",
@@ -64,7 +64,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRejectCpfWithMoreThan11Digits() {
+    void deveRejeitarCpfComMaisDe11Digitos() {
         var request = new ClienteRequest(
             "123456789101",
             "Felipe Ferreira",
@@ -81,7 +81,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRejectCpfWithLessThan11Digits() {
+    void deveRejeitarCpfComMenosDe11Digitos() {
         var request = new ClienteRequest(
             "1234567891",
             "Felipe Ferreira",
@@ -98,7 +98,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRemoveDotsAndHyphensFromCpf() {
+    void deveRemoverPontosETracosDoCpf() {
         var request = new ClienteRequest(
             "123.456.789-03",
             "Felipe Ferreira",
@@ -109,7 +109,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldKeepCpfWithoutFormatting() {
+    void deveManterCpfSemFormatacao() {
         var request = new ClienteRequest(
             "12345678903",
             "Felipe Ferreira",
@@ -120,7 +120,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldPreserveNullCpf() {
+    void devePreservarCpfNulo() {
         var request = new ClienteRequest(
             null,
             "Felipe Ferreira",
@@ -131,7 +131,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRejectBlankNome() {
+    void deveRejeitarNomeEmBranco() {
         var request = new ClienteRequest(
             "12345678903",
             "",
@@ -147,7 +147,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldTrimNome() {
+    void deveRemoverEspacosDoNome() {
         var request = new ClienteRequest(
             "12345678903",
             "  Felipe Ferreira  ",
@@ -158,7 +158,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRejectNullNumero() {
+    void deveRejeitarNumeroNulo() {
         var endereco = new ClienteRequest.EnderecoRequest(
             "Rua das Flores",
             null,
@@ -182,7 +182,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRejectNonPositiveNumero() {
+    void deveRejeitarNumeroNaoPositivo() {
         var endereco = new ClienteRequest.EnderecoRequest(
             "Rua das Flores",
             0,
@@ -206,7 +206,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRejectNullEndereco() {
+    void deveRejeitarEnderecoNulo() {
         var request = new ClienteRequest(
             "12345678903",
             "Felipe Ferreira",
@@ -221,7 +221,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldTrimAddressFields() {
+    void deveRemoverEspacosDosCamposDoEndereco() {
         var endereco = new ClienteRequest.EnderecoRequest(
             "  Rua das Flores  ",
             123,
@@ -238,7 +238,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRejectInvalidRua() {
+    void deveRejeitarRuaInvalida() {
         var endereco = new ClienteRequest.EnderecoRequest(
             "",
             123,
@@ -262,7 +262,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRejectInvalidBairro() {
+    void deveRejeitarBairroInvalido() {
         var endereco = new ClienteRequest.EnderecoRequest(
             "Rua das Flores",
             123,
@@ -286,7 +286,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRemoveHyphensFromCEP() {
+    void deveRemoverHifenDoCep() {
         var endereco = new ClienteRequest.EnderecoRequest(
             "Rua das Flores",
             123,
@@ -306,7 +306,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRejectInvalidCEP() {
+    void deveRejeitarCepInvalido() {
         var endereco = new ClienteRequest.EnderecoRequest(
             "Rua das Flores",
             123,
@@ -330,7 +330,7 @@ class ClienteRequestTest {
     }
 
     @Test
-    void shouldRejectInvalidEstado() {
+    void deveRejeitarEstadoInvalido() {
         var endereco = new ClienteRequest.EnderecoRequest(
             "Rua das Flores",
             123,
