@@ -7,6 +7,8 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "cliente")
 public class Cliente {
@@ -23,11 +25,4 @@ public class Cliente {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "endereco_id", nullable = false, unique = true)
     private Endereco endereco;
-
-    @Builder
-    public Cliente (String cpf,  String nome, Endereco endereco) {
-        this.cpf = cpf;
-        this.nome = nome;
-        this.endereco = endereco;
-    }
 }

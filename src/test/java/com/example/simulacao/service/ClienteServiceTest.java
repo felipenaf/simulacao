@@ -1,5 +1,6 @@
 package com.example.simulacao.service;
 
+import com.example.simulacao.dto.ClientePatchRequest;
 import com.example.simulacao.dto.ClienteRequest;
 import com.example.simulacao.dto.ClienteResponse;
 import com.example.simulacao.entity.Cliente;
@@ -55,19 +56,20 @@ public class ClienteServiceTest {
         return new ClienteRequest("12345678900", "Felipe Ferreira", endereco);
     }
 
-    private Cliente criarEntity() {
+    private Cliente criarCliente(Long id) {
         Endereco endereco = Endereco.builder()
-            .rua("Rua das Flores")
-            .numero(123)
-            .bairro("Centro")
-            .cep("13000-000")
-            .cidade("Campinas")
-            .estado(Estado.SP)
+            .rua("Rua Antiga")
+            .numero(10)
+            .bairro("Bairro Antigo")
+            .cep("11111-111")
+            .cidade("Santos")
+            .estado(Estado.PA)
             .build();
 
         return Cliente.builder()
-            .cpf("12345678900")
-            .nome("Felipe Ferreira")
+            .id(id)
+            .cpf("11111111111")
+            .nome("Felipe Antigo")
             .endereco(endereco)
             .build();
     }
@@ -147,7 +149,7 @@ public class ClienteServiceTest {
 
     @Test
     void deveConsultarCliente() {
-        Cliente cliente = criarEntity();
+        Cliente cliente = criarCliente(1L);
 
         when(clienteRepository.findById(1L))
             .thenReturn(Optional.of(cliente));
@@ -190,7 +192,7 @@ public class ClienteServiceTest {
     @Test
     void deveConsultarClientes() {
         List<Cliente> clientes = IntStream.range(0, 2)
-            .mapToObj(i -> criarEntity()).toList();
+            .mapToObj(i -> criarCliente((long) i)).toList();
 
         when(clienteRepository.findAll(PageRequest.of(0, 2)))
             .thenReturn(new PageImpl<>(clientes));
@@ -227,5 +229,335 @@ public class ClienteServiceTest {
             () -> clienteService.findAll(null)
         );
     }
+
+    // ---------------------------------------------------------------
+    // Helpers para patch / put / delete
+    // ---------------------------------------------------------------
+
+
+
+    // ---------------------------------------------------------------
+    // patch
+    // ---------------------------------------------------------------
+
+    @Test
+    void deveLancarIllegalArgumentExceptionAoAtualizarPatchComIdNull() {
+        ClientePatchRequest request = new ClientePatchRequest(null, "Novo Nome", null);
+
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> clienteService.patch(null, request)
+        );
+
+        verifyNoInteractions(clienteRepository);
+    }
+
+    @Test
+    void deveLancarIllegalArgumentExceptionAoAtualizarComRequestNullPatch() {
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> clienteService.patch(1L, null)
+        );
+
+        verifyNoInteractions(clienteRepository);
+    }
+
+    @Test
+    void deveLancarClienteNaoEncontradoExceptionAoAtualizarPatch() {
+        when(clienteRepository.findById(99L))
+            .thenReturn(Optional.empty());
+
+        ClientePatchRequest request = new ClientePatchRequest(null, "Novo Nome", null);
+
+        assertThrows(
+            ClienteNaoEncontradoException.class,
+            () -> clienteService.patch(99L, request)
+        );
+    }
+
+    @Test
+    void deveAtualizarTodosCamposPatch() {
+        Cliente existente = criarCliente(1L);
+
+        when(clienteRepository.findById(1L))
+            .thenReturn(Optional.of(existente));
+
+        when(clienteRepository.findByCpf("12345678900"))
+            .thenReturn(Optional.empty());
+
+        ClientePatchRequest request = new ClientePatchRequest(
+            "12345678900",
+            "João da Silva",
+            new ClientePatchRequest.EnderecoRequest("Rua das Flores", 123, "Centro", "13000-000", "Campinas", Estado.SP)
+        );
+
+        ClienteResponse response = clienteService.patch(1L, request);
+
+        assertNotNull(response);
+
+        assertEquals("12345678900", existente.getCpf());
+        assertEquals("João da Silva", existente.getNome());
+        assertEquals("Rua das Flores", existente.getEndereco().getRua());
+        assertEquals(123, existente.getEndereco().getNumero());
+        assertEquals("Centro", existente.getEndereco().getBairro());
+        assertEquals("13000000", existente.getEndereco().getCep());
+        assertEquals("Campinas", existente.getEndereco().getCidade());
+        assertEquals(Estado.SP, existente.getEndereco().getEstado());
+
+        assertEquals("12345678900", response.cpf());
+        assertEquals("João da Silva", response.nome());
+    }
+
+    @Test
+    void deveAtualizarApenasNomePatch() {
+        Cliente existente = criarCliente(1L);
+
+        when(clienteRepository.findById(1L))
+            .thenReturn(Optional.of(existente));
+
+        ClientePatchRequest request = new ClientePatchRequest(null, "Novo Nome", null);
+
+        clienteService.patch(1L, request);
+
+        assertEquals("Novo Nome", existente.getNome());
+        assertEquals("11111111111", existente.getCpf());
+        assertEquals("Rua Antiga", existente.getEndereco().getRua());
+        assertEquals("Santos", existente.getEndereco().getCidade());
+    }
+
+    @Test
+    void deveManterValoresAntigosQuandoTodosCamposNulos() {
+        Cliente existente = criarCliente(1L);
+
+        when(clienteRepository.findById(1L))
+            .thenReturn(Optional.of(existente));
+
+        clienteService.patch(1L, new ClientePatchRequest(null, null, null));
+
+        assertEquals("11111111111", existente.getCpf());
+        assertEquals("Felipe Antigo", existente.getNome());
+        assertEquals("Rua Antiga", existente.getEndereco().getRua());
+
+        verify(clienteRepository, never()).findByCpf(any());
+    }
+
+    @Test
+    void devePermitirAtualizarApenasComMesmoCpfDoProprioClientePatch() {
+        Cliente existente = criarCliente(1L);
+
+        when(clienteRepository.findById(1L))
+            .thenReturn(Optional.of(existente));
+
+        when(clienteRepository.findByCpf("11111111111"))
+            .thenReturn(Optional.of(existente));
+
+        ClientePatchRequest request = new ClientePatchRequest("11111111111", null, null);
+
+        ClienteResponse response = clienteService.patch(1L, request);
+
+        assertNotNull(response);
+        assertEquals("11111111111", existente.getCpf());
+    }
+
+    @Test
+    void deveLancarCpfJaCadastradoExceptionPatch() {
+        Cliente existente = criarCliente(1L);
+        when(clienteRepository.findById(1L))
+            .thenReturn(Optional.of(existente));
+
+        Cliente outro = criarCliente(2L);
+        when(clienteRepository.findByCpf("99999999999"))
+            .thenReturn(Optional.of(outro));
+
+        ClientePatchRequest request = new ClientePatchRequest("99999999999", "Novo Nome", null);
+
+        assertThrows(
+            CpfJaCadastradoException.class,
+            () -> clienteService.patch(1L, request)
+        );
+
+        // a exceção ocorre antes de qualquer alteração
+        assertEquals("11111111111", existente.getCpf());
+        assertEquals("Felipe Antigo", existente.getNome());
+    }
+
+    // ---------------------------------------------------------------
+    // put
+    // ---------------------------------------------------------------
+
+    @Test
+    void deveLancarIllegalArgumentExceptionQuandoIdNullPut() {
+        ClienteRequest request = criarRequest();
+
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> clienteService.put(null, request)
+        );
+
+        verifyNoInteractions(clienteRepository);
+    }
+
+    @Test
+    void deveLancarIllegalArgumentExceptionAoAtualizarComRequestNullPut() {
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> clienteService.put(1L, null)
+        );
+
+        verifyNoInteractions(clienteRepository);
+    }
+
+    @Test
+    void deveLancarClienteNaoEncontradoExceptionPut() {
+        when(clienteRepository.findById(99L))
+            .thenReturn(Optional.empty());
+
+        ClienteRequest request = criarRequest();
+
+        assertThrows(
+            ClienteNaoEncontradoException.class,
+            () -> clienteService.put(99L, request)
+        );
+    }
+
+    @Test
+    void deveAtualizarPut() {
+        Cliente existente = criarCliente(1L);
+        ClienteRequest request = criarRequest();
+
+        when(clienteRepository.findById(1L))
+            .thenReturn(Optional.of(existente));
+
+        when(clienteRepository.findByCpf(request.cpf()))
+            .thenReturn(Optional.empty());
+
+        ClienteResponse response = clienteService.put(1L, request);
+
+        assertNotNull(response);
+        assertEquals(request.cpf(), existente.getCpf());
+        assertEquals(request.nome(), existente.getNome());
+        assertEquals(request.endereco().rua(), existente.getEndereco().getRua());
+        assertEquals(request.endereco().numero(), existente.getEndereco().getNumero());
+        assertEquals(request.endereco().bairro(), existente.getEndereco().getBairro());
+        assertEquals(request.endereco().cep(), existente.getEndereco().getCep());
+        assertEquals(request.endereco().cidade(), existente.getEndereco().getCidade());
+        assertEquals(request.endereco().estado(), existente.getEndereco().getEstado());
+
+        assertEquals(request.cpf(), response.cpf());
+        assertEquals(request.nome(), response.nome());
+    }
+
+    @Test
+    void devePermitirAtualizarApenasComMesmoCpfDoProprioClientePut() {
+        Cliente existente = criarCliente(1L);
+
+        ClienteRequest request = new ClienteRequest(
+            "11111111112",
+            "Novo Nome",
+            criarRequest().endereco()
+        );
+
+        when(clienteRepository.findById(1L))
+            .thenReturn(Optional.of(existente));
+
+        // o stub precisa ter o mesmo cpf passado na função a ser testada
+        // neste exemplo é clienteService.put(1L, request);
+        when(clienteRepository.findByCpf(request.cpf()))
+            .thenReturn(Optional.of(existente));
+
+        ClienteResponse response = clienteService.put(1L, request);
+
+        assertNotNull(response);
+        assertEquals("Novo Nome", existente.getNome());
+        assertEquals("11111111112", existente.getCpf());
+    }
+
+    @Test
+    void deveLancarCpfJaCadastradoExceptionPut() {
+        Cliente existente = criarCliente(1L);
+        Cliente outro = criarCliente(2L);
+
+        ClienteRequest request = criarRequest();
+        when(clienteRepository.findById(1L))
+            .thenReturn(Optional.of(existente));
+
+        when(clienteRepository.findByCpf(request.cpf()))
+            .thenReturn(Optional.of(outro));
+
+        assertThrows(
+            CpfJaCadastradoException.class,
+            () -> clienteService.put(1L, request)
+        );
+
+        assertEquals("11111111111", existente.getCpf());
+        assertEquals("Felipe Antigo", existente.getNome());
+        assertEquals("Rua Antiga", existente.getEndereco().getRua());
+    }
+//
+//    // ---------------------------------------------------------------
+//    // delete
+//    // ---------------------------------------------------------------
+//
+//    @Test
+//    @DisplayName("delete: deve lançar IllegalArgumentException quando o id é null")
+//    void delete_deveLancarExcecaoQuandoIdNulo() {
+//        IllegalArgumentException ex = assertThrows(
+//            IllegalArgumentException.class,
+//            () -> clienteService.delete(null)
+//        );
+//
+//        assertEquals("id não pode ser null", ex.getMessage());
+//        verifyNoInteractions(clienteRepository, simulacaoRepository);
+//    }
+//
+//    @Test
+//    @DisplayName("delete: deve lançar ClienteNaoEncontradoException quando o cliente não existe")
+//    void delete_deveLancarExcecaoQuandoClienteNaoEncontrado() {
+//        when(clienteRepository.findById(99L)).thenReturn(Optional.empty());
+//
+//        ClienteNaoEncontradoException ex = assertThrows(
+//            ClienteNaoEncontradoException.class,
+//            () -> clienteService.delete(99L)
+//        );
+//
+//        assertEquals("Cliente não encontrado: 99", ex.getMessage());
+//        verifyNoInteractions(simulacaoRepository);
+//        verify(clienteRepository, never()).delete(any(Cliente.class));
+//    }
+//
+//    @Test
+//    @DisplayName("delete: deve lançar ClientePossuiSimulacoesException quando o cliente possui simulações")
+//    void delete_deveLancarExcecaoQuandoClientePossuiSimulacoes() {
+//        Cliente existente = criarCliente(1L);
+//        Page<Simulacao> comSimulacao = new PageImpl<>(List.of(mock(Simulacao.class)));
+//        when(clienteRepository.findById(1L)).thenReturn(Optional.of(existente));
+//        when(simulacaoRepository.findByCliente(existente, PageRequest.of(0, 1)))
+//            .thenReturn(comSimulacao);
+//
+//        ClientePossuiSimulacoesException ex = assertThrows(
+//            ClientePossuiSimulacoesException.class,
+//            () -> clienteService.delete(1L)
+//        );
+//
+//        assertEquals(
+//            "Cliente não pode ser removido pois possui simulações associadas a ele",
+//            ex.getMessage()
+//        );
+//        verify(clienteRepository, never()).delete(any(Cliente.class));
+//    }
+//
+//    @Test
+//    @DisplayName("delete: deve remover o cliente quando ele não possui simulações")
+//    void delete_deveRemoverClienteQuandoNaoPossuiSimulacoes() {
+//        Cliente existente = criarCliente(1L);
+//        when(clienteRepository.findById(1L)).thenReturn(Optional.of(existente));
+//        when(simulacaoRepository.findByCliente(existente, PageRequest.of(0, 1)))
+//            .thenReturn(Page.empty());
+//
+//        clienteService.delete(1L);
+//
+//        verify(clienteRepository).delete(existente);
+//    }
+
 
 }
