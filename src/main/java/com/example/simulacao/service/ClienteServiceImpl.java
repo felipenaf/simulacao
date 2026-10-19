@@ -34,6 +34,10 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public ClienteResponse save(ClienteRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("request não pode ser null");
+        }
+
         if (clienteRepository.findByCpf(request.cpf()).isPresent()) {
             throw new CpfJaCadastradoException("CPF já cadastrado");
         }
@@ -64,6 +68,10 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public ClienteResponse findById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id não pode ser null");
+        }
+
         Cliente cliente = clienteRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
@@ -74,6 +82,10 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Page<ClienteResponse> findAll(Pageable pageable) {
+        if (pageable == null) {
+            throw new IllegalArgumentException("pageable não pode ser null");
+        }
+
        return clienteRepository
            .findAll(pageable)
            .map(ClienteResponse::from);
@@ -82,6 +94,14 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public ClienteResponse patch(Long id, ClientePatchRequest request) {
+        if (id == null) {
+            throw new IllegalArgumentException("id não pode ser null");
+        }
+
+        if (request == null) {
+            throw new IllegalArgumentException("request não pode ser null");
+        }
+
         Cliente clienteExistente = clienteRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
@@ -136,6 +156,14 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public ClienteResponse put(Long id, ClienteRequest request) {
+        if (id == null) {
+            throw new IllegalArgumentException("id não pode ser null");
+        }
+
+        if (request == null) {
+            throw new IllegalArgumentException("request não pode ser null");
+        }
+
         Cliente clienteExistente = clienteRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
@@ -163,6 +191,10 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public void delete(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id não pode ser null");
+        }
+
         Cliente clienteExistente = clienteRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
