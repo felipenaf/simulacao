@@ -3,7 +3,9 @@ package com.example.simulacao.service;
 import com.example.simulacao.dto.ClienteRequest;
 import com.example.simulacao.dto.ClienteResponse;
 import com.example.simulacao.entity.Cliente;
+import com.example.simulacao.entity.Endereco;
 import com.example.simulacao.entity.Estado;
+import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.repository.ClienteRepository;
 import com.example.simulacao.repository.SimulacaoRepository;
@@ -48,6 +50,23 @@ public class ClienteServiceTest {
         return new ClienteRequest("12345678900", "Felipe Ferreira", endereco);
     }
 
+    private Cliente criarEntity() {
+        Endereco endereco = Endereco.builder()
+            .rua("Rua das Flores")
+            .numero(123)
+            .bairro("Centro")
+            .cep("13000-000")
+            .cidade("Campinas")
+            .estado(Estado.SP)
+            .build();
+
+        return Cliente.builder()
+            .cpf("12345678900")
+            .nome("Felipe Ferreira")
+            .endereco(endereco)
+            .build();
+    }
+
     @Test
     void deveSalvarCliente() {
         ClienteRequest request = criarRequest();
@@ -80,7 +99,7 @@ public class ClienteServiceTest {
     }
 
     @Test
-    void deveRetornarResponseCorreto() {
+    void deveRetornarResponseCorretoAoSalvarCliente() {
         ClienteRequest request = criarRequest();
         when(clienteRepository.findByCpf(request.cpf())).thenReturn(Optional.empty());
 
@@ -97,7 +116,7 @@ public class ClienteServiceTest {
     }
 
     @Test
-    void deveLancarCpfJaCadastradoException() {
+    void deveLancarCpfJaCadastradoExceptionAoSalvarCliente() {
         ClienteRequest request = criarRequest();
 
         when(clienteRepository.findByCpf(request.cpf()))
@@ -121,6 +140,46 @@ public class ClienteServiceTest {
         );
     }
 
+    @Test
+    void deveConsultarCliente() {
+        Cliente cliente = criarEntity();
 
+        when(clienteRepository.findById(1L))
+            .thenReturn(Optional.of(cliente));
+
+        ClienteResponse response = clienteService.findById(1L);
+
+        verify(clienteRepository).findById(1L);
+
+        assertNotNull(response);
+        assertEquals(response.cpf(), cliente.getCpf());
+        assertEquals(response.nome(), cliente.getNome());
+        assertEquals(response.endereco().rua(), cliente.getEndereco().getRua());
+        assertEquals(response.endereco().numero(), cliente.getEndereco().getNumero());
+        assertEquals(response.endereco().bairro(), cliente.getEndereco().getBairro());
+        assertEquals(response.endereco().cep(), cliente.getEndereco().getCep());
+        assertEquals(response.endereco().cidade(), cliente.getEndereco().getCidade());
+        assertEquals(response.endereco().estado(), cliente.getEndereco().getEstado());
+    }
+
+    @Test
+    void deveLancarClienteNaoEncontradoExceptionAoConsultarCliente() {
+        when(clienteRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(
+            ClienteNaoEncontradoException.class,
+            () -> clienteService.findById(1L)
+        );
+
+        verify(clienteRepository).findById(1L);
+    }
+
+    @Test
+    void deveLancarIllegalArgumentExceptionAoConsultarClienteComIdNull() {
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> clienteService.findById(null)
+        );
+    }
 
 }
