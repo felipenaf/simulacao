@@ -16,8 +16,13 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -179,6 +184,47 @@ public class ClienteServiceTest {
         assertThrows(
             IllegalArgumentException.class,
             () -> clienteService.findById(null)
+        );
+    }
+
+    @Test
+    void deveConsultarClientes() {
+        List<Cliente> clientes = IntStream.range(0, 2)
+            .mapToObj(i -> criarEntity()).toList();
+
+        when(clienteRepository.findAll(PageRequest.of(0, 2)))
+            .thenReturn(new PageImpl<>(clientes));
+
+        Page<ClienteResponse> response = clienteService.findAll(PageRequest.of(0, 2));
+
+        verify(clienteRepository).findAll(PageRequest.of(0, 2));
+
+        assertNotNull(response);
+
+        assertEquals(response.getContent().getFirst().cpf(), clientes.getFirst().getCpf());
+        assertEquals(response.getContent().getFirst().nome(), clientes.getFirst().getNome());
+        assertEquals(response.getContent().getFirst().endereco().rua(), clientes.getFirst().getEndereco().getRua());
+        assertEquals(response.getContent().getFirst().endereco().numero(), clientes.getFirst().getEndereco().getNumero());
+        assertEquals(response.getContent().getFirst().endereco().bairro(), clientes.getFirst().getEndereco().getBairro());
+        assertEquals(response.getContent().getFirst().endereco().cep(), clientes.getFirst().getEndereco().getCep());
+        assertEquals(response.getContent().getFirst().endereco().cidade(), clientes.getFirst().getEndereco().getCidade());
+        assertEquals(response.getContent().getFirst().endereco().estado(), clientes.getFirst().getEndereco().getEstado());
+
+        assertEquals(response.getContent().getLast().cpf(), clientes.getLast().getCpf());
+        assertEquals(response.getContent().getLast().nome(), clientes.getLast().getNome());
+        assertEquals(response.getContent().getLast().endereco().rua(), clientes.getLast().getEndereco().getRua());
+        assertEquals(response.getContent().getLast().endereco().numero(), clientes.getLast().getEndereco().getNumero());
+        assertEquals(response.getContent().getLast().endereco().bairro(), clientes.getLast().getEndereco().getBairro());
+        assertEquals(response.getContent().getLast().endereco().cep(), clientes.getLast().getEndereco().getCep());
+        assertEquals(response.getContent().getLast().endereco().cidade(), clientes.getLast().getEndereco().getCidade());
+        assertEquals(response.getContent().getLast().endereco().estado(), clientes.getLast().getEndereco().getEstado());
+    }
+
+    @Test
+    void deveLancarIllegalArgumentExceptionAoConsultarClientesComPageableNull() {
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> clienteService.findAll(null)
         );
     }
 
