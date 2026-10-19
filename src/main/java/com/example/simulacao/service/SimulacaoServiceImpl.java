@@ -33,6 +33,14 @@ public class SimulacaoServiceImpl implements SimulacaoService {
         Long clienteId,
         List<SimulacaoRequest> requests
     ) {
+        if (clienteId == null) {
+            throw new IllegalArgumentException("clienteId não pode ser null");
+        }
+
+        if (requests == null) {
+            throw new IllegalArgumentException("requests não pode ser null");
+        }
+
         Cliente cliente = clienteRepository.findById(clienteId)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado")
@@ -62,6 +70,14 @@ public class SimulacaoServiceImpl implements SimulacaoService {
         Long clienteId,
         Pageable pageable
     ) {
+        if (clienteId == null) {
+            throw new IllegalArgumentException("clienteId não pode ser null");
+        }
+
+        if (pageable == null) {
+            throw new IllegalArgumentException("pageable não pode ser null");
+        }
+
         Cliente cliente = clienteRepository.findById(clienteId)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado")
