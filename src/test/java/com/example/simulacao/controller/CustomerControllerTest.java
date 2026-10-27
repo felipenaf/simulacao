@@ -7,7 +7,7 @@ import com.example.simulacao.entity.Estado;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.exception.ClientePossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
-import com.example.simulacao.service.ClienteService;
+import com.example.simulacao.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +26,13 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ClienteController.class)
+@WebMvcTest(CustomerController.class)
 public class CustomerControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockitoBean
-    private ClienteService clienteService;
+    private CustomerService customerService;
 
     @Test
     void deveListarCliente() throws Exception {
@@ -49,7 +49,7 @@ public class CustomerControllerTest {
             )
         );
 
-        when(clienteService.findById(1L))
+        when(customerService.findById(1L))
             .thenReturn(response);
 
         mockMvc.perform(get("/customers/1"))
@@ -58,18 +58,18 @@ public class CustomerControllerTest {
             .andExpect(content().contentType("application/json"))
         ;
 
-        verify(clienteService).findById(1L);
+        verify(customerService).findById(1L);
     }
 
     @Test
     void deveRetornarNotFoundAoListarCliente() throws Exception {
-        when(clienteService.findById(1L))
+        when(customerService.findById(1L))
             .thenThrow(ClienteNaoEncontradoException.class);
 
         mockMvc.perform(get("/customers/1"))
             .andExpect(status().isNotFound());
 
-        verify(clienteService).findById(1L);
+        verify(customerService).findById(1L);
     }
 
     @Test
@@ -87,14 +87,14 @@ public class CustomerControllerTest {
             )
         );
 
-        when(clienteService.findAll(any(Pageable.class)))
+        when(customerService.findAll(any(Pageable.class)))
             .thenReturn(new PageImpl<>(List.of(response)));
 
         mockMvc.perform(get("/customers"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content[0].cpf").value("12345678908"));
 
-        verify(clienteService).findAll(PageRequest.of(0, 10));
+        verify(customerService).findAll(PageRequest.of(0, 10));
     }
 
     @Test
@@ -125,7 +125,7 @@ public class CustomerControllerTest {
             )
         );
 
-        when(clienteService.save(any(ClienteRequest.class)))
+        when(customerService.save(any(ClienteRequest.class)))
             .thenReturn(response);
 
         mockMvc.perform(
@@ -136,7 +136,7 @@ public class CustomerControllerTest {
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.cpf").value("12345678908"));
 
-        verify(clienteService, times(1)).save(request);
+        verify(customerService, times(1)).save(request);
     }
 
     @Test
@@ -154,7 +154,7 @@ public class CustomerControllerTest {
             )
         );
 
-        when(clienteService.save(any(ClienteRequest.class)))
+        when(customerService.save(any(ClienteRequest.class)))
             .thenThrow(CpfJaCadastradoException.class);
 
         mockMvc.perform(
@@ -164,7 +164,7 @@ public class CustomerControllerTest {
             )
             .andExpect(status().isConflict());
 
-        verify(clienteService, times(1)).save(request);
+        verify(customerService, times(1)).save(request);
     }
 
     @Test
@@ -188,7 +188,7 @@ public class CustomerControllerTest {
             null
         );
 
-        when(clienteService.patch(eq(1L), any(ClientePatchRequest.class)))
+        when(customerService.patch(eq(1L), any(ClientePatchRequest.class)))
             .thenReturn(response);
 
         mockMvc.perform(
@@ -200,7 +200,7 @@ public class CustomerControllerTest {
             .andExpect(jsonPath("$.nome").value("Felipe Teste"))
         ;
 
-        verify(clienteService, times(1)).patch(1L, request);
+        verify(customerService, times(1)).patch(1L, request);
     }
 
     @Test
@@ -211,7 +211,7 @@ public class CustomerControllerTest {
             null
         );
 
-        when(clienteService.patch(eq(1L), any(ClientePatchRequest.class)))
+        when(customerService.patch(eq(1L), any(ClientePatchRequest.class)))
             .thenThrow(ClienteNaoEncontradoException.class);
 
         mockMvc.perform(
@@ -222,7 +222,7 @@ public class CustomerControllerTest {
             .andExpect(status().isNotFound())
         ;
 
-        verify(clienteService, times(1)).patch(1L, request);
+        verify(customerService, times(1)).patch(1L, request);
     }
 
     @Test
@@ -233,7 +233,7 @@ public class CustomerControllerTest {
             null
         );
 
-        when(clienteService.patch(eq(1L), any(ClientePatchRequest.class)))
+        when(customerService.patch(eq(1L), any(ClientePatchRequest.class)))
             .thenThrow(CpfJaCadastradoException.class);
 
         mockMvc.perform(
@@ -244,7 +244,7 @@ public class CustomerControllerTest {
             .andExpect(status().isConflict())
         ;
 
-        verify(clienteService, times(1)).patch(1L, request);
+        verify(customerService, times(1)).patch(1L, request);
     }
 
     @Test
@@ -275,7 +275,7 @@ public class CustomerControllerTest {
             )
         );
 
-        when(clienteService.put(eq(1L), any(ClienteRequest.class)))
+        when(customerService.put(eq(1L), any(ClienteRequest.class)))
             .thenReturn(response);
 
         mockMvc.perform(
@@ -286,7 +286,7 @@ public class CustomerControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.cpf").value("12345678908"));
 
-        verify(clienteService, times(1)).put(1L, request);
+        verify(customerService, times(1)).put(1L, request);
     }
 
     @Test
@@ -304,7 +304,7 @@ public class CustomerControllerTest {
             )
         );
 
-        when(clienteService.put(eq(1L), any(ClienteRequest.class)))
+        when(customerService.put(eq(1L), any(ClienteRequest.class)))
             .thenThrow(ClienteNaoEncontradoException.class);
 
         mockMvc.perform(
@@ -315,7 +315,7 @@ public class CustomerControllerTest {
             .andExpect(status().isNotFound())
         ;
 
-        verify(clienteService, times(1)).put(1L, request);
+        verify(customerService, times(1)).put(1L, request);
     }
 
     @Test
@@ -333,7 +333,7 @@ public class CustomerControllerTest {
             )
         );
 
-        when(clienteService.put(eq(1L), any(ClienteRequest.class)))
+        when(customerService.put(eq(1L), any(ClienteRequest.class)))
             .thenThrow(CpfJaCadastradoException.class);
 
         mockMvc.perform(
@@ -344,39 +344,39 @@ public class CustomerControllerTest {
             .andExpect(status().isConflict())
         ;
 
-        verify(clienteService, times(1)).put(1L, request);
+        verify(customerService, times(1)).put(1L, request);
     }
 
     @Test
     void deveDeletarCliente() throws Exception {
         doNothing()
-            .when(clienteService).delete(1L);
+            .when(customerService).delete(1L);
 
         mockMvc.perform(delete("/customers/1"))
             .andExpect(status().isNoContent());
 
-        verify(clienteService, times(1)).delete(1L);
+        verify(customerService, times(1)).delete(1L);
     }
 
     @Test
     void deveRetornarConflictAoDeletarCliente() throws Exception {
         doThrow(ClientePossuiSimulacoesException.class)
-            .when(clienteService).delete(1L);
+            .when(customerService).delete(1L);
 
         mockMvc.perform(delete("/customers/1"))
             .andExpect(status().isConflict());
 
-        verify(clienteService, times(1)).delete(1L);
+        verify(customerService, times(1)).delete(1L);
     }
 
     @Test
     void deveRetornarNotFoundAoDeletarCliente() throws Exception {
         doThrow(ClienteNaoEncontradoException.class)
-            .when(clienteService).delete(1L);
+            .when(customerService).delete(1L);
 
         mockMvc.perform(delete("/customers/1"))
             .andExpect(status().isNotFound());
 
-        verify(clienteService, times(1)).delete(1L);
+        verify(customerService, times(1)).delete(1L);
     }
 }

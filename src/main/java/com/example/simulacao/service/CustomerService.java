@@ -6,7 +6,7 @@ import com.example.simulacao.dto.ClienteResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface ClienteService {
+public interface CustomerService {
     ClienteResponse save(ClienteRequest request);
 
     ClienteResponse findById(Long id);

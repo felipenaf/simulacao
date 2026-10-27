@@ -5,7 +5,7 @@ import com.example.simulacao.dto.SimulacaoResponse;
 import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Simulacao;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
-import com.example.simulacao.repository.ClienteRepository;
+import com.example.simulacao.repository.CustomerRepository;
 import com.example.simulacao.repository.SimulacaoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class SimulacaoServiceTest {
     @Mock
-    private ClienteRepository clienteRepository;
+    private CustomerRepository customerRepository;
 
     @Mock
     private SimulacaoRepository simulacaoRepository;
@@ -65,7 +65,7 @@ public class SimulacaoServiceTest {
                     .build()
             ).toList();
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(customer));
 
         when(simulacaoRepository.saveAll(anyList()))
@@ -77,7 +77,7 @@ public class SimulacaoServiceTest {
         assertEquals(1, response.size());
         assertEquals(new BigDecimal("30000"), response.getFirst().valorSolicitado());
 
-        verify(clienteRepository).findById(1L);
+        verify(customerRepository).findById(1L);
         verify(simulacaoRepository).saveAll(anyList());
     }
 
@@ -104,7 +104,7 @@ public class SimulacaoServiceTest {
                     .build()
             ).toList();
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(customer));
 
         when(simulacaoRepository.saveAll(anyList()))
@@ -117,7 +117,7 @@ public class SimulacaoServiceTest {
         assertEquals(new BigDecimal("30001"), response.get(1).valorSolicitado());
         assertEquals(new BigDecimal("30002"), response.get(2).valorSolicitado());
 
-        verify(clienteRepository).findById(1L);
+        verify(customerRepository).findById(1L);
         verify(simulacaoRepository).saveAll(simulacoesCaptor.capture());
 
         List<List<Simulacao>> capturedValues = simulacoesCaptor.getAllValues();
@@ -164,7 +164,7 @@ public class SimulacaoServiceTest {
                     .build()
             ).toList();
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(customer));
 
         when(simulacaoRepository.saveAll(anyList()))
@@ -178,7 +178,7 @@ public class SimulacaoServiceTest {
         assertEquals(new BigDecimal("30001"), response.get(1).valorSolicitado());
         assertEquals(new BigDecimal("30002"), response.get(2).valorSolicitado());
 
-        verify(clienteRepository).findById(1L);
+        verify(customerRepository).findById(1L);
         verify(simulacaoRepository).saveAll(anyList());
     }
 
@@ -192,7 +192,7 @@ public class SimulacaoServiceTest {
                 new BigDecimal("2.5")
             )).toList();
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.empty());
 
         assertThrows(
@@ -205,7 +205,7 @@ public class SimulacaoServiceTest {
 
     @Test
     void deveLancarClienteNaoEncontradoExceptionAoCadastrarSimulacaoComRequestsVazio() {
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.empty());
 
         assertThrows(
@@ -246,7 +246,7 @@ public class SimulacaoServiceTest {
                     .build()
             ).toList();
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(customer));
 
         Pageable pageable = PageRequest.of(0, 2);
@@ -267,7 +267,7 @@ public class SimulacaoServiceTest {
         assertEquals(new BigDecimal("30000"), response.getContent().get(0).valorSolicitado());
         assertEquals(new BigDecimal("30001"), response.getContent().get(1).valorSolicitado());
 
-        verify(clienteRepository).findById(1L);
+        verify(customerRepository).findById(1L);
         verify(simulacaoRepository).findByCustomer(customer, pageable);
     }
 
@@ -275,7 +275,7 @@ public class SimulacaoServiceTest {
     void deveRetornarListaVaziaAoConsultarSimulacoes() {
         Customer customer = new Customer();
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(customer));
 
         Pageable pageable = PageRequest.of(0, 1);
@@ -298,7 +298,7 @@ public class SimulacaoServiceTest {
         assertTrue(response.isLast());
         assertTrue(response.isEmpty());
 
-        verify(clienteRepository).findById(1L);
+        verify(customerRepository).findById(1L);
         verify(simulacaoRepository).findByCustomer(customer, pageable);
     }
 

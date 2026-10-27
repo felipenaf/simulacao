@@ -10,7 +10,7 @@ import com.example.simulacao.entity.Simulacao;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.exception.ClientePossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
-import com.example.simulacao.repository.ClienteRepository;
+import com.example.simulacao.repository.CustomerRepository;
 import com.example.simulacao.repository.SimulacaoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,13 +34,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class CustomerServiceTest {
     @Mock
-    private ClienteRepository clienteRepository;
+    private CustomerRepository customerRepository;
 
     @Mock
     private SimulacaoRepository simulacaoRepository;
 
     @InjectMocks
-    private ClienteServiceImpl clienteService;
+    private CustomerServiceImpl clienteService;
 
     @Captor
     private ArgumentCaptor<Customer> clienteCaptor;
@@ -80,7 +80,7 @@ public class CustomerServiceTest {
     void deveSalvarCliente() {
         ClienteRequest request = criarRequest();
 
-        when(clienteRepository.findByCpf(request.cpf()))
+        when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.empty());
 
         ClienteResponse response = clienteService.save(request);
@@ -89,7 +89,7 @@ public class CustomerServiceTest {
 
         // Aqui está sendo interceptado o objeto Cliente que é criado dentro
         // da função save do ClienteService e enviado ao repository e não tenho acesso.
-        verify(clienteRepository).save(clienteCaptor.capture());
+        verify(customerRepository).save(clienteCaptor.capture());
 
         // Garante que apenas uma chamada foi feita
         assertEquals(1, clienteCaptor.getAllValues().size());
@@ -110,7 +110,7 @@ public class CustomerServiceTest {
     @Test
     void deveRetornarResponseCorretoAoSalvarCliente() {
         ClienteRequest request = criarRequest();
-        when(clienteRepository.findByCpf(request.cpf())).thenReturn(Optional.empty());
+        when(customerRepository.findByCpf(request.cpf())).thenReturn(Optional.empty());
 
         ClienteResponse response = clienteService.save(request);
 
@@ -128,7 +128,7 @@ public class CustomerServiceTest {
     void deveLancarCpfJaCadastradoExceptionAoSalvarCliente() {
         ClienteRequest request = criarRequest();
 
-        when(clienteRepository.findByCpf(request.cpf()))
+        when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.of(Customer.builder().cpf(request.cpf()).build()));
 
         CpfJaCadastradoException ex = assertThrows(
@@ -138,7 +138,7 @@ public class CustomerServiceTest {
 
         assertEquals("CPF já cadastrado", ex.getMessage());
 
-        verify(clienteRepository, never()).save(any(Customer.class));
+        verify(customerRepository, never()).save(any(Customer.class));
     }
 
     @Test
@@ -153,12 +153,12 @@ public class CustomerServiceTest {
     void deveConsultarCliente() {
         Customer customer = criarCliente(1L);
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(customer));
 
         ClienteResponse response = clienteService.findById(1L);
 
-        verify(clienteRepository).findById(1L);
+        verify(customerRepository).findById(1L);
 
         assertNotNull(response);
         assertEquals(response.cpf(), customer.getCpf());
@@ -173,14 +173,14 @@ public class CustomerServiceTest {
 
     @Test
     void deveLancarClienteNaoEncontradoExceptionAoConsultarCliente() {
-        when(clienteRepository.findById(1L)).thenReturn(Optional.empty());
+        when(customerRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(
             ClienteNaoEncontradoException.class,
             () -> clienteService.findById(1L)
         );
 
-        verify(clienteRepository).findById(1L);
+        verify(customerRepository).findById(1L);
     }
 
     @Test
@@ -196,12 +196,12 @@ public class CustomerServiceTest {
         List<Customer> customers = IntStream.range(0, 2)
             .mapToObj(i -> criarCliente((long) i)).toList();
 
-        when(clienteRepository.findAll(PageRequest.of(0, 2)))
+        when(customerRepository.findAll(PageRequest.of(0, 2)))
             .thenReturn(new PageImpl<>(customers));
 
         Page<ClienteResponse> response = clienteService.findAll(PageRequest.of(0, 2));
 
-        verify(clienteRepository).findAll(PageRequest.of(0, 2));
+        verify(customerRepository).findAll(PageRequest.of(0, 2));
 
         assertNotNull(response);
 
@@ -241,7 +241,7 @@ public class CustomerServiceTest {
             () -> clienteService.patch(null, request)
         );
 
-        verifyNoInteractions(clienteRepository);
+        verifyNoInteractions(customerRepository);
     }
 
     @Test
@@ -251,12 +251,12 @@ public class CustomerServiceTest {
             () -> clienteService.patch(1L, null)
         );
 
-        verifyNoInteractions(clienteRepository);
+        verifyNoInteractions(customerRepository);
     }
 
     @Test
     void deveLancarClienteNaoEncontradoExceptionAoAtualizarPatch() {
-        when(clienteRepository.findById(99L))
+        when(customerRepository.findById(99L))
             .thenReturn(Optional.empty());
 
         ClientePatchRequest request = new ClientePatchRequest(null, "Novo Nome", null);
@@ -271,10 +271,10 @@ public class CustomerServiceTest {
     void deveAtualizarTodosCamposPatch() {
         Customer existente = criarCliente(1L);
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
-        when(clienteRepository.findByCpf("12345678900"))
+        when(customerRepository.findByCpf("12345678900"))
             .thenReturn(Optional.empty());
 
         ClientePatchRequest request = new ClientePatchRequest(
@@ -304,7 +304,7 @@ public class CustomerServiceTest {
     void deveAtualizarApenasNomePatch() {
         Customer existente = criarCliente(1L);
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
         ClientePatchRequest request = new ClientePatchRequest(null, "Novo Nome", null);
@@ -321,7 +321,7 @@ public class CustomerServiceTest {
     void deveManterValoresAntigosQuandoTodosCamposNulosAoAtualizar() {
         Customer existente = criarCliente(1L);
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
         clienteService.patch(1L, new ClientePatchRequest(null, null, null));
@@ -330,17 +330,17 @@ public class CustomerServiceTest {
         assertEquals("Felipe Antigo", existente.getNome());
         assertEquals("Rua Antiga", existente.getEndereco().getRua());
 
-        verify(clienteRepository, never()).findByCpf(any());
+        verify(customerRepository, never()).findByCpf(any());
     }
 
     @Test
     void devePermitirAtualizarApenasComMesmoCpfDoProprioClientePatch() {
         Customer existente = criarCliente(1L);
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
-        when(clienteRepository.findByCpf("11111111111"))
+        when(customerRepository.findByCpf("11111111111"))
             .thenReturn(Optional.of(existente));
 
         ClientePatchRequest request = new ClientePatchRequest("11111111111", null, null);
@@ -354,11 +354,11 @@ public class CustomerServiceTest {
     @Test
     void deveLancarCpfJaCadastradoExceptionAoAtualizarPatch() {
         Customer existente = criarCliente(1L);
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
         Customer outro = criarCliente(2L);
-        when(clienteRepository.findByCpf("99999999999"))
+        when(customerRepository.findByCpf("99999999999"))
             .thenReturn(Optional.of(outro));
 
         ClientePatchRequest request = new ClientePatchRequest("99999999999", "Novo Nome", null);
@@ -378,10 +378,10 @@ public class CustomerServiceTest {
         Customer existente = criarCliente(1L);
         ClienteRequest request = criarRequest();
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
-        when(clienteRepository.findByCpf(request.cpf()))
+        when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.empty());
 
         ClienteResponse response = clienteService.put(1L, request);
@@ -409,7 +409,7 @@ public class CustomerServiceTest {
             () -> clienteService.put(null, request)
         );
 
-        verifyNoInteractions(clienteRepository);
+        verifyNoInteractions(customerRepository);
     }
 
     @Test
@@ -419,12 +419,12 @@ public class CustomerServiceTest {
             () -> clienteService.put(1L, null)
         );
 
-        verifyNoInteractions(clienteRepository);
+        verifyNoInteractions(customerRepository);
     }
 
     @Test
     void deveLancarClienteNaoEncontradoExceptionAoAtualizarPut() {
-        when(clienteRepository.findById(99L))
+        when(customerRepository.findById(99L))
             .thenReturn(Optional.empty());
 
         ClienteRequest request = criarRequest();
@@ -445,12 +445,12 @@ public class CustomerServiceTest {
             criarRequest().endereco()
         );
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
         // o stub precisa ter o mesmo cpf passado na função a ser testada
         // neste exemplo é clienteService.put(1L, request);
-        when(clienteRepository.findByCpf(request.cpf()))
+        when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.of(existente));
 
         ClienteResponse response = clienteService.put(1L, request);
@@ -466,10 +466,10 @@ public class CustomerServiceTest {
         Customer outro = criarCliente(2L);
 
         ClienteRequest request = criarRequest();
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
-        when(clienteRepository.findByCpf(request.cpf()))
+        when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.of(outro));
 
         assertThrows(
@@ -486,7 +486,7 @@ public class CustomerServiceTest {
     void deveRemoverCliente() {
         Customer existente = criarCliente(1L);
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
         when(simulacaoRepository.findByCustomer(existente, PageRequest.of(0, 1)))
@@ -494,7 +494,7 @@ public class CustomerServiceTest {
 
         clienteService.delete(1L);
 
-        verify(clienteRepository).delete(existente);
+        verify(customerRepository).delete(existente);
     }
 
     @Test
@@ -504,12 +504,12 @@ public class CustomerServiceTest {
             () -> clienteService.delete(null)
         );
 
-        verifyNoInteractions(clienteRepository, simulacaoRepository);
+        verifyNoInteractions(customerRepository, simulacaoRepository);
     }
 
     @Test
     void deveLancarClienteNaoEncontradoExceptionAoRemover() {
-        when(clienteRepository.findById(99L))
+        when(customerRepository.findById(99L))
             .thenReturn(Optional.empty());
 
         assertThrows(
@@ -519,7 +519,7 @@ public class CustomerServiceTest {
 
         verifyNoInteractions(simulacaoRepository);
 
-        verify(clienteRepository, never())
+        verify(customerRepository, never())
             .delete(any(Customer.class));
     }
 
@@ -529,7 +529,7 @@ public class CustomerServiceTest {
         // Poderia ser new Simualacao() ao invés de mock(Simulacao.class)
         Page<Simulacao> comSimulacao = new PageImpl<>(List.of(mock(Simulacao.class)));
 
-        when(clienteRepository.findById(1L))
+        when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
         when(simulacaoRepository.findByCustomer(existente, PageRequest.of(0, 1)))
@@ -540,7 +540,7 @@ public class CustomerServiceTest {
             () -> clienteService.delete(1L)
         );
 
-        verify(clienteRepository, never()).delete(any(Customer.class));
+        verify(customerRepository, never()).delete(any(Customer.class));
     }
 
     @Test

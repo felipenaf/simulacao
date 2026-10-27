@@ -4,7 +4,7 @@ import com.example.simulacao.dto.*;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.exception.ClientePossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
-import com.example.simulacao.service.ClienteService;
+import com.example.simulacao.service.CustomerService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
@@ -18,11 +18,11 @@ import jakarta.validation.Valid;
 @Slf4j
 @RestController
 @RequestMapping("/customers")
-public class ClienteController {
-    private final ClienteService clienteService;
+public class CustomerController {
+    private final CustomerService customerService;
 
-    public ClienteController(ClienteService clienteService) {
-        this.clienteService = clienteService;
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
     @PostMapping
@@ -30,7 +30,7 @@ public class ClienteController {
         log.info("Novo customer: {}", request.toString());
 
         try {
-            ClienteResponse response = clienteService.save(request);
+            ClienteResponse response = customerService.save(request);
 
             return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -51,7 +51,7 @@ public class ClienteController {
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponse> findById(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(clienteService.findById(id));
+            return ResponseEntity.ok(customerService.findById(id));
         } catch (ClienteNaoEncontradoException e) {
             log.error(e.getMessage());
 
@@ -79,7 +79,7 @@ public class ClienteController {
         int quantidadePorPagina
     ) {
         try {
-            Page<ClienteResponse> list = clienteService.findAll(
+            Page<ClienteResponse> list = customerService.findAll(
                 // O índice da paginação inicia em zero
                 PageRequest.of(pagina - 1, quantidadePorPagina)
             );
@@ -100,7 +100,7 @@ public class ClienteController {
         @Valid @RequestBody ClientePatchRequest request
     ) {
         try {
-            ClienteResponse response = clienteService.patch(id, request);
+            ClienteResponse response = customerService.patch(id, request);
             return ResponseEntity.ok().body(response);
         } catch (ClienteNaoEncontradoException e) {
             log.error(e.getMessage());
@@ -129,7 +129,7 @@ public class ClienteController {
         @Valid @RequestBody ClienteRequest request
     ) {
         try {
-            ClienteResponse response = clienteService.put(id, request);
+            ClienteResponse response = customerService.put(id, request);
             return ResponseEntity.ok().body(response);
         } catch (ClienteNaoEncontradoException e) {
             log.error(e.getMessage());
@@ -155,7 +155,7 @@ public class ClienteController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
-            clienteService.delete(id);
+            customerService.delete(id);
             return ResponseEntity.noContent().build();
         } catch (ClienteNaoEncontradoException e) {
             log.error(e.getMessage());

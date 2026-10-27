@@ -9,7 +9,7 @@ import com.example.simulacao.entity.Estado;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.exception.ClientePossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
-import com.example.simulacao.repository.ClienteRepository;
+import com.example.simulacao.repository.CustomerRepository;
 import com.example.simulacao.repository.SimulacaoRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -22,15 +22,15 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class ClienteServiceImpl implements ClienteService {
-    private final ClienteRepository clienteRepository;
+public class CustomerServiceImpl implements CustomerService {
+    private final CustomerRepository customerRepository;
     private final SimulacaoRepository simulacaoRepository;
 
-    public ClienteServiceImpl(
-        ClienteRepository clienteRepository,
+    public CustomerServiceImpl(
+        CustomerRepository customerRepository,
         SimulacaoRepository simulacaoRepository
     ) {
-        this.clienteRepository = clienteRepository;
+        this.customerRepository = customerRepository;
         this.simulacaoRepository = simulacaoRepository;
     }
 
@@ -41,7 +41,7 @@ public class ClienteServiceImpl implements ClienteService {
             throw new IllegalArgumentException("request não pode ser null");
         }
 
-        if (clienteRepository.findByCpf(request.cpf()).isPresent()) {
+        if (customerRepository.findByCpf(request.cpf()).isPresent()) {
             throw new CpfJaCadastradoException("CPF já cadastrado");
         }
 
@@ -64,7 +64,7 @@ public class ClienteServiceImpl implements ClienteService {
 
         log.info(customer.toString());
 
-        clienteRepository.save(customer);
+        customerRepository.save(customer);
 
         return ClienteResponse.from(customer);
     }
@@ -75,7 +75,7 @@ public class ClienteServiceImpl implements ClienteService {
             throw new IllegalArgumentException("id não pode ser null");
         }
 
-        Customer customer = clienteRepository.findById(id)
+        Customer customer = customerRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
             );
@@ -89,7 +89,7 @@ public class ClienteServiceImpl implements ClienteService {
             throw new IllegalArgumentException("pageable não pode ser null");
         }
 
-       return clienteRepository
+       return customerRepository
            .findAll(pageable)
            .map(ClienteResponse::from);
     }
@@ -105,13 +105,13 @@ public class ClienteServiceImpl implements ClienteService {
             throw new IllegalArgumentException("request não pode ser null");
         }
 
-        Customer customerExistente = clienteRepository.findById(id)
+        Customer customerExistente = customerRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
             );
 
         if (request.cpf() != null) {
-            clienteRepository.findByCpf(request.cpf())
+            customerRepository.findByCpf(request.cpf())
                 .filter(customer -> !customer.getId().equals(customerExistente.getId()))
                 .ifPresent(customer -> {
                     throw new CpfJaCadastradoException("CPF já cadastrado");
@@ -167,12 +167,12 @@ public class ClienteServiceImpl implements ClienteService {
             throw new IllegalArgumentException("request não pode ser null");
         }
 
-        Customer customerExistente = clienteRepository.findById(id)
+        Customer customerExistente = customerRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
             );
 
-        clienteRepository.findByCpf(request.cpf())
+        customerRepository.findByCpf(request.cpf())
             // Quando o id é diferente ele mantém na lista
             .filter(clienteCpf -> !clienteCpf.getId().equals(customerExistente.getId()))
             .ifPresent(clienteCpf -> {
@@ -198,7 +198,7 @@ public class ClienteServiceImpl implements ClienteService {
             throw new IllegalArgumentException("id não pode ser null");
         }
 
-        Customer customerExistente = clienteRepository.findById(id)
+        Customer customerExistente = customerRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
             );
@@ -207,7 +207,7 @@ public class ClienteServiceImpl implements ClienteService {
             throw new ClientePossuiSimulacoesException("Cliente não pode ser removido pois possui simulações associadas a ele");
         }
 
-        clienteRepository.delete(customerExistente);
+        customerRepository.delete(customerExistente);
     }
 
     /**

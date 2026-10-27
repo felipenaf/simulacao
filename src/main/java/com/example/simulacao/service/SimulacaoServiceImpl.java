@@ -5,7 +5,7 @@ import com.example.simulacao.dto.SimulacaoResponse;
 import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Simulacao;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
-import com.example.simulacao.repository.ClienteRepository;
+import com.example.simulacao.repository.CustomerRepository;
 import com.example.simulacao.repository.SimulacaoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -17,14 +17,14 @@ import java.util.List;
 @Service
 public class SimulacaoServiceImpl implements SimulacaoService {
     private final SimulacaoRepository simulacaoRepository;
-    private final ClienteRepository clienteRepository;
+    private final CustomerRepository customerRepository;
 
     public SimulacaoServiceImpl(
         SimulacaoRepository simulacaoRepository,
-        ClienteRepository clienteRepository
+        CustomerRepository customerRepository
     ) {
         this.simulacaoRepository = simulacaoRepository;
-        this.clienteRepository = clienteRepository;
+        this.customerRepository = customerRepository;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SimulacaoServiceImpl implements SimulacaoService {
             throw new IllegalArgumentException("requests não pode ser null");
         }
 
-        Customer customer = clienteRepository.findById(clienteId)
+        Customer customer = customerRepository.findById(clienteId)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado")
             );
@@ -78,7 +78,7 @@ public class SimulacaoServiceImpl implements SimulacaoService {
             throw new IllegalArgumentException("pageable não pode ser null");
         }
 
-        Customer customer = clienteRepository.findById(clienteId)
+        Customer customer = customerRepository.findById(clienteId)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado")
             );
