@@ -71,7 +71,7 @@ public class CustomerServiceTest {
         return Customer.builder()
             .id(id)
             .cpf("11111111111")
-            .nome("Felipe Antigo")
+            .name("Felipe Antigo")
             .endereco(endereco)
             .build();
     }
@@ -97,7 +97,7 @@ public class CustomerServiceTest {
         Customer salvo = customerCaptor.getValue();
 
         assertEquals(request.cpf(), salvo.getCpf());
-        assertEquals(request.nome(), salvo.getNome());
+        assertEquals(request.nome(), salvo.getName());
 
         assertEquals(request.endereco().rua(), salvo.getEndereco().getRua());
         assertEquals(request.endereco().numero(), salvo.getEndereco().getNumero());
@@ -162,7 +162,7 @@ public class CustomerServiceTest {
 
         assertNotNull(response);
         assertEquals(response.cpf(), customer.getCpf());
-        assertEquals(response.nome(), customer.getNome());
+        assertEquals(response.nome(), customer.getName());
         assertEquals(response.endereco().rua(), customer.getEndereco().getRua());
         assertEquals(response.endereco().numero(), customer.getEndereco().getNumero());
         assertEquals(response.endereco().bairro(), customer.getEndereco().getBairro());
@@ -206,7 +206,7 @@ public class CustomerServiceTest {
         assertNotNull(response);
 
         assertEquals(response.getContent().getFirst().cpf(), customers.getFirst().getCpf());
-        assertEquals(response.getContent().getFirst().nome(), customers.getFirst().getNome());
+        assertEquals(response.getContent().getFirst().nome(), customers.getFirst().getName());
         assertEquals(response.getContent().getFirst().endereco().rua(), customers.getFirst().getEndereco().getRua());
         assertEquals(response.getContent().getFirst().endereco().numero(), customers.getFirst().getEndereco().getNumero());
         assertEquals(response.getContent().getFirst().endereco().bairro(), customers.getFirst().getEndereco().getBairro());
@@ -215,7 +215,7 @@ public class CustomerServiceTest {
         assertEquals(response.getContent().getFirst().endereco().estado(), customers.getFirst().getEndereco().getEstado());
 
         assertEquals(response.getContent().getLast().cpf(), customers.getLast().getCpf());
-        assertEquals(response.getContent().getLast().nome(), customers.getLast().getNome());
+        assertEquals(response.getContent().getLast().nome(), customers.getLast().getName());
         assertEquals(response.getContent().getLast().endereco().rua(), customers.getLast().getEndereco().getRua());
         assertEquals(response.getContent().getLast().endereco().numero(), customers.getLast().getEndereco().getNumero());
         assertEquals(response.getContent().getLast().endereco().bairro(), customers.getLast().getEndereco().getBairro());
@@ -288,7 +288,7 @@ public class CustomerServiceTest {
         assertNotNull(response);
 
         assertEquals("12345678900", existente.getCpf());
-        assertEquals("João da Silva", existente.getNome());
+        assertEquals("João da Silva", existente.getName());
         assertEquals("Rua das Flores", existente.getEndereco().getRua());
         assertEquals(123, existente.getEndereco().getNumero());
         assertEquals("Centro", existente.getEndereco().getBairro());
@@ -311,7 +311,7 @@ public class CustomerServiceTest {
 
         customerService.patch(1L, request);
 
-        assertEquals("Novo Nome", existente.getNome());
+        assertEquals("Novo Nome", existente.getName());
         assertEquals("11111111111", existente.getCpf());
         assertEquals("Rua Antiga", existente.getEndereco().getRua());
         assertEquals("Santos", existente.getEndereco().getCidade());
@@ -327,7 +327,7 @@ public class CustomerServiceTest {
         customerService.patch(1L, new CustomerPatchRequest(null, null, null));
 
         assertEquals("11111111111", existente.getCpf());
-        assertEquals("Felipe Antigo", existente.getNome());
+        assertEquals("Felipe Antigo", existente.getName());
         assertEquals("Rua Antiga", existente.getEndereco().getRua());
 
         verify(customerRepository, never()).findByCpf(any());
@@ -370,7 +370,7 @@ public class CustomerServiceTest {
 
         // a exceção ocorre antes de qualquer alteração
         assertEquals("11111111111", existente.getCpf());
-        assertEquals("Felipe Antigo", existente.getNome());
+        assertEquals("Felipe Antigo", existente.getName());
     }
 
     @Test
@@ -388,7 +388,7 @@ public class CustomerServiceTest {
 
         assertNotNull(response);
         assertEquals(request.cpf(), existente.getCpf());
-        assertEquals(request.nome(), existente.getNome());
+        assertEquals(request.nome(), existente.getName());
         assertEquals(request.endereco().rua(), existente.getEndereco().getRua());
         assertEquals(request.endereco().numero(), existente.getEndereco().getNumero());
         assertEquals(request.endereco().bairro(), existente.getEndereco().getBairro());
@@ -456,7 +456,7 @@ public class CustomerServiceTest {
         CustomerResponse response = customerService.put(1L, request);
 
         assertNotNull(response);
-        assertEquals("Novo Nome", existente.getNome());
+        assertEquals("Novo Nome", existente.getName());
         assertEquals("11111111112", existente.getCpf());
     }
 
@@ -478,7 +478,7 @@ public class CustomerServiceTest {
         );
 
         assertEquals("11111111111", existente.getCpf());
-        assertEquals("Felipe Antigo", existente.getNome());
+        assertEquals("Felipe Antigo", existente.getName());
         assertEquals("Rua Antiga", existente.getEndereco().getRua());
     }
 
@@ -546,7 +546,7 @@ public class CustomerServiceTest {
     @Test
     void deveCalcularNomesCustomersParaCidadeEstado() {
         var cli1 = Customer.builder()
-            .nome("Bruno Oliveira")
+            .name("Bruno Oliveira")
             .cpf("98765432100")
             .endereco(Endereco.builder()
                 .rua("Rua da Bahia")
@@ -559,7 +559,7 @@ public class CustomerServiceTest {
             .build();
 
         var cli2 = Customer.builder()
-            .nome("Ana Souza")
+            .name("Ana Souza")
             .cpf("12345678909")
             .endereco(Endereco.builder()
                 .rua("Avenida Paulista")
@@ -572,7 +572,7 @@ public class CustomerServiceTest {
             .build();
 
         var cli3 = Customer.builder()
-            .nome("Carla Mendes")
+            .name("Carla Mendes")
             .cpf("45678912311")
             .endereco(Endereco.builder()
                 .rua("Rua Voluntários da Pátria")

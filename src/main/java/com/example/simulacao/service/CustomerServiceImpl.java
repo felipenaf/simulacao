@@ -58,7 +58,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customer = Customer.builder()
             .cpf(request.cpf())
-            .nome(request.nome())
+            .name(request.nome())
             .endereco(endereco)
             .build();
 
@@ -121,7 +121,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         if (request.nome() != null) {
-            customerExistente.setNome(request.nome());
+            customerExistente.setName(request.nome());
         }
 
         if (request.endereco() != null) {
@@ -180,7 +180,7 @@ public class CustomerServiceImpl implements CustomerService {
             });
 
         customerExistente.setCpf(request.cpf());
-        customerExistente.setNome(request.nome());
+        customerExistente.setName(request.nome());
         customerExistente.getEndereco().setRua(request.endereco().rua());
         customerExistente.getEndereco().setNumero(request.endereco().numero());
         customerExistente.getEndereco().setBairro(request.endereco().bairro());
@@ -231,7 +231,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customers.stream()
             .filter(customer -> customer.getEndereco().getCidade().equals(cidade))
             .filter(customer -> customer.getEndereco().getEstado().equals(Estado.valueOf(estado)))
-            .map(Customer::getNome)
+            .map(Customer::getName)
             .toList();
     }
 }

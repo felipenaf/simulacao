@@ -20,7 +20,7 @@ public class Customer {
     private String cpf;
 
     @Column(nullable = false, length = 150)
-    private String nome;
+    private String name;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "endereco_id", nullable = false, unique = true)

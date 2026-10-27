@@ -30,7 +30,7 @@ public record CustomerResponse(
 
         return new CustomerResponse(
             customer.getCpf(),
-            customer.getNome(),
+            customer.getName(),
             enderecoResponse
         );
     }
