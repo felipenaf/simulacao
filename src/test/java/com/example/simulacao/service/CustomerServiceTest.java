@@ -3,7 +3,7 @@ package com.example.simulacao.service;
 import com.example.simulacao.dto.ClientePatchRequest;
 import com.example.simulacao.dto.ClienteRequest;
 import com.example.simulacao.dto.ClienteResponse;
-import com.example.simulacao.entity.Cliente;
+import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Endereco;
 import com.example.simulacao.entity.Estado;
 import com.example.simulacao.entity.Simulacao;
@@ -32,7 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ClienteServiceTest {
+public class CustomerServiceTest {
     @Mock
     private ClienteRepository clienteRepository;
 
@@ -43,7 +43,7 @@ public class ClienteServiceTest {
     private ClienteServiceImpl clienteService;
 
     @Captor
-    private ArgumentCaptor<Cliente> clienteCaptor;
+    private ArgumentCaptor<Customer> clienteCaptor;
 
     private ClienteRequest criarRequest() {
         ClienteRequest.EnderecoRequest endereco = new ClienteRequest.EnderecoRequest(
@@ -58,7 +58,7 @@ public class ClienteServiceTest {
         return new ClienteRequest("12345678900", "Felipe Ferreira", endereco);
     }
 
-    private Cliente criarCliente(Long id) {
+    private Customer criarCliente(Long id) {
         Endereco endereco = Endereco.builder()
             .rua("Rua Antiga")
             .numero(10)
@@ -68,7 +68,7 @@ public class ClienteServiceTest {
             .estado(Estado.PA)
             .build();
 
-        return Cliente.builder()
+        return Customer.builder()
             .id(id)
             .cpf("11111111111")
             .nome("Felipe Antigo")
@@ -94,7 +94,7 @@ public class ClienteServiceTest {
         // Garante que apenas uma chamada foi feita
         assertEquals(1, clienteCaptor.getAllValues().size());
 
-        Cliente salvo = clienteCaptor.getValue();
+        Customer salvo = clienteCaptor.getValue();
 
         assertEquals(request.cpf(), salvo.getCpf());
         assertEquals(request.nome(), salvo.getNome());
@@ -129,7 +129,7 @@ public class ClienteServiceTest {
         ClienteRequest request = criarRequest();
 
         when(clienteRepository.findByCpf(request.cpf()))
-            .thenReturn(Optional.of(Cliente.builder().cpf(request.cpf()).build()));
+            .thenReturn(Optional.of(Customer.builder().cpf(request.cpf()).build()));
 
         CpfJaCadastradoException ex = assertThrows(
             CpfJaCadastradoException.class,
@@ -138,7 +138,7 @@ public class ClienteServiceTest {
 
         assertEquals("CPF já cadastrado", ex.getMessage());
 
-        verify(clienteRepository, never()).save(any(Cliente.class));
+        verify(clienteRepository, never()).save(any(Customer.class));
     }
 
     @Test
@@ -151,24 +151,24 @@ public class ClienteServiceTest {
 
     @Test
     void deveConsultarCliente() {
-        Cliente cliente = criarCliente(1L);
+        Customer customer = criarCliente(1L);
 
         when(clienteRepository.findById(1L))
-            .thenReturn(Optional.of(cliente));
+            .thenReturn(Optional.of(customer));
 
         ClienteResponse response = clienteService.findById(1L);
 
         verify(clienteRepository).findById(1L);
 
         assertNotNull(response);
-        assertEquals(response.cpf(), cliente.getCpf());
-        assertEquals(response.nome(), cliente.getNome());
-        assertEquals(response.endereco().rua(), cliente.getEndereco().getRua());
-        assertEquals(response.endereco().numero(), cliente.getEndereco().getNumero());
-        assertEquals(response.endereco().bairro(), cliente.getEndereco().getBairro());
-        assertEquals(response.endereco().cep(), cliente.getEndereco().getCep());
-        assertEquals(response.endereco().cidade(), cliente.getEndereco().getCidade());
-        assertEquals(response.endereco().estado(), cliente.getEndereco().getEstado());
+        assertEquals(response.cpf(), customer.getCpf());
+        assertEquals(response.nome(), customer.getNome());
+        assertEquals(response.endereco().rua(), customer.getEndereco().getRua());
+        assertEquals(response.endereco().numero(), customer.getEndereco().getNumero());
+        assertEquals(response.endereco().bairro(), customer.getEndereco().getBairro());
+        assertEquals(response.endereco().cep(), customer.getEndereco().getCep());
+        assertEquals(response.endereco().cidade(), customer.getEndereco().getCidade());
+        assertEquals(response.endereco().estado(), customer.getEndereco().getEstado());
     }
 
     @Test
@@ -193,11 +193,11 @@ public class ClienteServiceTest {
 
     @Test
     void deveConsultarClientes() {
-        List<Cliente> clientes = IntStream.range(0, 2)
+        List<Customer> customers = IntStream.range(0, 2)
             .mapToObj(i -> criarCliente((long) i)).toList();
 
         when(clienteRepository.findAll(PageRequest.of(0, 2)))
-            .thenReturn(new PageImpl<>(clientes));
+            .thenReturn(new PageImpl<>(customers));
 
         Page<ClienteResponse> response = clienteService.findAll(PageRequest.of(0, 2));
 
@@ -205,23 +205,23 @@ public class ClienteServiceTest {
 
         assertNotNull(response);
 
-        assertEquals(response.getContent().getFirst().cpf(), clientes.getFirst().getCpf());
-        assertEquals(response.getContent().getFirst().nome(), clientes.getFirst().getNome());
-        assertEquals(response.getContent().getFirst().endereco().rua(), clientes.getFirst().getEndereco().getRua());
-        assertEquals(response.getContent().getFirst().endereco().numero(), clientes.getFirst().getEndereco().getNumero());
-        assertEquals(response.getContent().getFirst().endereco().bairro(), clientes.getFirst().getEndereco().getBairro());
-        assertEquals(response.getContent().getFirst().endereco().cep(), clientes.getFirst().getEndereco().getCep());
-        assertEquals(response.getContent().getFirst().endereco().cidade(), clientes.getFirst().getEndereco().getCidade());
-        assertEquals(response.getContent().getFirst().endereco().estado(), clientes.getFirst().getEndereco().getEstado());
+        assertEquals(response.getContent().getFirst().cpf(), customers.getFirst().getCpf());
+        assertEquals(response.getContent().getFirst().nome(), customers.getFirst().getNome());
+        assertEquals(response.getContent().getFirst().endereco().rua(), customers.getFirst().getEndereco().getRua());
+        assertEquals(response.getContent().getFirst().endereco().numero(), customers.getFirst().getEndereco().getNumero());
+        assertEquals(response.getContent().getFirst().endereco().bairro(), customers.getFirst().getEndereco().getBairro());
+        assertEquals(response.getContent().getFirst().endereco().cep(), customers.getFirst().getEndereco().getCep());
+        assertEquals(response.getContent().getFirst().endereco().cidade(), customers.getFirst().getEndereco().getCidade());
+        assertEquals(response.getContent().getFirst().endereco().estado(), customers.getFirst().getEndereco().getEstado());
 
-        assertEquals(response.getContent().getLast().cpf(), clientes.getLast().getCpf());
-        assertEquals(response.getContent().getLast().nome(), clientes.getLast().getNome());
-        assertEquals(response.getContent().getLast().endereco().rua(), clientes.getLast().getEndereco().getRua());
-        assertEquals(response.getContent().getLast().endereco().numero(), clientes.getLast().getEndereco().getNumero());
-        assertEquals(response.getContent().getLast().endereco().bairro(), clientes.getLast().getEndereco().getBairro());
-        assertEquals(response.getContent().getLast().endereco().cep(), clientes.getLast().getEndereco().getCep());
-        assertEquals(response.getContent().getLast().endereco().cidade(), clientes.getLast().getEndereco().getCidade());
-        assertEquals(response.getContent().getLast().endereco().estado(), clientes.getLast().getEndereco().getEstado());
+        assertEquals(response.getContent().getLast().cpf(), customers.getLast().getCpf());
+        assertEquals(response.getContent().getLast().nome(), customers.getLast().getNome());
+        assertEquals(response.getContent().getLast().endereco().rua(), customers.getLast().getEndereco().getRua());
+        assertEquals(response.getContent().getLast().endereco().numero(), customers.getLast().getEndereco().getNumero());
+        assertEquals(response.getContent().getLast().endereco().bairro(), customers.getLast().getEndereco().getBairro());
+        assertEquals(response.getContent().getLast().endereco().cep(), customers.getLast().getEndereco().getCep());
+        assertEquals(response.getContent().getLast().endereco().cidade(), customers.getLast().getEndereco().getCidade());
+        assertEquals(response.getContent().getLast().endereco().estado(), customers.getLast().getEndereco().getEstado());
     }
 
     @Test
@@ -269,7 +269,7 @@ public class ClienteServiceTest {
 
     @Test
     void deveAtualizarTodosCamposPatch() {
-        Cliente existente = criarCliente(1L);
+        Customer existente = criarCliente(1L);
 
         when(clienteRepository.findById(1L))
             .thenReturn(Optional.of(existente));
@@ -302,7 +302,7 @@ public class ClienteServiceTest {
 
     @Test
     void deveAtualizarApenasNomePatch() {
-        Cliente existente = criarCliente(1L);
+        Customer existente = criarCliente(1L);
 
         when(clienteRepository.findById(1L))
             .thenReturn(Optional.of(existente));
@@ -319,7 +319,7 @@ public class ClienteServiceTest {
 
     @Test
     void deveManterValoresAntigosQuandoTodosCamposNulosAoAtualizar() {
-        Cliente existente = criarCliente(1L);
+        Customer existente = criarCliente(1L);
 
         when(clienteRepository.findById(1L))
             .thenReturn(Optional.of(existente));
@@ -335,7 +335,7 @@ public class ClienteServiceTest {
 
     @Test
     void devePermitirAtualizarApenasComMesmoCpfDoProprioClientePatch() {
-        Cliente existente = criarCliente(1L);
+        Customer existente = criarCliente(1L);
 
         when(clienteRepository.findById(1L))
             .thenReturn(Optional.of(existente));
@@ -353,11 +353,11 @@ public class ClienteServiceTest {
 
     @Test
     void deveLancarCpfJaCadastradoExceptionAoAtualizarPatch() {
-        Cliente existente = criarCliente(1L);
+        Customer existente = criarCliente(1L);
         when(clienteRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
-        Cliente outro = criarCliente(2L);
+        Customer outro = criarCliente(2L);
         when(clienteRepository.findByCpf("99999999999"))
             .thenReturn(Optional.of(outro));
 
@@ -375,7 +375,7 @@ public class ClienteServiceTest {
 
     @Test
     void deveAtualizarPut() {
-        Cliente existente = criarCliente(1L);
+        Customer existente = criarCliente(1L);
         ClienteRequest request = criarRequest();
 
         when(clienteRepository.findById(1L))
@@ -437,7 +437,7 @@ public class ClienteServiceTest {
 
     @Test
     void devePermitirAtualizarApenasComMesmoCpfDoProprioClientePut() {
-        Cliente existente = criarCliente(1L);
+        Customer existente = criarCliente(1L);
 
         ClienteRequest request = new ClienteRequest(
             "11111111112",
@@ -462,8 +462,8 @@ public class ClienteServiceTest {
 
     @Test
     void deveLancarCpfJaCadastradoExceptionAoAtualizarPut() {
-        Cliente existente = criarCliente(1L);
-        Cliente outro = criarCliente(2L);
+        Customer existente = criarCliente(1L);
+        Customer outro = criarCliente(2L);
 
         ClienteRequest request = criarRequest();
         when(clienteRepository.findById(1L))
@@ -484,12 +484,12 @@ public class ClienteServiceTest {
 
     @Test
     void deveRemoverCliente() {
-        Cliente existente = criarCliente(1L);
+        Customer existente = criarCliente(1L);
 
         when(clienteRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
-        when(simulacaoRepository.findByCliente(existente, PageRequest.of(0, 1)))
+        when(simulacaoRepository.findByCustomer(existente, PageRequest.of(0, 1)))
             .thenReturn(Page.empty());
 
         clienteService.delete(1L);
@@ -520,19 +520,19 @@ public class ClienteServiceTest {
         verifyNoInteractions(simulacaoRepository);
 
         verify(clienteRepository, never())
-            .delete(any(Cliente.class));
+            .delete(any(Customer.class));
     }
 
     @Test
     void deveLancarClientePossuiSimulacoesExceptionAoRemover() {
-        Cliente existente = criarCliente(1L);
+        Customer existente = criarCliente(1L);
         // Poderia ser new Simualacao() ao invés de mock(Simulacao.class)
         Page<Simulacao> comSimulacao = new PageImpl<>(List.of(mock(Simulacao.class)));
 
         when(clienteRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
-        when(simulacaoRepository.findByCliente(existente, PageRequest.of(0, 1)))
+        when(simulacaoRepository.findByCustomer(existente, PageRequest.of(0, 1)))
             .thenReturn(comSimulacao);
 
         assertThrows(
@@ -540,12 +540,12 @@ public class ClienteServiceTest {
             () -> clienteService.delete(1L)
         );
 
-        verify(clienteRepository, never()).delete(any(Cliente.class));
+        verify(clienteRepository, never()).delete(any(Customer.class));
     }
 
     @Test
     void deveCalcularNomesClientesParaCidadeEstado() {
-        var cli1 = Cliente.builder()
+        var cli1 = Customer.builder()
             .nome("Bruno Oliveira")
             .cpf("98765432100")
             .endereco(Endereco.builder()
@@ -558,7 +558,7 @@ public class ClienteServiceTest {
                 .build())
             .build();
 
-        var cli2 = Cliente.builder()
+        var cli2 = Customer.builder()
             .nome("Ana Souza")
             .cpf("12345678909")
             .endereco(Endereco.builder()
@@ -571,7 +571,7 @@ public class ClienteServiceTest {
                 .build())
             .build();
 
-        var cli3 = Cliente.builder()
+        var cli3 = Customer.builder()
             .nome("Carla Mendes")
             .cpf("45678912311")
             .endereco(Endereco.builder()
@@ -584,10 +584,10 @@ public class ClienteServiceTest {
                 .build())
             .build();
 
-        List<Cliente> clientes = List.of(cli1, cli2, cli3);
+        List<Customer> customers = List.of(cli1, cli2, cli3);
 
         List<String> nomes = clienteService.calculaNomesClientesParaCidadeEstado(
-            clientes, "Belo Horizonte", Estado.MG.name()
+            customers, "Belo Horizonte", Estado.MG.name()
         );
 
         assertEquals(1, nomes.size());

@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ClienteController.class)
-public class ClienteControllerTest {
+public class CustomerControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -52,7 +52,7 @@ public class ClienteControllerTest {
         when(clienteService.findById(1L))
             .thenReturn(response);
 
-        mockMvc.perform(get("/clientes/1"))
+        mockMvc.perform(get("/customers/1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.cpf").value("12345678908"))
             .andExpect(content().contentType("application/json"))
@@ -66,7 +66,7 @@ public class ClienteControllerTest {
         when(clienteService.findById(1L))
             .thenThrow(ClienteNaoEncontradoException.class);
 
-        mockMvc.perform(get("/clientes/1"))
+        mockMvc.perform(get("/customers/1"))
             .andExpect(status().isNotFound());
 
         verify(clienteService).findById(1L);
@@ -90,7 +90,7 @@ public class ClienteControllerTest {
         when(clienteService.findAll(any(Pageable.class)))
             .thenReturn(new PageImpl<>(List.of(response)));
 
-        mockMvc.perform(get("/clientes"))
+        mockMvc.perform(get("/customers"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content[0].cpf").value("12345678908"));
 
@@ -129,7 +129,7 @@ public class ClienteControllerTest {
             .thenReturn(response);
 
         mockMvc.perform(
-                post("/clientes")
+                post("/customers")
                     .content(new ObjectMapper().writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
             )
@@ -158,7 +158,7 @@ public class ClienteControllerTest {
             .thenThrow(CpfJaCadastradoException.class);
 
         mockMvc.perform(
-            post("/clientes")
+            post("/customers")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
             )
@@ -192,7 +192,7 @@ public class ClienteControllerTest {
             .thenReturn(response);
 
         mockMvc.perform(
-            patch("/clientes/1")
+            patch("/customers/1")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
             )
@@ -215,7 +215,7 @@ public class ClienteControllerTest {
             .thenThrow(ClienteNaoEncontradoException.class);
 
         mockMvc.perform(
-            patch("/clientes/1")
+            patch("/customers/1")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
             )
@@ -237,7 +237,7 @@ public class ClienteControllerTest {
             .thenThrow(CpfJaCadastradoException.class);
 
         mockMvc.perform(
-            patch("/clientes/1")
+            patch("/customers/1")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
             )
@@ -279,7 +279,7 @@ public class ClienteControllerTest {
             .thenReturn(response);
 
         mockMvc.perform(
-                put("/clientes/1")
+                put("/customers/1")
                     .content(new ObjectMapper().writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
             )
@@ -308,7 +308,7 @@ public class ClienteControllerTest {
             .thenThrow(ClienteNaoEncontradoException.class);
 
         mockMvc.perform(
-            put("/clientes/1")
+            put("/customers/1")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
             )
@@ -337,7 +337,7 @@ public class ClienteControllerTest {
             .thenThrow(CpfJaCadastradoException.class);
 
         mockMvc.perform(
-            put("/clientes/1")
+            put("/customers/1")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
             )
@@ -352,7 +352,7 @@ public class ClienteControllerTest {
         doNothing()
             .when(clienteService).delete(1L);
 
-        mockMvc.perform(delete("/clientes/1"))
+        mockMvc.perform(delete("/customers/1"))
             .andExpect(status().isNoContent());
 
         verify(clienteService, times(1)).delete(1L);
@@ -363,7 +363,7 @@ public class ClienteControllerTest {
         doThrow(ClientePossuiSimulacoesException.class)
             .when(clienteService).delete(1L);
 
-        mockMvc.perform(delete("/clientes/1"))
+        mockMvc.perform(delete("/customers/1"))
             .andExpect(status().isConflict());
 
         verify(clienteService, times(1)).delete(1L);
@@ -374,7 +374,7 @@ public class ClienteControllerTest {
         doThrow(ClienteNaoEncontradoException.class)
             .when(clienteService).delete(1L);
 
-        mockMvc.perform(delete("/clientes/1"))
+        mockMvc.perform(delete("/customers/1"))
             .andExpect(status().isNotFound());
 
         verify(clienteService, times(1)).delete(1L);

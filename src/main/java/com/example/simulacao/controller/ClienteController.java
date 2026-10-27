@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping("/clientes")
+@RequestMapping("/customers")
 public class ClienteController {
     private final ClienteService clienteService;
 
@@ -27,7 +27,7 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody ClienteRequest request){
-        log.info("Novo cliente: {}", request.toString());
+        log.info("Novo customer: {}", request.toString());
 
         try {
             ClienteResponse response = clienteService.save(request);
@@ -40,7 +40,7 @@ public class ClienteController {
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
-            log.error("Erro ao criar novo cliente: {}", request, e);
+            log.error("Erro ao criar novo customer: {}", request, e);
 
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -59,7 +59,7 @@ public class ClienteController {
                 .status(HttpStatus.NOT_FOUND)
                 .build();
         } catch (Exception e) {
-            log.error("Erro ao obter o cliente: {}", id, e);
+            log.error("Erro ao obter o customer: {}", id, e);
 
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -86,7 +86,7 @@ public class ClienteController {
 
             return ResponseEntity.ok(PageResponse.from(list));
         } catch (Exception e) {
-            log.error("Erro ao obter lista de clientes: ", e);
+            log.error("Erro ao obter lista de customers: ", e);
 
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -115,7 +115,7 @@ public class ClienteController {
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
-            log.error("Erro ao criar novo cliente: {}", request, e);
+            log.error("Erro ao criar novo customer: {}", request, e);
 
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -144,7 +144,7 @@ public class ClienteController {
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
-            log.error("Erro ao criar novo cliente: {}", request, e);
+            log.error("Erro ao criar novo customer: {}", request, e);
 
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -170,7 +170,7 @@ public class ClienteController {
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
-            log.error("Erro ao remover cliente: {}", id, e);
+            log.error("Erro ao remover customer: {}", id, e);
 
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)

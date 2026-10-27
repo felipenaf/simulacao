@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ClienteRequestTest {
+class CustomerRequestTest {
     private static Validator validator;
     private static ValidatorFactory validatorFactory;
     private static ClienteRequest.EnderecoRequest enderecoCorreto;

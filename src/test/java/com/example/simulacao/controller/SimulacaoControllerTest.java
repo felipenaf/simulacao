@@ -40,7 +40,7 @@ class SimulacaoControllerTest {
     @MockitoBean
     private ExportadorSimulacaoFactory exportadorFactory;
 
-    // GET /simulacoes/clientes/{id}
+    // GET /simulacoes/customers/{id}
 
     @Test
     void deveListarSimulacoesEmJson() throws Exception {
@@ -53,11 +53,11 @@ class SimulacaoControllerTest {
         );
 
         // Cria o service e mocka o retorno
-        when(simulacaoService.findByClienteId(eq(1L), any(Pageable.class)))
+        when(simulacaoService.findByCustomerId(eq(1L), any(Pageable.class)))
             .thenReturn(new PageImpl<>(List.of(simulacao)));
 
         // Chamada http
-        mockMvc.perform(get("/simulacoes/clientes/1"))
+        mockMvc.perform(get("/simulacoes/customers/1"))
             // Validações
             .andExpect(status().isOk())
             .andExpect(content().string(org.hamcrest.Matchers.containsString("valorSolicitado")))
@@ -67,7 +67,7 @@ class SimulacaoControllerTest {
             .andExpect(content().string(org.hamcrest.Matchers.containsString("taxaJurosMensal")));
 
         // Valida se a chamada feita ao service foi exatamente essa
-        verify(simulacaoService).findByClienteId(1L, PageRequest.of(0, 10));
+        verify(simulacaoService).findByCustomerId(1L, PageRequest.of(0, 10));
     }
 
     @Test
@@ -80,13 +80,13 @@ class SimulacaoControllerTest {
             new BigDecimal("2.00")
         );
 
-        when(simulacaoService.findByClienteId(eq(1L), any(Pageable.class)))
+        when(simulacaoService.findByCustomerId(eq(1L), any(Pageable.class)))
             .thenReturn(new PageImpl<>(List.of(simulacao)));
 
         when(exportadorFactory.buscar(eq(FormatoExportacao.CSV)))
             .thenReturn(Optional.of(new ExportadorSimulacaoCsv()));
 
-        mockMvc.perform(get("/simulacoes/clientes/1?formato=CSV&pagina=1"))
+        mockMvc.perform(get("/simulacoes/customers/1?formato=CSV&pagina=1"))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith("text/csv"))
             .andExpect(content().string(
@@ -100,7 +100,7 @@ class SimulacaoControllerTest {
                 )
             ));
 
-        verify(simulacaoService).findByClienteId(1L, PageRequest.of(0, 10));
+        verify(simulacaoService).findByCustomerId(1L, PageRequest.of(0, 10));
     }
 
     @Test
@@ -113,13 +113,13 @@ class SimulacaoControllerTest {
             new BigDecimal("2.00")
         );
 
-        when(simulacaoService.findByClienteId(eq(1L), any(Pageable.class)))
+        when(simulacaoService.findByCustomerId(eq(1L), any(Pageable.class)))
             .thenReturn(new PageImpl<>(List.of(simulacao)));
 
         when(exportadorFactory.buscar(eq(FormatoExportacao.TXT)))
             .thenReturn(Optional.of(new ExportadorSimulacaoTxt(new ExportadorSimulacaoCsv())));
 
-        mockMvc.perform(get("/simulacoes/clientes/1?formato=TXT&pagina=1"))
+        mockMvc.perform(get("/simulacoes/customers/1?formato=TXT&pagina=1"))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith("text/plain"))
             .andExpect(content().string(
@@ -133,7 +133,7 @@ class SimulacaoControllerTest {
                 )
             ));
 
-        verify(simulacaoService).findByClienteId(1L, PageRequest.of(0, 10));
+        verify(simulacaoService).findByCustomerId(1L, PageRequest.of(0, 10));
     }
 
     @Test
@@ -147,14 +147,14 @@ class SimulacaoControllerTest {
                 new BigDecimal("2.00")
             )).toList();
 
-        when(simulacaoService.findByClienteId(eq(1L), any(PageRequest.class)))
+        when(simulacaoService.findByCustomerId(eq(1L), any(PageRequest.class)))
             .thenReturn(new PageImpl<>(
                 simulacoes.subList(0, 2),
                 PageRequest.of(0, 2),
                 simulacoes.size()
             ));
 
-        mockMvc.perform(get("/simulacoes/clientes/1?pagina=1&quantidade_por_pagina=2"))
+        mockMvc.perform(get("/simulacoes/customers/1?pagina=1&quantidade_por_pagina=2"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content[0].dataHora").isNotEmpty())
             .andExpect(jsonPath("$.content[1].dataHora").isNotEmpty())
@@ -163,21 +163,21 @@ class SimulacaoControllerTest {
             .andExpect(jsonPath("$.totalPages").value(5))
             .andExpect(jsonPath("$.first").value(true));
 
-        verify(simulacaoService).findByClienteId(1L, PageRequest.of(0, 2));
+        verify(simulacaoService).findByCustomerId(1L, PageRequest.of(0, 2));
     }
 
     @Test
     void deveRetornarNotFoundEmCasoDeClienteNaoExisteNoGet() throws Exception {
-        when(simulacaoService.findByClienteId(eq(1L), any(Pageable.class)))
+        when(simulacaoService.findByCustomerId(eq(1L), any(Pageable.class)))
             .thenThrow(new ClienteNaoEncontradoException("Cliente não encontrado"));
 
-        mockMvc.perform(get("/simulacoes/clientes/1"))
+        mockMvc.perform(get("/simulacoes/customers/1"))
             .andExpect(status().isNotFound());
 
-        verify(simulacaoService).findByClienteId(1L, PageRequest.of(0, 10));
+        verify(simulacaoService).findByCustomerId(1L, PageRequest.of(0, 10));
     }
 
-    // POST /simulacoes/clientes/{id}
+    // POST /simulacoes/customers/{id}
 
     @Test
     void deveCadastrarSimulacoes() throws Exception {
@@ -204,7 +204,7 @@ class SimulacaoControllerTest {
             .thenReturn(simulacoes);
 
         mockMvc.perform(
-            post("/simulacoes/clientes/1")
+            post("/simulacoes/customers/1")
                 .content(new ObjectMapper().writeValueAsString(requests))
                 .contentType(MediaType.APPLICATION_JSON)
             )
@@ -230,7 +230,7 @@ class SimulacaoControllerTest {
         when(simulacaoService.save(eq(1L), anyList()))
             .thenThrow(new ClienteNaoEncontradoException("Cliente não encontrado"));
 
-        mockMvc.perform(post("/simulacoes/clientes/1")
+        mockMvc.perform(post("/simulacoes/customers/1")
             .content(new ObjectMapper().writeValueAsString(requests))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNotFound());

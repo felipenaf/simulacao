@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ClientePatchRequestTest {
+class CustomerPatchRequestTest {
     private static Validator validator;
     private static ValidatorFactory validatorFactory;
 

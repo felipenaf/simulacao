@@ -2,19 +2,16 @@ package com.example.simulacao.service;
 
 import com.example.simulacao.dto.SimulacaoRequest;
 import com.example.simulacao.dto.SimulacaoResponse;
-import com.example.simulacao.entity.Cliente;
+import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Simulacao;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.repository.ClienteRepository;
 import com.example.simulacao.repository.SimulacaoRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -44,7 +41,7 @@ public class SimulacaoServiceImpl implements SimulacaoService {
             throw new IllegalArgumentException("requests não pode ser null");
         }
 
-        Cliente cliente = clienteRepository.findById(clienteId)
+        Customer customer = clienteRepository.findById(clienteId)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado")
             );
@@ -52,7 +49,7 @@ public class SimulacaoServiceImpl implements SimulacaoService {
         List<Simulacao> simulacoes = requests.stream()
             .map(request ->
                 Simulacao.builder()
-                    .cliente(cliente)
+                    .customer(customer)
                     .valorSolicitado(request.valorSolicitado())
                     .valorGarantia(request.valorGarantia())
                     .quantidadeMeses(request.quantidadeMeses())
@@ -69,7 +66,7 @@ public class SimulacaoServiceImpl implements SimulacaoService {
 
     @Override
     @Transactional
-    public Page<SimulacaoResponse> findByClienteId(
+    public Page<SimulacaoResponse> findByCustomerId(
         Long clienteId,
         Pageable pageable
     ) {
@@ -81,13 +78,13 @@ public class SimulacaoServiceImpl implements SimulacaoService {
             throw new IllegalArgumentException("pageable não pode ser null");
         }
 
-        Cliente cliente = clienteRepository.findById(clienteId)
+        Customer customer = clienteRepository.findById(clienteId)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado")
             );
 
         return simulacaoRepository
-            .findByCliente(cliente, pageable)
+            .findByCustomer(customer, pageable)
             .map(SimulacaoResponse::from);
     }
 

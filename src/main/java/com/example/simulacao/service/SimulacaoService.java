@@ -10,5 +10,5 @@ import java.util.List;
 public interface SimulacaoService {
     List<SimulacaoResponse> save(Long clienteId, List<SimulacaoRequest> request);
 
-    Page<SimulacaoResponse> findByClienteId(Long clienteId, Pageable pageable);
+    Page<SimulacaoResponse> findByCustomerId(Long clienteId, Pageable pageable);
 }

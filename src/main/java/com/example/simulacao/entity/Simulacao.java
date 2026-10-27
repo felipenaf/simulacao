@@ -18,8 +18,8 @@ public class Simulacao {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @Column(nullable = false)
     private LocalDateTime dataHora;
@@ -45,13 +45,13 @@ public class Simulacao {
 
     @Builder
     public Simulacao (
-        Cliente cliente,
+        Customer customer,
         BigDecimal valorSolicitado,
         BigDecimal valorGarantia,
         Integer quantidadeMeses,
         BigDecimal taxaJurosMensal
     ) {
-        this.cliente = cliente;
+        this.customer = customer;
         this.valorSolicitado = valorSolicitado;
         this.valorGarantia = valorGarantia;
         this.quantidadeMeses = quantidadeMeses;

@@ -3,7 +3,7 @@ package com.example.simulacao.service;
 import com.example.simulacao.dto.ClientePatchRequest;
 import com.example.simulacao.dto.ClienteRequest;
 import com.example.simulacao.dto.ClienteResponse;
-import com.example.simulacao.entity.Cliente;
+import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Endereco;
 import com.example.simulacao.entity.Estado;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
@@ -56,17 +56,17 @@ public class ClienteServiceImpl implements ClienteService {
 
         log.info(endereco.toString());
 
-        Cliente cliente = Cliente.builder()
+        Customer customer = Customer.builder()
             .cpf(request.cpf())
             .nome(request.nome())
             .endereco(endereco)
             .build();
 
-        log.info(cliente.toString());
+        log.info(customer.toString());
 
-        clienteRepository.save(cliente);
+        clienteRepository.save(customer);
 
-        return ClienteResponse.from(cliente);
+        return ClienteResponse.from(customer);
     }
 
     @Override
@@ -75,12 +75,12 @@ public class ClienteServiceImpl implements ClienteService {
             throw new IllegalArgumentException("id não pode ser null");
         }
 
-        Cliente cliente = clienteRepository.findById(id)
+        Customer customer = clienteRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
             );
 
-        return ClienteResponse.from(cliente);
+        return ClienteResponse.from(customer);
     }
 
     @Override
@@ -105,28 +105,28 @@ public class ClienteServiceImpl implements ClienteService {
             throw new IllegalArgumentException("request não pode ser null");
         }
 
-        Cliente clienteExistente = clienteRepository.findById(id)
+        Customer customerExistente = clienteRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
             );
 
         if (request.cpf() != null) {
             clienteRepository.findByCpf(request.cpf())
-                .filter(cliente -> !cliente.getId().equals(clienteExistente.getId()))
-                .ifPresent(cliente -> {
+                .filter(customer -> !customer.getId().equals(customerExistente.getId()))
+                .ifPresent(customer -> {
                     throw new CpfJaCadastradoException("CPF já cadastrado");
                 });
 
-            clienteExistente.setCpf(request.cpf());
+            customerExistente.setCpf(request.cpf());
         }
 
         if (request.nome() != null) {
-            clienteExistente.setNome(request.nome());
+            customerExistente.setNome(request.nome());
         }
 
         if (request.endereco() != null) {
             var enderecoRequest = request.endereco();
-            var enderecoExistente = clienteExistente.getEndereco();
+            var enderecoExistente = customerExistente.getEndereco();
 
             if (enderecoRequest.rua() != null) {
                 enderecoExistente.setRua(enderecoRequest.rua());
@@ -153,7 +153,7 @@ public class ClienteServiceImpl implements ClienteService {
             }
         }
 
-        return ClienteResponse.from(clienteExistente);
+        return ClienteResponse.from(customerExistente);
     }
 
     @Override
@@ -167,28 +167,28 @@ public class ClienteServiceImpl implements ClienteService {
             throw new IllegalArgumentException("request não pode ser null");
         }
 
-        Cliente clienteExistente = clienteRepository.findById(id)
+        Customer customerExistente = clienteRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
             );
 
         clienteRepository.findByCpf(request.cpf())
             // Quando o id é diferente ele mantém na lista
-            .filter(clienteCpf -> !clienteCpf.getId().equals(clienteExistente.getId()))
+            .filter(clienteCpf -> !clienteCpf.getId().equals(customerExistente.getId()))
             .ifPresent(clienteCpf -> {
                 throw new CpfJaCadastradoException("CPF já cadastrado");
             });
 
-        clienteExistente.setCpf(request.cpf());
-        clienteExistente.setNome(request.nome());
-        clienteExistente.getEndereco().setRua(request.endereco().rua());
-        clienteExistente.getEndereco().setNumero(request.endereco().numero());
-        clienteExistente.getEndereco().setBairro(request.endereco().bairro());
-        clienteExistente.getEndereco().setCep(request.endereco().cep());
-        clienteExistente.getEndereco().setCidade(request.endereco().cidade());
-        clienteExistente.getEndereco().setEstado(request.endereco().estado());
+        customerExistente.setCpf(request.cpf());
+        customerExistente.setNome(request.nome());
+        customerExistente.getEndereco().setRua(request.endereco().rua());
+        customerExistente.getEndereco().setNumero(request.endereco().numero());
+        customerExistente.getEndereco().setBairro(request.endereco().bairro());
+        customerExistente.getEndereco().setCep(request.endereco().cep());
+        customerExistente.getEndereco().setCidade(request.endereco().cidade());
+        customerExistente.getEndereco().setEstado(request.endereco().estado());
 
-        return ClienteResponse.from(clienteExistente);
+        return ClienteResponse.from(customerExistente);
     }
 
     @Override
@@ -198,40 +198,40 @@ public class ClienteServiceImpl implements ClienteService {
             throw new IllegalArgumentException("id não pode ser null");
         }
 
-        Cliente clienteExistente = clienteRepository.findById(id)
+        Customer customerExistente = clienteRepository.findById(id)
             .orElseThrow(() ->
                 new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
             );
 
-        if (!simulacaoRepository.findByCliente(clienteExistente, PageRequest.of(0, 1)).isEmpty()) {
+        if (!simulacaoRepository.findByCustomer(customerExistente, PageRequest.of(0, 1)).isEmpty()) {
             throw new ClientePossuiSimulacoesException("Cliente não pode ser removido pois possui simulações associadas a ele");
         }
 
-        clienteRepository.delete(clienteExistente);
+        clienteRepository.delete(customerExistente);
     }
 
     /**
      * TODO: Pass this to Repository
-     * Calcula uma lista com os nomes dos clientes que moram em uma determinada cidade e estado.
+     * Calcula uma lista com os nomes dos customers que moram em uma determinada cidade e estado.
      *
-     * @param clientes lista dos clientes usados
+     * @param customers lista dos customers usados
     como base para o cálculo
-     * @param cidade cidade dos clientes a serem
+     * @param cidade cidade dos customers a serem
     recuperados
-     * @param estado estado da cidade dos clientes
+     * @param estado estado da cidade dos customers
     a serem recuperados
-     * @return Lista com os nomes dos clientes
+     * @return Lista com os nomes dos customers
     da lista fornecida que moram na cidade e estado fornecida.
      */
     public List<String> calculaNomesClientesParaCidadeEstado(
-        List<Cliente> clientes,
+        List<Customer> customers,
         String cidade,
         String estado
     ) {
-        return clientes.stream()
-            .filter(cliente -> cliente.getEndereco().getCidade().equals(cidade))
-            .filter(cliente -> cliente.getEndereco().getEstado().equals(Estado.valueOf(estado)))
-            .map(Cliente::getNome)
+        return customers.stream()
+            .filter(customer -> customer.getEndereco().getCidade().equals(cidade))
+            .filter(customer -> customer.getEndereco().getEstado().equals(Estado.valueOf(estado)))
+            .map(Customer::getNome)
             .toList();
     }
 }

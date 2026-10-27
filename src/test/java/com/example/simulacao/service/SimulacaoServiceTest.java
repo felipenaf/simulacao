@@ -2,7 +2,7 @@ package com.example.simulacao.service;
 
 import com.example.simulacao.dto.SimulacaoRequest;
 import com.example.simulacao.dto.SimulacaoResponse;
-import com.example.simulacao.entity.Cliente;
+import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Simulacao;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.repository.ClienteRepository;
@@ -52,12 +52,12 @@ public class SimulacaoServiceTest {
                 new BigDecimal("2.5")
             )).toList();
 
-        Cliente cliente = new Cliente();
+        Customer customer = new Customer();
 
         List<Simulacao> simulacoes = requests.stream()
             .map(request ->
                 Simulacao.builder()
-                    .cliente(cliente)
+                    .customer(customer)
                     .valorSolicitado(request.valorSolicitado())
                     .valorGarantia(request.valorGarantia())
                     .quantidadeMeses(request.quantidadeMeses())
@@ -66,7 +66,7 @@ public class SimulacaoServiceTest {
             ).toList();
 
         when(clienteRepository.findById(1L))
-            .thenReturn(Optional.of(cliente));
+            .thenReturn(Optional.of(customer));
 
         when(simulacaoRepository.saveAll(anyList()))
             .thenReturn(simulacoes);
@@ -91,12 +91,12 @@ public class SimulacaoServiceTest {
                 new BigDecimal("2.5")
             )).toList();
 
-        Cliente cliente = new Cliente();
+        Customer customer = new Customer();
 
         List<Simulacao> simulacoes = requests.stream()
             .map(request ->
                 Simulacao.builder()
-                    .cliente(cliente)
+                    .customer(customer)
                     .valorSolicitado(request.valorSolicitado())
                     .valorGarantia(request.valorGarantia())
                     .quantidadeMeses(request.quantidadeMeses())
@@ -105,7 +105,7 @@ public class SimulacaoServiceTest {
             ).toList();
 
         when(clienteRepository.findById(1L))
-            .thenReturn(Optional.of(cliente));
+            .thenReturn(Optional.of(customer));
 
         when(simulacaoRepository.saveAll(anyList()))
             .thenReturn(simulacoes);
@@ -144,7 +144,7 @@ public class SimulacaoServiceTest {
 
     @Test
     void deveCadastrarSimulacoesSimples() {
-        Cliente cliente = new Cliente();
+        Customer customer = new Customer();
         List<SimulacaoRequest> requests = IntStream.range(0, 3)
             .mapToObj(i -> new SimulacaoRequest(
                 new BigDecimal("30000").add(new BigDecimal(i)),
@@ -156,7 +156,7 @@ public class SimulacaoServiceTest {
         List<Simulacao> simulacoes = requests.stream()
             .map(request ->
                 Simulacao.builder()
-                    .cliente(cliente)
+                    .customer(customer)
                     .valorSolicitado(request.valorSolicitado())
                     .valorGarantia(request.valorGarantia())
                     .quantidadeMeses(request.quantidadeMeses())
@@ -165,7 +165,7 @@ public class SimulacaoServiceTest {
             ).toList();
 
         when(clienteRepository.findById(1L))
-            .thenReturn(Optional.of(cliente));
+            .thenReturn(Optional.of(customer));
 
         when(simulacaoRepository.saveAll(anyList()))
             .thenReturn(simulacoes);
@@ -234,11 +234,11 @@ public class SimulacaoServiceTest {
 
     @Test
     void deveConsultarSimulacoes() {
-        Cliente cliente = new Cliente();
+        Customer customer = new Customer();
         List<Simulacao> simulacoes = IntStream.range(0, 10)
             .mapToObj(i ->
                 Simulacao.builder()
-                    .cliente(cliente)
+                    .customer(customer)
                     .valorSolicitado(new BigDecimal("30000").add(new BigDecimal(i)))
                     .valorGarantia(new BigDecimal("50000.50"))
                     .quantidadeMeses(420)
@@ -247,18 +247,18 @@ public class SimulacaoServiceTest {
             ).toList();
 
         when(clienteRepository.findById(1L))
-            .thenReturn(Optional.of(cliente));
+            .thenReturn(Optional.of(customer));
 
         Pageable pageable = PageRequest.of(0, 2);
 
-        when(simulacaoRepository.findByCliente(eq(cliente), any(PageRequest.class)))
+        when(simulacaoRepository.findByCustomer(eq(customer), any(PageRequest.class)))
             .thenReturn(new PageImpl<>(
                 simulacoes.subList(0, 2),
                 pageable,
                 simulacoes.size()
             ));
 
-        Page<SimulacaoResponse> response = simulacaoService.findByClienteId(
+        Page<SimulacaoResponse> response = simulacaoService.findByCustomerId(
             1L,
             pageable
         );
@@ -268,26 +268,26 @@ public class SimulacaoServiceTest {
         assertEquals(new BigDecimal("30001"), response.getContent().get(1).valorSolicitado());
 
         verify(clienteRepository).findById(1L);
-        verify(simulacaoRepository).findByCliente(cliente, pageable);
+        verify(simulacaoRepository).findByCustomer(customer, pageable);
     }
 
     @Test
     void deveRetornarListaVaziaAoConsultarSimulacoes() {
-        Cliente cliente = new Cliente();
+        Customer customer = new Customer();
 
         when(clienteRepository.findById(1L))
-            .thenReturn(Optional.of(cliente));
+            .thenReturn(Optional.of(customer));
 
         Pageable pageable = PageRequest.of(0, 1);
 
-        when(simulacaoRepository.findByCliente(eq(cliente), any(PageRequest.class)))
+        when(simulacaoRepository.findByCustomer(eq(customer), any(PageRequest.class)))
             .thenReturn(new PageImpl<>(
                 List.of(),
                 pageable,
                 0
             ));
 
-        Page<SimulacaoResponse> response = simulacaoService.findByClienteId(
+        Page<SimulacaoResponse> response = simulacaoService.findByCustomerId(
             1L,
             pageable
         );
@@ -299,14 +299,14 @@ public class SimulacaoServiceTest {
         assertTrue(response.isEmpty());
 
         verify(clienteRepository).findById(1L);
-        verify(simulacaoRepository).findByCliente(cliente, pageable);
+        verify(simulacaoRepository).findByCustomer(customer, pageable);
     }
 
     @Test
     void deveLancarClienteNaoEncontradoExceptionAoConsultarSimulacao() {
         assertThrows(
             ClienteNaoEncontradoException.class,
-            () -> simulacaoService.findByClienteId(1L, PageRequest.of(0, 10))
+            () -> simulacaoService.findByCustomerId(1L, PageRequest.of(0, 10))
         );
     }
 
@@ -314,7 +314,7 @@ public class SimulacaoServiceTest {
     void deveLancarIllegalArgumentExceptionAoConsultarSimulacaoComPageableNull() {
         assertThrows(
             IllegalArgumentException.class,
-            () -> simulacaoService.findByClienteId(1L, null)
+            () -> simulacaoService.findByCustomerId(1L, null)
         );
     }
 
@@ -322,7 +322,7 @@ public class SimulacaoServiceTest {
     void deveLancarIllegalArgumentExceptionAoConsultarSimulacaoComClienteIdNull() {
         assertThrows(
             IllegalArgumentException.class,
-            () -> simulacaoService.findByClienteId(null, PageRequest.of(0, 10))
+            () -> simulacaoService.findByCustomerId(null, PageRequest.of(0, 10))
         );
     }
 }

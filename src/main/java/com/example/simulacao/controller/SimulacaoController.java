@@ -38,7 +38,7 @@ public class SimulacaoController {
         this.exportadorFactory = exportadorFactory;
     }
 
-    @PostMapping("/clientes/{clienteId}")
+    @PostMapping("/customers/{clienteId}")
     public ResponseEntity<?> save(
         @PathVariable Long clienteId,
         @RequestBody
@@ -46,7 +46,7 @@ public class SimulacaoController {
         @Size(min = 1, max = 5, message = "A lista deve conter entre 1 e 5 simulações")
         List<@Valid SimulacaoRequest> requests
     ) {
-        log.info("Criando {} simulações para o cliente {}", requests.size(), clienteId);
+        log.info("Criando {} simulações para o customer {}", requests.size(), clienteId);
 
         try {
             List<SimulacaoResponse> response = simulacaoService.save(clienteId, requests);
@@ -69,8 +69,8 @@ public class SimulacaoController {
         }
     }
 
-    @GetMapping("/clientes/{clienteId}")
-    public ResponseEntity<?> findByClienteId(
+    @GetMapping("/customers/{clienteId}")
+    public ResponseEntity<?> findByCustomerId(
         @PathVariable Long clienteId,
 
         @RequestParam(defaultValue = "JSON")
@@ -86,7 +86,7 @@ public class SimulacaoController {
         int quantidadePorPagina
     ) {
         try {
-            Page<SimulacaoResponse> simulacoes = simulacaoService.findByClienteId(
+            Page<SimulacaoResponse> simulacoes = simulacaoService.findByCustomerId(
                 clienteId,
                 // O índice da paginação inicia em zero
                 PageRequest.of(pagina - 1, quantidadePorPagina)
@@ -103,7 +103,7 @@ public class SimulacaoController {
                 .status(HttpStatus.NOT_FOUND)
                 .build();
         } catch (Exception e) {
-            log.error("Erro ao obter simulacoes do cliente: {}", clienteId, e);
+            log.error("Erro ao obter simulacoes do customer: {}", clienteId, e);
 
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
