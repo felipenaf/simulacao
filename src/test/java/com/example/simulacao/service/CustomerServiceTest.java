@@ -40,10 +40,10 @@ public class CustomerServiceTest {
     private SimulacaoRepository simulacaoRepository;
 
     @InjectMocks
-    private CustomerServiceImpl clienteService;
+    private CustomerServiceImpl customerService;
 
     @Captor
-    private ArgumentCaptor<Customer> clienteCaptor;
+    private ArgumentCaptor<Customer> customerCaptor;
 
     private CustomerRequest criarRequest() {
         CustomerRequest.EnderecoRequest endereco = new CustomerRequest.EnderecoRequest(
@@ -83,18 +83,18 @@ public class CustomerServiceTest {
         when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.empty());
 
-        CustomerResponse response = clienteService.save(request);
+        CustomerResponse response = customerService.save(request);
 
         assertNotNull(response);
 
         // Aqui está sendo interceptado o objeto Customer que é criado dentro
         // da função save do CustomerService e enviado ao repository e não tenho acesso.
-        verify(customerRepository).save(clienteCaptor.capture());
+        verify(customerRepository).save(customerCaptor.capture());
 
         // Garante que apenas uma chamada foi feita
-        assertEquals(1, clienteCaptor.getAllValues().size());
+        assertEquals(1, customerCaptor.getAllValues().size());
 
-        Customer salvo = clienteCaptor.getValue();
+        Customer salvo = customerCaptor.getValue();
 
         assertEquals(request.cpf(), salvo.getCpf());
         assertEquals(request.nome(), salvo.getNome());
@@ -112,7 +112,7 @@ public class CustomerServiceTest {
         CustomerRequest request = criarRequest();
         when(customerRepository.findByCpf(request.cpf())).thenReturn(Optional.empty());
 
-        CustomerResponse response = clienteService.save(request);
+        CustomerResponse response = customerService.save(request);
 
         assertEquals(request.cpf(), response.cpf());
         assertEquals(request.nome(), response.nome());
@@ -133,7 +133,7 @@ public class CustomerServiceTest {
 
         CpfJaCadastradoException ex = assertThrows(
             CpfJaCadastradoException.class,
-            () -> clienteService.save(request)
+            () -> customerService.save(request)
         );
 
         assertEquals("CPF já cadastrado", ex.getMessage());
@@ -145,7 +145,7 @@ public class CustomerServiceTest {
     void deveLancarIllegalArgumentExceptionAoSalvarCustomerComRequestNull() {
         assertThrows(
             IllegalArgumentException.class,
-            () -> clienteService.save(null)
+            () -> customerService.save(null)
         );
     }
 
@@ -156,7 +156,7 @@ public class CustomerServiceTest {
         when(customerRepository.findById(1L))
             .thenReturn(Optional.of(customer));
 
-        CustomerResponse response = clienteService.findById(1L);
+        CustomerResponse response = customerService.findById(1L);
 
         verify(customerRepository).findById(1L);
 
@@ -177,7 +177,7 @@ public class CustomerServiceTest {
 
         assertThrows(
             CustomerNaoEncontradoException.class,
-            () -> clienteService.findById(1L)
+            () -> customerService.findById(1L)
         );
 
         verify(customerRepository).findById(1L);
@@ -187,7 +187,7 @@ public class CustomerServiceTest {
     void deveLancarIllegalArgumentExceptionAoConsultarCustomerComIdNull() {
         assertThrows(
             IllegalArgumentException.class,
-            () -> clienteService.findById(null)
+            () -> customerService.findById(null)
         );
     }
 
@@ -199,7 +199,7 @@ public class CustomerServiceTest {
         when(customerRepository.findAll(PageRequest.of(0, 2)))
             .thenReturn(new PageImpl<>(customers));
 
-        Page<CustomerResponse> response = clienteService.findAll(PageRequest.of(0, 2));
+        Page<CustomerResponse> response = customerService.findAll(PageRequest.of(0, 2));
 
         verify(customerRepository).findAll(PageRequest.of(0, 2));
 
@@ -228,7 +228,7 @@ public class CustomerServiceTest {
     void deveLancarIllegalArgumentExceptionAoConsultarCustomersComPageableNull() {
         assertThrows(
             IllegalArgumentException.class,
-            () -> clienteService.findAll(null)
+            () -> customerService.findAll(null)
         );
     }
 
@@ -238,7 +238,7 @@ public class CustomerServiceTest {
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> clienteService.patch(null, request)
+            () -> customerService.patch(null, request)
         );
 
         verifyNoInteractions(customerRepository);
@@ -248,7 +248,7 @@ public class CustomerServiceTest {
     void deveLancarIllegalArgumentExceptionAoAtualizarComRequestNullPatch() {
         assertThrows(
             IllegalArgumentException.class,
-            () -> clienteService.patch(1L, null)
+            () -> customerService.patch(1L, null)
         );
 
         verifyNoInteractions(customerRepository);
@@ -263,7 +263,7 @@ public class CustomerServiceTest {
 
         assertThrows(
             CustomerNaoEncontradoException.class,
-            () -> clienteService.patch(99L, request)
+            () -> customerService.patch(99L, request)
         );
     }
 
@@ -283,7 +283,7 @@ public class CustomerServiceTest {
             new CustomerPatchRequest.EnderecoRequest("Rua das Flores", 123, "Centro", "13000-000", "Campinas", Estado.SP)
         );
 
-        CustomerResponse response = clienteService.patch(1L, request);
+        CustomerResponse response = customerService.patch(1L, request);
 
         assertNotNull(response);
 
@@ -309,7 +309,7 @@ public class CustomerServiceTest {
 
         CustomerPatchRequest request = new CustomerPatchRequest(null, "Novo Nome", null);
 
-        clienteService.patch(1L, request);
+        customerService.patch(1L, request);
 
         assertEquals("Novo Nome", existente.getNome());
         assertEquals("11111111111", existente.getCpf());
@@ -324,7 +324,7 @@ public class CustomerServiceTest {
         when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
-        clienteService.patch(1L, new CustomerPatchRequest(null, null, null));
+        customerService.patch(1L, new CustomerPatchRequest(null, null, null));
 
         assertEquals("11111111111", existente.getCpf());
         assertEquals("Felipe Antigo", existente.getNome());
@@ -345,7 +345,7 @@ public class CustomerServiceTest {
 
         CustomerPatchRequest request = new CustomerPatchRequest("11111111111", null, null);
 
-        CustomerResponse response = clienteService.patch(1L, request);
+        CustomerResponse response = customerService.patch(1L, request);
 
         assertNotNull(response);
         assertEquals("11111111111", existente.getCpf());
@@ -365,7 +365,7 @@ public class CustomerServiceTest {
 
         assertThrows(
             CpfJaCadastradoException.class,
-            () -> clienteService.patch(1L, request)
+            () -> customerService.patch(1L, request)
         );
 
         // a exceção ocorre antes de qualquer alteração
@@ -384,7 +384,7 @@ public class CustomerServiceTest {
         when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.empty());
 
-        CustomerResponse response = clienteService.put(1L, request);
+        CustomerResponse response = customerService.put(1L, request);
 
         assertNotNull(response);
         assertEquals(request.cpf(), existente.getCpf());
@@ -406,7 +406,7 @@ public class CustomerServiceTest {
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> clienteService.put(null, request)
+            () -> customerService.put(null, request)
         );
 
         verifyNoInteractions(customerRepository);
@@ -416,7 +416,7 @@ public class CustomerServiceTest {
     void deveLancarIllegalArgumentExceptionAoAtualizarQuandoRequestNullPut() {
         assertThrows(
             IllegalArgumentException.class,
-            () -> clienteService.put(1L, null)
+            () -> customerService.put(1L, null)
         );
 
         verifyNoInteractions(customerRepository);
@@ -431,7 +431,7 @@ public class CustomerServiceTest {
 
         assertThrows(
             CustomerNaoEncontradoException.class,
-            () -> clienteService.put(99L, request)
+            () -> customerService.put(99L, request)
         );
     }
 
@@ -449,11 +449,11 @@ public class CustomerServiceTest {
             .thenReturn(Optional.of(existente));
 
         // o stub precisa ter o mesmo cpf passado na função a ser testada
-        // neste exemplo é clienteService.put(1L, request);
+        // neste exemplo é customerService.put(1L, request);
         when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.of(existente));
 
-        CustomerResponse response = clienteService.put(1L, request);
+        CustomerResponse response = customerService.put(1L, request);
 
         assertNotNull(response);
         assertEquals("Novo Nome", existente.getNome());
@@ -474,7 +474,7 @@ public class CustomerServiceTest {
 
         assertThrows(
             CpfJaCadastradoException.class,
-            () -> clienteService.put(1L, request)
+            () -> customerService.put(1L, request)
         );
 
         assertEquals("11111111111", existente.getCpf());
@@ -492,7 +492,7 @@ public class CustomerServiceTest {
         when(simulacaoRepository.findByCustomer(existente, PageRequest.of(0, 1)))
             .thenReturn(Page.empty());
 
-        clienteService.delete(1L);
+        customerService.delete(1L);
 
         verify(customerRepository).delete(existente);
     }
@@ -501,7 +501,7 @@ public class CustomerServiceTest {
     void deveLancarIllegalArgumentExceptionAoRemoverQuandoIdNull() {
         assertThrows(
             IllegalArgumentException.class,
-            () -> clienteService.delete(null)
+            () -> customerService.delete(null)
         );
 
         verifyNoInteractions(customerRepository, simulacaoRepository);
@@ -514,7 +514,7 @@ public class CustomerServiceTest {
 
         assertThrows(
             CustomerNaoEncontradoException.class,
-            () -> clienteService.delete(99L)
+            () -> customerService.delete(99L)
         );
 
         verifyNoInteractions(simulacaoRepository);
@@ -537,7 +537,7 @@ public class CustomerServiceTest {
 
         assertThrows(
             CustomerPossuiSimulacoesException.class,
-            () -> clienteService.delete(1L)
+            () -> customerService.delete(1L)
         );
 
         verify(customerRepository, never()).delete(any(Customer.class));
@@ -586,7 +586,7 @@ public class CustomerServiceTest {
 
         List<Customer> customers = List.of(cli1, cli2, cli3);
 
-        List<String> nomes = clienteService.calculaNomesCustomersParaCidadeEstado(
+        List<String> nomes = customerService.calculaNomesCustomersParaCidadeEstado(
             customers, "Belo Horizonte", Estado.MG.name()
         );
 

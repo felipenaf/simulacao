@@ -29,8 +29,8 @@ public class ExportadorSimulacaoCsv implements ExportadorSimulacao{
     }
 
     @Override
-    public String nomeArquivo(Long clienteId) {
-        return "simulacoes_cliente_" + clienteId + "." +  this.formato();
+    public String nomeArquivo(Long customerId) {
+        return "simulacoes_customer_" + customerId + "." +  this.formato();
     }
 
     @Override

@@ -30,18 +30,18 @@ public class SimulacaoServiceImpl implements SimulacaoService {
     @Override
     @Transactional
     public List<SimulacaoResponse> save(
-        Long clienteId,
+        Long customerId,
         List<SimulacaoRequest> requests
     ) {
-        if (clienteId == null) {
-            throw new IllegalArgumentException("clienteId não pode ser null");
+        if (customerId == null) {
+            throw new IllegalArgumentException("customerId não pode ser null");
         }
 
         if (requests == null) {
             throw new IllegalArgumentException("requests não pode ser null");
         }
 
-        Customer customer = customerRepository.findById(clienteId)
+        Customer customer = customerRepository.findById(customerId)
             .orElseThrow(() ->
                 new CustomerNaoEncontradoException("Customer não encontrado")
             );
@@ -67,18 +67,18 @@ public class SimulacaoServiceImpl implements SimulacaoService {
     @Override
     @Transactional
     public Page<SimulacaoResponse> findByCustomerId(
-        Long clienteId,
+        Long customerId,
         Pageable pageable
     ) {
-        if (clienteId == null) {
-            throw new IllegalArgumentException("clienteId não pode ser null");
+        if (customerId == null) {
+            throw new IllegalArgumentException("customerId não pode ser null");
         }
 
         if (pageable == null) {
             throw new IllegalArgumentException("pageable não pode ser null");
         }
 
-        Customer customer = customerRepository.findById(clienteId)
+        Customer customer = customerRepository.findById(customerId)
             .orElseThrow(() ->
                 new CustomerNaoEncontradoException("Customer não encontrado")
             );

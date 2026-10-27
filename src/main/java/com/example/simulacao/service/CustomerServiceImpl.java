@@ -174,8 +174,8 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerRepository.findByCpf(request.cpf())
             // Quando o id é diferente ele mantém na lista
-            .filter(clienteCpf -> !clienteCpf.getId().equals(customerExistente.getId()))
-            .ifPresent(clienteCpf -> {
+            .filter(customerCpf -> !customerCpf.getId().equals(customerExistente.getId()))
+            .ifPresent(customerCpf -> {
                 throw new CpfJaCadastradoException("CPF já cadastrado");
             });
 

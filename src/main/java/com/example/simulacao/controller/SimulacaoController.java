@@ -38,18 +38,18 @@ public class SimulacaoController {
         this.exportadorFactory = exportadorFactory;
     }
 
-    @PostMapping("/customers/{clienteId}")
+    @PostMapping("/customers/{customerId}")
     public ResponseEntity<?> save(
-        @PathVariable Long clienteId,
+        @PathVariable Long customerId,
         @RequestBody
         @Valid
         @Size(min = 1, max = 5, message = "A lista deve conter entre 1 e 5 simulações")
         List<@Valid SimulacaoRequest> requests
     ) {
-        log.info("Criando {} simulações para o customer {}", requests.size(), clienteId);
+        log.info("Criando {} simulações para o customer {}", requests.size(), customerId);
 
         try {
-            List<SimulacaoResponse> response = simulacaoService.save(clienteId, requests);
+            List<SimulacaoResponse> response = simulacaoService.save(customerId, requests);
 
             return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -69,9 +69,9 @@ public class SimulacaoController {
         }
     }
 
-    @GetMapping("/customers/{clienteId}")
+    @GetMapping("/customers/{customerId}")
     public ResponseEntity<?> findByCustomerId(
-        @PathVariable Long clienteId,
+        @PathVariable Long customerId,
 
         @RequestParam(defaultValue = "JSON")
         FormatoExportacao formato,
@@ -87,14 +87,14 @@ public class SimulacaoController {
     ) {
         try {
             Page<SimulacaoResponse> simulacoes = simulacaoService.findByCustomerId(
-                clienteId,
+                customerId,
                 // O índice da paginação inicia em zero
                 PageRequest.of(pagina - 1, quantidadePorPagina)
             );
 
             return switch (formato) {
                 case JSON -> ResponseEntity.ok(PageResponse.from(simulacoes));
-                case CSV, TXT -> montaRespostaExportacao(simulacoes, clienteId, formato);
+                case CSV, TXT -> montaRespostaExportacao(simulacoes, customerId, formato);
             };
         } catch (CustomerNaoEncontradoException e) {
             log.error(e.getMessage());
@@ -103,7 +103,7 @@ public class SimulacaoController {
                 .status(HttpStatus.NOT_FOUND)
                 .build();
         } catch (Exception e) {
-            log.error("Erro ao obter simulacoes do customer: {}", clienteId, e);
+            log.error("Erro ao obter simulacoes do customer: {}", customerId, e);
 
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -113,7 +113,7 @@ public class SimulacaoController {
 
     private ResponseEntity<byte[]> montaRespostaExportacao(
         Page<SimulacaoResponse> simulacoes,
-        Long clienteId,
+        Long customerId,
         FormatoExportacao formato
     ) throws IOException {
         Optional<ExportadorSimulacao> resultado = exportadorFactory.buscar(formato);
@@ -128,7 +128,7 @@ public class SimulacaoController {
             .contentType(MediaType.parseMediaType(exportador.contentType()))
             .header(
                 HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + exportador.nomeArquivo(clienteId) + "\""
+                "attachment; filename=\"" + exportador.nomeArquivo(customerId) + "\""
             )
             .body(exportador.exportar(simulacoes.getContent()));
     }
