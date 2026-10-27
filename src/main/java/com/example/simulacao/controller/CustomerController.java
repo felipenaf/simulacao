@@ -1,8 +1,8 @@
 package com.example.simulacao.controller;
 
 import com.example.simulacao.dto.*;
-import com.example.simulacao.exception.ClienteNaoEncontradoException;
-import com.example.simulacao.exception.ClientePossuiSimulacoesException;
+import com.example.simulacao.exception.CustomerNaoEncontradoException;
+import com.example.simulacao.exception.CustomerPossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.service.CustomerService;
 import jakarta.validation.constraints.Max;
@@ -26,11 +26,11 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@Valid @RequestBody ClienteRequest request){
+    public ResponseEntity<?> save(@Valid @RequestBody CustomerRequest request){
         log.info("Novo customer: {}", request.toString());
 
         try {
-            ClienteResponse response = customerService.save(request);
+            CustomerResponse response = customerService.save(request);
 
             return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -49,10 +49,10 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<CustomerResponse> findById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(customerService.findById(id));
-        } catch (ClienteNaoEncontradoException e) {
+        } catch (CustomerNaoEncontradoException e) {
             log.error(e.getMessage());
 
             return ResponseEntity
@@ -79,7 +79,7 @@ public class CustomerController {
         int quantidadePorPagina
     ) {
         try {
-            Page<ClienteResponse> list = customerService.findAll(
+            Page<CustomerResponse> list = customerService.findAll(
                 // O índice da paginação inicia em zero
                 PageRequest.of(pagina - 1, quantidadePorPagina)
             );
@@ -97,12 +97,12 @@ public class CustomerController {
     @PatchMapping("/{id}")
     public ResponseEntity<?> patch(
         @PathVariable Long id,
-        @Valid @RequestBody ClientePatchRequest request
+        @Valid @RequestBody CustomerPatchRequest request
     ) {
         try {
-            ClienteResponse response = customerService.patch(id, request);
+            CustomerResponse response = customerService.patch(id, request);
             return ResponseEntity.ok().body(response);
-        } catch (ClienteNaoEncontradoException e) {
+        } catch (CustomerNaoEncontradoException e) {
             log.error(e.getMessage());
 
             return ResponseEntity
@@ -126,12 +126,12 @@ public class CustomerController {
     @PutMapping("/{id}")
     public ResponseEntity<?> put(
         @PathVariable Long id,
-        @Valid @RequestBody ClienteRequest request
+        @Valid @RequestBody CustomerRequest request
     ) {
         try {
-            ClienteResponse response = customerService.put(id, request);
+            CustomerResponse response = customerService.put(id, request);
             return ResponseEntity.ok().body(response);
-        } catch (ClienteNaoEncontradoException e) {
+        } catch (CustomerNaoEncontradoException e) {
             log.error(e.getMessage());
 
             return ResponseEntity
@@ -157,13 +157,13 @@ public class CustomerController {
         try {
             customerService.delete(id);
             return ResponseEntity.noContent().build();
-        } catch (ClienteNaoEncontradoException e) {
+        } catch (CustomerNaoEncontradoException e) {
             log.error(e.getMessage());
 
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .build();
-        } catch (ClientePossuiSimulacoesException e) {
+        } catch (CustomerPossuiSimulacoesException e) {
             log.error(e.getMessage());
 
             return ResponseEntity

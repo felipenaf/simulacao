@@ -13,14 +13,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class CustomerRequestTest {
     private static Validator validator;
     private static ValidatorFactory validatorFactory;
-    private static ClienteRequest.EnderecoRequest enderecoCorreto;
+    private static CustomerRequest.EnderecoRequest enderecoCorreto;
 
     @BeforeAll
     static void setUp() {
         validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
 
-        enderecoCorreto = new ClienteRequest.EnderecoRequest(
+        enderecoCorreto = new CustomerRequest.EnderecoRequest(
             "Rua das Flores",
             123,
             "Centro",
@@ -37,7 +37,7 @@ class CustomerRequestTest {
 
     @Test
     void deveAceitarRequestValida() {
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
             enderecoCorreto
@@ -50,7 +50,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarCpfEmBranco() {
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "   ",
             "Felipe Ferreira",
             enderecoCorreto
@@ -65,7 +65,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarCpfComMaisDe11Digitos() {
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "123456789101",
             "Felipe Ferreira",
             enderecoCorreto
@@ -82,7 +82,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarCpfComMenosDe11Digitos() {
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "1234567891",
             "Felipe Ferreira",
             enderecoCorreto
@@ -99,7 +99,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRemoverPontosETracosDoCpf() {
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "123.456.789-03",
             "Felipe Ferreira",
             enderecoCorreto
@@ -110,7 +110,7 @@ class CustomerRequestTest {
 
     @Test
     void deveManterCpfSemFormatacao() {
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
             enderecoCorreto
@@ -121,7 +121,7 @@ class CustomerRequestTest {
 
     @Test
     void devePreservarCpfNulo() {
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             null,
             "Felipe Ferreira",
             enderecoCorreto
@@ -132,7 +132,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarNomeEmBranco() {
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "",
             enderecoCorreto
@@ -148,7 +148,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRemoverEspacosDoNome() {
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "  Felipe Ferreira  ",
             enderecoCorreto
@@ -159,7 +159,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarNumeroNulo() {
-        var endereco = new ClienteRequest.EnderecoRequest(
+        var endereco = new CustomerRequest.EnderecoRequest(
             "Rua das Flores",
             null,
             "Centro",
@@ -168,7 +168,7 @@ class CustomerRequestTest {
             Estado.SP
         );
 
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
             endereco
@@ -183,7 +183,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarNumeroNaoPositivo() {
-        var endereco = new ClienteRequest.EnderecoRequest(
+        var endereco = new CustomerRequest.EnderecoRequest(
             "Rua das Flores",
             0,
             "Centro",
@@ -192,7 +192,7 @@ class CustomerRequestTest {
             Estado.SP
         );
 
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
             endereco
@@ -207,7 +207,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarEnderecoNulo() {
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
             null
@@ -222,7 +222,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRemoverEspacosDosCamposDoEndereco() {
-        var endereco = new ClienteRequest.EnderecoRequest(
+        var endereco = new CustomerRequest.EnderecoRequest(
             "  Rua das Flores  ",
             123,
             "  Centro  ",
@@ -239,7 +239,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarRuaInvalida() {
-        var endereco = new ClienteRequest.EnderecoRequest(
+        var endereco = new CustomerRequest.EnderecoRequest(
             "",
             123,
             "Centro",
@@ -248,7 +248,7 @@ class CustomerRequestTest {
             Estado.SP
         );
 
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
             endereco
@@ -263,7 +263,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarBairroInvalido() {
-        var endereco = new ClienteRequest.EnderecoRequest(
+        var endereco = new CustomerRequest.EnderecoRequest(
             "Rua das Flores",
             123,
             "",
@@ -272,7 +272,7 @@ class CustomerRequestTest {
             Estado.SP
         );
 
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
             endereco
@@ -287,7 +287,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRemoverHifenDoCep() {
-        var endereco = new ClienteRequest.EnderecoRequest(
+        var endereco = new CustomerRequest.EnderecoRequest(
             "Rua das Flores",
             123,
             "Centro",
@@ -296,7 +296,7 @@ class CustomerRequestTest {
             Estado.SP
         );
 
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
             endereco
@@ -307,7 +307,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarCepInvalido() {
-        var endereco = new ClienteRequest.EnderecoRequest(
+        var endereco = new CustomerRequest.EnderecoRequest(
             "Rua das Flores",
             123,
             "Centro",
@@ -316,7 +316,7 @@ class CustomerRequestTest {
             Estado.SP
         );
 
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
             endereco
@@ -331,7 +331,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarEstadoInvalido() {
-        var endereco = new ClienteRequest.EnderecoRequest(
+        var endereco = new CustomerRequest.EnderecoRequest(
             "Rua das Flores",
             123,
             "Centro",
@@ -340,7 +340,7 @@ class CustomerRequestTest {
             null
         );
 
-        var request = new ClienteRequest(
+        var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
             endereco

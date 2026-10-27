@@ -3,7 +3,7 @@ package com.example.simulacao.controller;
 import com.example.simulacao.dto.SimulacaoRequest;
 import com.example.simulacao.dto.SimulacaoResponse;
 import com.example.simulacao.enums.FormatoExportacao;
-import com.example.simulacao.exception.ClienteNaoEncontradoException;
+import com.example.simulacao.exception.CustomerNaoEncontradoException;
 import com.example.simulacao.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -167,9 +167,9 @@ class SimulacaoControllerTest {
     }
 
     @Test
-    void deveRetornarNotFoundEmCasoDeClienteNaoExisteNoGet() throws Exception {
+    void deveRetornarNotFoundEmCasoDeCustomerNaoExisteNoGet() throws Exception {
         when(simulacaoService.findByCustomerId(eq(1L), any(Pageable.class)))
-            .thenThrow(new ClienteNaoEncontradoException("Cliente não encontrado"));
+            .thenThrow(new CustomerNaoEncontradoException("Customer não encontrado"));
 
         mockMvc.perform(get("/simulacoes/customers/1"))
             .andExpect(status().isNotFound());
@@ -217,7 +217,7 @@ class SimulacaoControllerTest {
     }
 
     @Test
-    void deveRetornarNotFoundEmCasoDeClienteNaoExisteNoPost() throws Exception {
+    void deveRetornarNotFoundEmCasoDeCustomerNaoExisteNoPost() throws Exception {
         List<SimulacaoRequest> requests = IntStream.range(0, 5)
             .mapToObj(i -> new SimulacaoRequest(
                 new BigDecimal("300000.00").add(new BigDecimal(i)),
@@ -228,7 +228,7 @@ class SimulacaoControllerTest {
             .toList();
 
         when(simulacaoService.save(eq(1L), anyList()))
-            .thenThrow(new ClienteNaoEncontradoException("Cliente não encontrado"));
+            .thenThrow(new CustomerNaoEncontradoException("Customer não encontrado"));
 
         mockMvc.perform(post("/simulacoes/customers/1")
             .content(new ObjectMapper().writeValueAsString(requests))

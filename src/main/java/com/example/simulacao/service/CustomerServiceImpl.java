@@ -1,13 +1,13 @@
 package com.example.simulacao.service;
 
-import com.example.simulacao.dto.ClientePatchRequest;
-import com.example.simulacao.dto.ClienteRequest;
-import com.example.simulacao.dto.ClienteResponse;
+import com.example.simulacao.dto.CustomerPatchRequest;
+import com.example.simulacao.dto.CustomerRequest;
+import com.example.simulacao.dto.CustomerResponse;
 import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Endereco;
 import com.example.simulacao.entity.Estado;
-import com.example.simulacao.exception.ClienteNaoEncontradoException;
-import com.example.simulacao.exception.ClientePossuiSimulacoesException;
+import com.example.simulacao.exception.CustomerNaoEncontradoException;
+import com.example.simulacao.exception.CustomerPossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.repository.CustomerRepository;
 import com.example.simulacao.repository.SimulacaoRepository;
@@ -36,7 +36,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public ClienteResponse save(ClienteRequest request) {
+    public CustomerResponse save(CustomerRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("request não pode ser null");
         }
@@ -66,37 +66,37 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerRepository.save(customer);
 
-        return ClienteResponse.from(customer);
+        return CustomerResponse.from(customer);
     }
 
     @Override
-    public ClienteResponse findById(Long id) {
+    public CustomerResponse findById(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("id não pode ser null");
         }
 
         Customer customer = customerRepository.findById(id)
             .orElseThrow(() ->
-                new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
+                new CustomerNaoEncontradoException("Customer não encontrado: " + id)
             );
 
-        return ClienteResponse.from(customer);
+        return CustomerResponse.from(customer);
     }
 
     @Override
-    public Page<ClienteResponse> findAll(Pageable pageable) {
+    public Page<CustomerResponse> findAll(Pageable pageable) {
         if (pageable == null) {
             throw new IllegalArgumentException("pageable não pode ser null");
         }
 
        return customerRepository
            .findAll(pageable)
-           .map(ClienteResponse::from);
+           .map(CustomerResponse::from);
     }
 
     @Override
     @Transactional
-    public ClienteResponse patch(Long id, ClientePatchRequest request) {
+    public CustomerResponse patch(Long id, CustomerPatchRequest request) {
         if (id == null) {
             throw new IllegalArgumentException("id não pode ser null");
         }
@@ -107,7 +107,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customerExistente = customerRepository.findById(id)
             .orElseThrow(() ->
-                new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
+                new CustomerNaoEncontradoException("Customer não encontrado: " + id)
             );
 
         if (request.cpf() != null) {
@@ -153,12 +153,12 @@ public class CustomerServiceImpl implements CustomerService {
             }
         }
 
-        return ClienteResponse.from(customerExistente);
+        return CustomerResponse.from(customerExistente);
     }
 
     @Override
     @Transactional
-    public ClienteResponse put(Long id, ClienteRequest request) {
+    public CustomerResponse put(Long id, CustomerRequest request) {
         if (id == null) {
             throw new IllegalArgumentException("id não pode ser null");
         }
@@ -169,7 +169,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customerExistente = customerRepository.findById(id)
             .orElseThrow(() ->
-                new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
+                new CustomerNaoEncontradoException("Customer não encontrado: " + id)
             );
 
         customerRepository.findByCpf(request.cpf())
@@ -188,7 +188,7 @@ public class CustomerServiceImpl implements CustomerService {
         customerExistente.getEndereco().setCidade(request.endereco().cidade());
         customerExistente.getEndereco().setEstado(request.endereco().estado());
 
-        return ClienteResponse.from(customerExistente);
+        return CustomerResponse.from(customerExistente);
     }
 
     @Override
@@ -200,11 +200,11 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customerExistente = customerRepository.findById(id)
             .orElseThrow(() ->
-                new ClienteNaoEncontradoException("Cliente não encontrado: " + id)
+                new CustomerNaoEncontradoException("Customer não encontrado: " + id)
             );
 
         if (!simulacaoRepository.findByCustomer(customerExistente, PageRequest.of(0, 1)).isEmpty()) {
-            throw new ClientePossuiSimulacoesException("Cliente não pode ser removido pois possui simulações associadas a ele");
+            throw new CustomerPossuiSimulacoesException("Customer não pode ser removido pois possui simulações associadas a ele");
         }
 
         customerRepository.delete(customerExistente);
@@ -223,7 +223,7 @@ public class CustomerServiceImpl implements CustomerService {
      * @return Lista com os nomes dos customers
     da lista fornecida que moram na cidade e estado fornecida.
      */
-    public List<String> calculaNomesClientesParaCidadeEstado(
+    public List<String> calculaNomesCustomersParaCidadeEstado(
         List<Customer> customers,
         String cidade,
         String estado

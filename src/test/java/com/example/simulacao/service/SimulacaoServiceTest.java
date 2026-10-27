@@ -4,7 +4,7 @@ import com.example.simulacao.dto.SimulacaoRequest;
 import com.example.simulacao.dto.SimulacaoResponse;
 import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Simulacao;
-import com.example.simulacao.exception.ClienteNaoEncontradoException;
+import com.example.simulacao.exception.CustomerNaoEncontradoException;
 import com.example.simulacao.repository.CustomerRepository;
 import com.example.simulacao.repository.SimulacaoRepository;
 import org.junit.jupiter.api.Test;
@@ -183,7 +183,7 @@ public class SimulacaoServiceTest {
     }
 
     @Test
-    void deveLancarClienteNaoEncontradoExceptionAoCadastrarSimulacao() {
+    void deveLancarCustomerNaoEncontradoExceptionAoCadastrarSimulacao() {
         List<SimulacaoRequest> requests = IntStream.range(0, 1)
             .mapToObj(i -> new SimulacaoRequest(
                 new BigDecimal("30000").add(new BigDecimal(i)),
@@ -196,7 +196,7 @@ public class SimulacaoServiceTest {
             .thenReturn(Optional.empty());
 
         assertThrows(
-            ClienteNaoEncontradoException.class,
+            CustomerNaoEncontradoException.class,
             () -> simulacaoService.save(1L, requests)
         );
 
@@ -204,12 +204,12 @@ public class SimulacaoServiceTest {
     }
 
     @Test
-    void deveLancarClienteNaoEncontradoExceptionAoCadastrarSimulacaoComRequestsVazio() {
+    void deveLancarCustomerNaoEncontradoExceptionAoCadastrarSimulacaoComRequestsVazio() {
         when(customerRepository.findById(1L))
             .thenReturn(Optional.empty());
 
         assertThrows(
-            ClienteNaoEncontradoException.class,
+            CustomerNaoEncontradoException.class,
             () -> simulacaoService.save(1L, List.of())
         );
 
@@ -225,7 +225,7 @@ public class SimulacaoServiceTest {
     }
 
     @Test
-    void deveLancarIllegalArgumentExceptionAoCadastrarSimulacaoComClienteIdNull() {
+    void deveLancarIllegalArgumentExceptionAoCadastrarSimulacaoComCustomerIdNull() {
         assertThrows(
             IllegalArgumentException.class,
             () -> simulacaoService.save(null, List.of())
@@ -303,9 +303,9 @@ public class SimulacaoServiceTest {
     }
 
     @Test
-    void deveLancarClienteNaoEncontradoExceptionAoConsultarSimulacao() {
+    void deveLancarCustomerNaoEncontradoExceptionAoConsultarSimulacao() {
         assertThrows(
-            ClienteNaoEncontradoException.class,
+            CustomerNaoEncontradoException.class,
             () -> simulacaoService.findByCustomerId(1L, PageRequest.of(0, 10))
         );
     }
@@ -319,7 +319,7 @@ public class SimulacaoServiceTest {
     }
 
     @Test
-    void deveLancarIllegalArgumentExceptionAoConsultarSimulacaoComClienteIdNull() {
+    void deveLancarIllegalArgumentExceptionAoConsultarSimulacaoComCustomerIdNull() {
         assertThrows(
             IllegalArgumentException.class,
             () -> simulacaoService.findByCustomerId(null, PageRequest.of(0, 10))

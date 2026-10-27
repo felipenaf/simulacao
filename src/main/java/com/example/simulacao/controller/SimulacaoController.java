@@ -2,7 +2,7 @@ package com.example.simulacao.controller;
 
 import com.example.simulacao.dto.*;
 import com.example.simulacao.enums.FormatoExportacao;
-import com.example.simulacao.exception.ClienteNaoEncontradoException;
+import com.example.simulacao.exception.CustomerNaoEncontradoException;
 import com.example.simulacao.service.ExportadorSimulacao;
 import com.example.simulacao.service.ExportadorSimulacaoFactory;
 import com.example.simulacao.service.SimulacaoService;
@@ -54,7 +54,7 @@ public class SimulacaoController {
             return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
-        } catch (ClienteNaoEncontradoException e) {
+        } catch (CustomerNaoEncontradoException e) {
             log.error(e.getMessage());
 
             return ResponseEntity
@@ -96,7 +96,7 @@ public class SimulacaoController {
                 case JSON -> ResponseEntity.ok(PageResponse.from(simulacoes));
                 case CSV, TXT -> montaRespostaExportacao(simulacoes, clienteId, formato);
             };
-        } catch (ClienteNaoEncontradoException e) {
+        } catch (CustomerNaoEncontradoException e) {
             log.error(e.getMessage());
 
             return ResponseEntity

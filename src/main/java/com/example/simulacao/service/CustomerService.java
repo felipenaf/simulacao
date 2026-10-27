@@ -1,21 +1,21 @@
 package com.example.simulacao.service;
 
-import com.example.simulacao.dto.ClientePatchRequest;
-import com.example.simulacao.dto.ClienteRequest;
-import com.example.simulacao.dto.ClienteResponse;
+import com.example.simulacao.dto.CustomerPatchRequest;
+import com.example.simulacao.dto.CustomerRequest;
+import com.example.simulacao.dto.CustomerResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CustomerService {
-    ClienteResponse save(ClienteRequest request);
+    CustomerResponse save(CustomerRequest request);
 
-    ClienteResponse findById(Long id);
+    CustomerResponse findById(Long id);
 
-    Page<ClienteResponse> findAll(Pageable pageable);
+    Page<CustomerResponse> findAll(Pageable pageable);
 
-    ClienteResponse patch(Long id, ClientePatchRequest request);
+    CustomerResponse patch(Long id, CustomerPatchRequest request);
 
-    ClienteResponse put(Long id, ClienteRequest request);
+    CustomerResponse put(Long id, CustomerRequest request);
 
     void delete(Long id);
 }

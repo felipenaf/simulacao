@@ -3,7 +3,7 @@ package com.example.simulacao.dto;
 import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Estado;
 
-public record ClienteResponse(
+public record CustomerResponse(
     String cpf,
     String nome,
     EnderecoResponse endereco
@@ -17,9 +17,9 @@ public record ClienteResponse(
         Estado estado
     ) {}
 
-    public static ClienteResponse from(Customer customer) {
-        ClienteResponse.EnderecoResponse enderecoResponse =
-            new ClienteResponse.EnderecoResponse(
+    public static CustomerResponse from(Customer customer) {
+        CustomerResponse.EnderecoResponse enderecoResponse =
+            new CustomerResponse.EnderecoResponse(
                 customer.getEndereco().getRua(),
                 customer.getEndereco().getNumero(),
                 customer.getEndereco().getBairro(),
@@ -28,7 +28,7 @@ public record ClienteResponse(
                 customer.getEndereco().getEstado()
             );
 
-        return new ClienteResponse(
+        return new CustomerResponse(
             customer.getCpf(),
             customer.getNome(),
             enderecoResponse

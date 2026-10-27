@@ -1,14 +1,14 @@
 package com.example.simulacao.service;
 
-import com.example.simulacao.dto.ClientePatchRequest;
-import com.example.simulacao.dto.ClienteRequest;
-import com.example.simulacao.dto.ClienteResponse;
+import com.example.simulacao.dto.CustomerPatchRequest;
+import com.example.simulacao.dto.CustomerRequest;
+import com.example.simulacao.dto.CustomerResponse;
 import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Endereco;
 import com.example.simulacao.entity.Estado;
 import com.example.simulacao.entity.Simulacao;
-import com.example.simulacao.exception.ClienteNaoEncontradoException;
-import com.example.simulacao.exception.ClientePossuiSimulacoesException;
+import com.example.simulacao.exception.CustomerNaoEncontradoException;
+import com.example.simulacao.exception.CustomerPossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.repository.CustomerRepository;
 import com.example.simulacao.repository.SimulacaoRepository;
@@ -45,8 +45,8 @@ public class CustomerServiceTest {
     @Captor
     private ArgumentCaptor<Customer> clienteCaptor;
 
-    private ClienteRequest criarRequest() {
-        ClienteRequest.EnderecoRequest endereco = new ClienteRequest.EnderecoRequest(
+    private CustomerRequest criarRequest() {
+        CustomerRequest.EnderecoRequest endereco = new CustomerRequest.EnderecoRequest(
             "Rua das Flores",
             123,
             "Centro",
@@ -55,10 +55,10 @@ public class CustomerServiceTest {
             Estado.SP
         );
 
-        return new ClienteRequest("12345678900", "Felipe Ferreira", endereco);
+        return new CustomerRequest("12345678900", "Felipe Ferreira", endereco);
     }
 
-    private Customer criarCliente(Long id) {
+    private Customer criarCustomer(Long id) {
         Endereco endereco = Endereco.builder()
             .rua("Rua Antiga")
             .numero(10)
@@ -77,18 +77,18 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveSalvarCliente() {
-        ClienteRequest request = criarRequest();
+    void deveSalvarCustomer() {
+        CustomerRequest request = criarRequest();
 
         when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.empty());
 
-        ClienteResponse response = clienteService.save(request);
+        CustomerResponse response = clienteService.save(request);
 
         assertNotNull(response);
 
-        // Aqui está sendo interceptado o objeto Cliente que é criado dentro
-        // da função save do ClienteService e enviado ao repository e não tenho acesso.
+        // Aqui está sendo interceptado o objeto Customer que é criado dentro
+        // da função save do CustomerService e enviado ao repository e não tenho acesso.
         verify(customerRepository).save(clienteCaptor.capture());
 
         // Garante que apenas uma chamada foi feita
@@ -108,11 +108,11 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveRetornarResponseCorretoAoSalvarCliente() {
-        ClienteRequest request = criarRequest();
+    void deveRetornarResponseCorretoAoSalvarCustomer() {
+        CustomerRequest request = criarRequest();
         when(customerRepository.findByCpf(request.cpf())).thenReturn(Optional.empty());
 
-        ClienteResponse response = clienteService.save(request);
+        CustomerResponse response = clienteService.save(request);
 
         assertEquals(request.cpf(), response.cpf());
         assertEquals(request.nome(), response.nome());
@@ -125,8 +125,8 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveLancarCpfJaCadastradoExceptionAoSalvarCliente() {
-        ClienteRequest request = criarRequest();
+    void deveLancarCpfJaCadastradoExceptionAoSalvarCustomer() {
+        CustomerRequest request = criarRequest();
 
         when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.of(Customer.builder().cpf(request.cpf()).build()));
@@ -142,7 +142,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveLancarIllegalArgumentExceptionAoSalvarClienteComRequestNull() {
+    void deveLancarIllegalArgumentExceptionAoSalvarCustomerComRequestNull() {
         assertThrows(
             IllegalArgumentException.class,
             () -> clienteService.save(null)
@@ -150,13 +150,13 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveConsultarCliente() {
-        Customer customer = criarCliente(1L);
+    void deveConsultarCustomer() {
+        Customer customer = criarCustomer(1L);
 
         when(customerRepository.findById(1L))
             .thenReturn(Optional.of(customer));
 
-        ClienteResponse response = clienteService.findById(1L);
+        CustomerResponse response = clienteService.findById(1L);
 
         verify(customerRepository).findById(1L);
 
@@ -172,11 +172,11 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveLancarClienteNaoEncontradoExceptionAoConsultarCliente() {
+    void deveLancarCustomerNaoEncontradoExceptionAoConsultarCustomer() {
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(
-            ClienteNaoEncontradoException.class,
+            CustomerNaoEncontradoException.class,
             () -> clienteService.findById(1L)
         );
 
@@ -184,7 +184,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveLancarIllegalArgumentExceptionAoConsultarClienteComIdNull() {
+    void deveLancarIllegalArgumentExceptionAoConsultarCustomerComIdNull() {
         assertThrows(
             IllegalArgumentException.class,
             () -> clienteService.findById(null)
@@ -192,14 +192,14 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveConsultarClientes() {
+    void deveConsultarCustomers() {
         List<Customer> customers = IntStream.range(0, 2)
-            .mapToObj(i -> criarCliente((long) i)).toList();
+            .mapToObj(i -> criarCustomer((long) i)).toList();
 
         when(customerRepository.findAll(PageRequest.of(0, 2)))
             .thenReturn(new PageImpl<>(customers));
 
-        Page<ClienteResponse> response = clienteService.findAll(PageRequest.of(0, 2));
+        Page<CustomerResponse> response = clienteService.findAll(PageRequest.of(0, 2));
 
         verify(customerRepository).findAll(PageRequest.of(0, 2));
 
@@ -225,7 +225,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveLancarIllegalArgumentExceptionAoConsultarClientesComPageableNull() {
+    void deveLancarIllegalArgumentExceptionAoConsultarCustomersComPageableNull() {
         assertThrows(
             IllegalArgumentException.class,
             () -> clienteService.findAll(null)
@@ -234,7 +234,7 @@ public class CustomerServiceTest {
 
     @Test
     void deveLancarIllegalArgumentExceptionAoAtualizarComIdNullPatch() {
-        ClientePatchRequest request = new ClientePatchRequest(null, "Novo Nome", null);
+        CustomerPatchRequest request = new CustomerPatchRequest(null, "Novo Nome", null);
 
         assertThrows(
             IllegalArgumentException.class,
@@ -255,21 +255,21 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveLancarClienteNaoEncontradoExceptionAoAtualizarPatch() {
+    void deveLancarCustomerNaoEncontradoExceptionAoAtualizarPatch() {
         when(customerRepository.findById(99L))
             .thenReturn(Optional.empty());
 
-        ClientePatchRequest request = new ClientePatchRequest(null, "Novo Nome", null);
+        CustomerPatchRequest request = new CustomerPatchRequest(null, "Novo Nome", null);
 
         assertThrows(
-            ClienteNaoEncontradoException.class,
+            CustomerNaoEncontradoException.class,
             () -> clienteService.patch(99L, request)
         );
     }
 
     @Test
     void deveAtualizarTodosCamposPatch() {
-        Customer existente = criarCliente(1L);
+        Customer existente = criarCustomer(1L);
 
         when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
@@ -277,13 +277,13 @@ public class CustomerServiceTest {
         when(customerRepository.findByCpf("12345678900"))
             .thenReturn(Optional.empty());
 
-        ClientePatchRequest request = new ClientePatchRequest(
+        CustomerPatchRequest request = new CustomerPatchRequest(
             "12345678900",
             "João da Silva",
-            new ClientePatchRequest.EnderecoRequest("Rua das Flores", 123, "Centro", "13000-000", "Campinas", Estado.SP)
+            new CustomerPatchRequest.EnderecoRequest("Rua das Flores", 123, "Centro", "13000-000", "Campinas", Estado.SP)
         );
 
-        ClienteResponse response = clienteService.patch(1L, request);
+        CustomerResponse response = clienteService.patch(1L, request);
 
         assertNotNull(response);
 
@@ -302,12 +302,12 @@ public class CustomerServiceTest {
 
     @Test
     void deveAtualizarApenasNomePatch() {
-        Customer existente = criarCliente(1L);
+        Customer existente = criarCustomer(1L);
 
         when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
-        ClientePatchRequest request = new ClientePatchRequest(null, "Novo Nome", null);
+        CustomerPatchRequest request = new CustomerPatchRequest(null, "Novo Nome", null);
 
         clienteService.patch(1L, request);
 
@@ -319,12 +319,12 @@ public class CustomerServiceTest {
 
     @Test
     void deveManterValoresAntigosQuandoTodosCamposNulosAoAtualizar() {
-        Customer existente = criarCliente(1L);
+        Customer existente = criarCustomer(1L);
 
         when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
-        clienteService.patch(1L, new ClientePatchRequest(null, null, null));
+        clienteService.patch(1L, new CustomerPatchRequest(null, null, null));
 
         assertEquals("11111111111", existente.getCpf());
         assertEquals("Felipe Antigo", existente.getNome());
@@ -334,8 +334,8 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void devePermitirAtualizarApenasComMesmoCpfDoProprioClientePatch() {
-        Customer existente = criarCliente(1L);
+    void devePermitirAtualizarApenasComMesmoCpfDoProprioCustomerPatch() {
+        Customer existente = criarCustomer(1L);
 
         when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
@@ -343,9 +343,9 @@ public class CustomerServiceTest {
         when(customerRepository.findByCpf("11111111111"))
             .thenReturn(Optional.of(existente));
 
-        ClientePatchRequest request = new ClientePatchRequest("11111111111", null, null);
+        CustomerPatchRequest request = new CustomerPatchRequest("11111111111", null, null);
 
-        ClienteResponse response = clienteService.patch(1L, request);
+        CustomerResponse response = clienteService.patch(1L, request);
 
         assertNotNull(response);
         assertEquals("11111111111", existente.getCpf());
@@ -353,15 +353,15 @@ public class CustomerServiceTest {
 
     @Test
     void deveLancarCpfJaCadastradoExceptionAoAtualizarPatch() {
-        Customer existente = criarCliente(1L);
+        Customer existente = criarCustomer(1L);
         when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
-        Customer outro = criarCliente(2L);
+        Customer outro = criarCustomer(2L);
         when(customerRepository.findByCpf("99999999999"))
             .thenReturn(Optional.of(outro));
 
-        ClientePatchRequest request = new ClientePatchRequest("99999999999", "Novo Nome", null);
+        CustomerPatchRequest request = new CustomerPatchRequest("99999999999", "Novo Nome", null);
 
         assertThrows(
             CpfJaCadastradoException.class,
@@ -375,8 +375,8 @@ public class CustomerServiceTest {
 
     @Test
     void deveAtualizarPut() {
-        Customer existente = criarCliente(1L);
-        ClienteRequest request = criarRequest();
+        Customer existente = criarCustomer(1L);
+        CustomerRequest request = criarRequest();
 
         when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
@@ -384,7 +384,7 @@ public class CustomerServiceTest {
         when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.empty());
 
-        ClienteResponse response = clienteService.put(1L, request);
+        CustomerResponse response = clienteService.put(1L, request);
 
         assertNotNull(response);
         assertEquals(request.cpf(), existente.getCpf());
@@ -402,7 +402,7 @@ public class CustomerServiceTest {
 
     @Test
     void deveLancarIllegalArgumentExceptionAoAtualizarQuandoIdNullPut() {
-        ClienteRequest request = criarRequest();
+        CustomerRequest request = criarRequest();
 
         assertThrows(
             IllegalArgumentException.class,
@@ -423,23 +423,23 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveLancarClienteNaoEncontradoExceptionAoAtualizarPut() {
+    void deveLancarCustomerNaoEncontradoExceptionAoAtualizarPut() {
         when(customerRepository.findById(99L))
             .thenReturn(Optional.empty());
 
-        ClienteRequest request = criarRequest();
+        CustomerRequest request = criarRequest();
 
         assertThrows(
-            ClienteNaoEncontradoException.class,
+            CustomerNaoEncontradoException.class,
             () -> clienteService.put(99L, request)
         );
     }
 
     @Test
-    void devePermitirAtualizarApenasComMesmoCpfDoProprioClientePut() {
-        Customer existente = criarCliente(1L);
+    void devePermitirAtualizarApenasComMesmoCpfDoProprioCustomerPut() {
+        Customer existente = criarCustomer(1L);
 
-        ClienteRequest request = new ClienteRequest(
+        CustomerRequest request = new CustomerRequest(
             "11111111112",
             "Novo Nome",
             criarRequest().endereco()
@@ -453,7 +453,7 @@ public class CustomerServiceTest {
         when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.of(existente));
 
-        ClienteResponse response = clienteService.put(1L, request);
+        CustomerResponse response = clienteService.put(1L, request);
 
         assertNotNull(response);
         assertEquals("Novo Nome", existente.getNome());
@@ -462,10 +462,10 @@ public class CustomerServiceTest {
 
     @Test
     void deveLancarCpfJaCadastradoExceptionAoAtualizarPut() {
-        Customer existente = criarCliente(1L);
-        Customer outro = criarCliente(2L);
+        Customer existente = criarCustomer(1L);
+        Customer outro = criarCustomer(2L);
 
-        ClienteRequest request = criarRequest();
+        CustomerRequest request = criarRequest();
         when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
 
@@ -483,8 +483,8 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveRemoverCliente() {
-        Customer existente = criarCliente(1L);
+    void deveRemoverCustomer() {
+        Customer existente = criarCustomer(1L);
 
         when(customerRepository.findById(1L))
             .thenReturn(Optional.of(existente));
@@ -508,12 +508,12 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveLancarClienteNaoEncontradoExceptionAoRemover() {
+    void deveLancarCustomerNaoEncontradoExceptionAoRemover() {
         when(customerRepository.findById(99L))
             .thenReturn(Optional.empty());
 
         assertThrows(
-            ClienteNaoEncontradoException.class,
+            CustomerNaoEncontradoException.class,
             () -> clienteService.delete(99L)
         );
 
@@ -524,8 +524,8 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveLancarClientePossuiSimulacoesExceptionAoRemover() {
-        Customer existente = criarCliente(1L);
+    void deveLancarCustomerPossuiSimulacoesExceptionAoRemover() {
+        Customer existente = criarCustomer(1L);
         // Poderia ser new Simualacao() ao invés de mock(Simulacao.class)
         Page<Simulacao> comSimulacao = new PageImpl<>(List.of(mock(Simulacao.class)));
 
@@ -536,7 +536,7 @@ public class CustomerServiceTest {
             .thenReturn(comSimulacao);
 
         assertThrows(
-            ClientePossuiSimulacoesException.class,
+            CustomerPossuiSimulacoesException.class,
             () -> clienteService.delete(1L)
         );
 
@@ -544,7 +544,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void deveCalcularNomesClientesParaCidadeEstado() {
+    void deveCalcularNomesCustomersParaCidadeEstado() {
         var cli1 = Customer.builder()
             .nome("Bruno Oliveira")
             .cpf("98765432100")
@@ -586,7 +586,7 @@ public class CustomerServiceTest {
 
         List<Customer> customers = List.of(cli1, cli2, cli3);
 
-        List<String> nomes = clienteService.calculaNomesClientesParaCidadeEstado(
+        List<String> nomes = clienteService.calculaNomesCustomersParaCidadeEstado(
             customers, "Belo Horizonte", Estado.MG.name()
         );
 

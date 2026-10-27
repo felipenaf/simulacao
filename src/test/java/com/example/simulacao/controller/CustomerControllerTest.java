@@ -1,11 +1,11 @@
 package com.example.simulacao.controller;
 
-import com.example.simulacao.dto.ClientePatchRequest;
-import com.example.simulacao.dto.ClienteRequest;
-import com.example.simulacao.dto.ClienteResponse;
+import com.example.simulacao.dto.CustomerPatchRequest;
+import com.example.simulacao.dto.CustomerRequest;
+import com.example.simulacao.dto.CustomerResponse;
 import com.example.simulacao.entity.Estado;
-import com.example.simulacao.exception.ClienteNaoEncontradoException;
-import com.example.simulacao.exception.ClientePossuiSimulacoesException;
+import com.example.simulacao.exception.CustomerNaoEncontradoException;
+import com.example.simulacao.exception.CustomerPossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
 import com.example.simulacao.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,11 +35,11 @@ public class CustomerControllerTest {
     private CustomerService customerService;
 
     @Test
-    void deveListarCliente() throws Exception {
-        ClienteResponse response = new ClienteResponse(
+    void deveListarCustomer() throws Exception {
+        CustomerResponse response = new CustomerResponse(
             "12345678908",
             "Felipe Ferreira",
-            new ClienteResponse.EnderecoResponse(
+            new CustomerResponse.EnderecoResponse(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -62,9 +62,9 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveRetornarNotFoundAoListarCliente() throws Exception {
+    void deveRetornarNotFoundAoListarCustomer() throws Exception {
         when(customerService.findById(1L))
-            .thenThrow(ClienteNaoEncontradoException.class);
+            .thenThrow(CustomerNaoEncontradoException.class);
 
         mockMvc.perform(get("/customers/1"))
             .andExpect(status().isNotFound());
@@ -73,11 +73,11 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveListarClientes() throws Exception {
-        ClienteResponse response = new ClienteResponse(
+    void deveListarCustomers() throws Exception {
+        CustomerResponse response = new CustomerResponse(
             "12345678908",
             "Felipe Ferreira",
-            new ClienteResponse.EnderecoResponse(
+            new CustomerResponse.EnderecoResponse(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -98,11 +98,11 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveCadastrarCliente() throws Exception {
-        ClienteResponse response = new ClienteResponse(
+    void deveCadastrarCustomer() throws Exception {
+        CustomerResponse response = new CustomerResponse(
             "12345678908",
             "Felipe Ferreira",
-            new ClienteResponse.EnderecoResponse(
+            new CustomerResponse.EnderecoResponse(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -112,10 +112,10 @@ public class CustomerControllerTest {
             )
         );
 
-        ClienteRequest request = new ClienteRequest(
+        CustomerRequest request = new CustomerRequest(
             "12345678908",
             "Felipe Ferreira",
-            new ClienteRequest.EnderecoRequest(
+            new CustomerRequest.EnderecoRequest(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -125,7 +125,7 @@ public class CustomerControllerTest {
             )
         );
 
-        when(customerService.save(any(ClienteRequest.class)))
+        when(customerService.save(any(CustomerRequest.class)))
             .thenReturn(response);
 
         mockMvc.perform(
@@ -140,11 +140,11 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveRetornarConflictQuandoCpfJaExisteAoCadastrarCliente() throws Exception {
-        ClienteRequest request = new ClienteRequest(
+    void deveRetornarConflictQuandoCpfJaExisteAoCadastrarCustomer() throws Exception {
+        CustomerRequest request = new CustomerRequest(
             "12345678908",
             "Felipe Ferreira",
-            new ClienteRequest.EnderecoRequest(
+            new CustomerRequest.EnderecoRequest(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -154,7 +154,7 @@ public class CustomerControllerTest {
             )
         );
 
-        when(customerService.save(any(ClienteRequest.class)))
+        when(customerService.save(any(CustomerRequest.class)))
             .thenThrow(CpfJaCadastradoException.class);
 
         mockMvc.perform(
@@ -168,11 +168,11 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveAtualizarClientePatch() throws Exception {
-        ClienteResponse response = new ClienteResponse(
+    void deveAtualizarCustomerPatch() throws Exception {
+        CustomerResponse response = new CustomerResponse(
             "12345678908",
             "Felipe Teste",
-            new ClienteResponse.EnderecoResponse(
+            new CustomerResponse.EnderecoResponse(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -182,13 +182,13 @@ public class CustomerControllerTest {
             )
         );
 
-        ClientePatchRequest request = new ClientePatchRequest(
+        CustomerPatchRequest request = new CustomerPatchRequest(
             null,
             "Felipe Teste",
             null
         );
 
-        when(customerService.patch(eq(1L), any(ClientePatchRequest.class)))
+        when(customerService.patch(eq(1L), any(CustomerPatchRequest.class)))
             .thenReturn(response);
 
         mockMvc.perform(
@@ -204,15 +204,15 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveRetornarNotFoundAoAtualizarClientePatch() throws Exception {
-        ClientePatchRequest request = new ClientePatchRequest(
+    void deveRetornarNotFoundAoAtualizarCustomerPatch() throws Exception {
+        CustomerPatchRequest request = new CustomerPatchRequest(
             null,
             "Felipe Teste",
             null
         );
 
-        when(customerService.patch(eq(1L), any(ClientePatchRequest.class)))
-            .thenThrow(ClienteNaoEncontradoException.class);
+        when(customerService.patch(eq(1L), any(CustomerPatchRequest.class)))
+            .thenThrow(CustomerNaoEncontradoException.class);
 
         mockMvc.perform(
             patch("/customers/1")
@@ -226,14 +226,14 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveRetornarConflictAoAtualizarClientePatch() throws Exception {
-        ClientePatchRequest request = new ClientePatchRequest(
+    void deveRetornarConflictAoAtualizarCustomerPatch() throws Exception {
+        CustomerPatchRequest request = new CustomerPatchRequest(
             null,
             "Felipe Teste",
             null
         );
 
-        when(customerService.patch(eq(1L), any(ClientePatchRequest.class)))
+        when(customerService.patch(eq(1L), any(CustomerPatchRequest.class)))
             .thenThrow(CpfJaCadastradoException.class);
 
         mockMvc.perform(
@@ -248,11 +248,11 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveAtualizarClientePut() throws Exception {
-        ClienteResponse response = new ClienteResponse(
+    void deveAtualizarCustomerPut() throws Exception {
+        CustomerResponse response = new CustomerResponse(
             "12345678908",
             "Felipe Ferreira",
-            new ClienteResponse.EnderecoResponse(
+            new CustomerResponse.EnderecoResponse(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -262,10 +262,10 @@ public class CustomerControllerTest {
             )
         );
 
-        ClienteRequest request = new ClienteRequest(
+        CustomerRequest request = new CustomerRequest(
             "12345678908",
             "Felipe Ferreira",
-            new ClienteRequest.EnderecoRequest(
+            new CustomerRequest.EnderecoRequest(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -275,7 +275,7 @@ public class CustomerControllerTest {
             )
         );
 
-        when(customerService.put(eq(1L), any(ClienteRequest.class)))
+        when(customerService.put(eq(1L), any(CustomerRequest.class)))
             .thenReturn(response);
 
         mockMvc.perform(
@@ -290,11 +290,11 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveRetornarNotFoundAoAtualizarClientePut() throws Exception {
-        ClienteRequest request = new ClienteRequest(
+    void deveRetornarNotFoundAoAtualizarCustomerPut() throws Exception {
+        CustomerRequest request = new CustomerRequest(
             "12345678908",
             "Felipe Ferreira",
-            new ClienteRequest.EnderecoRequest(
+            new CustomerRequest.EnderecoRequest(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -304,8 +304,8 @@ public class CustomerControllerTest {
             )
         );
 
-        when(customerService.put(eq(1L), any(ClienteRequest.class)))
-            .thenThrow(ClienteNaoEncontradoException.class);
+        when(customerService.put(eq(1L), any(CustomerRequest.class)))
+            .thenThrow(CustomerNaoEncontradoException.class);
 
         mockMvc.perform(
             put("/customers/1")
@@ -319,11 +319,11 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveRetornarConflictAoAtualizarClientePut() throws Exception {
-        ClienteRequest request = new ClienteRequest(
+    void deveRetornarConflictAoAtualizarCustomerPut() throws Exception {
+        CustomerRequest request = new CustomerRequest(
             "12345678908",
             "Felipe Ferreira",
-            new ClienteRequest.EnderecoRequest(
+            new CustomerRequest.EnderecoRequest(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -333,7 +333,7 @@ public class CustomerControllerTest {
             )
         );
 
-        when(customerService.put(eq(1L), any(ClienteRequest.class)))
+        when(customerService.put(eq(1L), any(CustomerRequest.class)))
             .thenThrow(CpfJaCadastradoException.class);
 
         mockMvc.perform(
@@ -348,7 +348,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveDeletarCliente() throws Exception {
+    void deveDeletarCustomer() throws Exception {
         doNothing()
             .when(customerService).delete(1L);
 
@@ -359,8 +359,8 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveRetornarConflictAoDeletarCliente() throws Exception {
-        doThrow(ClientePossuiSimulacoesException.class)
+    void deveRetornarConflictAoDeletarCustomer() throws Exception {
+        doThrow(CustomerPossuiSimulacoesException.class)
             .when(customerService).delete(1L);
 
         mockMvc.perform(delete("/customers/1"))
@@ -370,8 +370,8 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void deveRetornarNotFoundAoDeletarCliente() throws Exception {
-        doThrow(ClienteNaoEncontradoException.class)
+    void deveRetornarNotFoundAoDeletarCustomer() throws Exception {
+        doThrow(CustomerNaoEncontradoException.class)
             .when(customerService).delete(1L);
 
         mockMvc.perform(delete("/customers/1"))

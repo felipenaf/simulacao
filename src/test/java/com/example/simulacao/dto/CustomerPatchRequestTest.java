@@ -26,7 +26,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRemoverPontosETracosDoCpf() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             "123.456.789-03",
             null,
             null
@@ -37,7 +37,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveManterCpfSemFormatacao() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             "12345678903",
             null,
             null
@@ -48,7 +48,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void devePreservarCpfNulo() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             null,
             null,
             null
@@ -59,7 +59,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRemoverEspacosDoNome() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             null,
             "  Felipe Ferreira  ",
             null
@@ -70,7 +70,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void devePreservarNomeNulo() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             null,
             null,
             null
@@ -81,7 +81,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRemoverEspacosDosCamposDoEndereco() {
-        var endereco = new ClientePatchRequest.EnderecoRequest(
+        var endereco = new CustomerPatchRequest.EnderecoRequest(
             "  Rua das Flores  ",
             null,
             "  Centro  ",
@@ -98,7 +98,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRemoverHifenDoCep() {
-        var endereco = new ClientePatchRequest.EnderecoRequest(
+        var endereco = new CustomerPatchRequest.EnderecoRequest(
             null,
             null,
             null,
@@ -112,7 +112,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void devePreservarCamposDoEnderecoNulos() {
-        var endereco = new ClientePatchRequest.EnderecoRequest(
+        var endereco = new CustomerPatchRequest.EnderecoRequest(
             null,
             null,
             null,
@@ -131,7 +131,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveAceitarCpfNulo() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             null,
             null,
             null
@@ -142,7 +142,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRejeitarCpfComMenosDe11Caracteres() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             "1234567890",
             null,
             null
@@ -157,7 +157,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRejeitarCpfComMaisDe11Caracteres() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             "123456789012",
             null,
             null
@@ -172,7 +172,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveAceitarNomeNulo() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             null,
             null,
             null
@@ -183,7 +183,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRejeitarNomeComMaisDe150Caracteres() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             null,
             "A".repeat(151),
             null
@@ -198,7 +198,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveAceitarNomeEmBranco() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             null,
             "   ",
             null
@@ -209,7 +209,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRejeitarRuaComMaisDe150Caracteres() {
-        var endereco = new ClientePatchRequest.EnderecoRequest(
+        var endereco = new CustomerPatchRequest.EnderecoRequest(
             "A".repeat(151),
             null,
             null,
@@ -219,7 +219,7 @@ class CustomerPatchRequestTest {
         );
 
         var violations = validator.validate(
-            new ClientePatchRequest(null, null, endereco)
+            new CustomerPatchRequest(null, null, endereco)
         );
 
         assertTrue(violations.stream().anyMatch(
@@ -229,7 +229,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRejeitarNumeroNaoPositivo() {
-        var endereco = new ClientePatchRequest.EnderecoRequest(
+        var endereco = new CustomerPatchRequest.EnderecoRequest(
             null,
             0,
             null,
@@ -239,7 +239,7 @@ class CustomerPatchRequestTest {
         );
 
         var violations = validator.validate(
-            new ClientePatchRequest(null, null, endereco)
+            new CustomerPatchRequest(null, null, endereco)
         );
 
         assertTrue(violations.stream().anyMatch(
@@ -249,7 +249,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveAceitarNumeroNulo() {
-        var endereco = new ClientePatchRequest.EnderecoRequest(
+        var endereco = new CustomerPatchRequest.EnderecoRequest(
             null,
             null,
             null,
@@ -259,7 +259,7 @@ class CustomerPatchRequestTest {
         );
 
         var violations = validator.validate(
-            new ClientePatchRequest(null, null, endereco)
+            new CustomerPatchRequest(null, null, endereco)
         );
 
         assertTrue(violations.isEmpty());
@@ -267,7 +267,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRejeitarBairroComMaisDe100Caracteres() {
-        var endereco = new ClientePatchRequest.EnderecoRequest(
+        var endereco = new CustomerPatchRequest.EnderecoRequest(
             null,
             null,
             "A".repeat(101),
@@ -277,7 +277,7 @@ class CustomerPatchRequestTest {
         );
 
         var violations = validator.validate(
-            new ClientePatchRequest(null, null, endereco)
+            new CustomerPatchRequest(null, null, endereco)
         );
 
         assertTrue(violations.stream().anyMatch(
@@ -287,7 +287,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRejeitarCepComTamanhoIncorreto() {
-        var endereco = new ClientePatchRequest.EnderecoRequest(
+        var endereco = new CustomerPatchRequest.EnderecoRequest(
             null,
             null,
             null,
@@ -297,7 +297,7 @@ class CustomerPatchRequestTest {
         );
 
         var violations = validator.validate(
-            new ClientePatchRequest(null, null, endereco)
+            new CustomerPatchRequest(null, null, endereco)
         );
 
         assertTrue(violations.stream().anyMatch(
@@ -307,7 +307,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveRejeitarCidadeComMaisDe100Caracteres() {
-        var endereco = new ClientePatchRequest.EnderecoRequest(
+        var endereco = new CustomerPatchRequest.EnderecoRequest(
             null,
             null,
             null,
@@ -317,7 +317,7 @@ class CustomerPatchRequestTest {
         );
 
         var violations = validator.validate(
-            new ClientePatchRequest(null, null, endereco)
+            new CustomerPatchRequest(null, null, endereco)
         );
 
         assertTrue(violations.stream().anyMatch(
@@ -327,7 +327,7 @@ class CustomerPatchRequestTest {
 
     @Test
     void deveAceitarRequisicaoPatchVazia() {
-        var request = new ClientePatchRequest(
+        var request = new CustomerPatchRequest(
             null,
             null,
             null
