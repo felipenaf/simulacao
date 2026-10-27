@@ -22,7 +22,7 @@ public class Cliente {
     @Column(nullable = false, length = 150)
     private String nome;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "endereco_id", nullable = false, unique = true)
     private Endereco endereco;
 }
