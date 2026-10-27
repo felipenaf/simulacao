@@ -542,4 +542,55 @@ public class ClienteServiceTest {
 
         verify(clienteRepository, never()).delete(any(Cliente.class));
     }
+
+    @Test
+    void deveCalcularNomesClientesParaCidadeEstado() {
+        var cli1 = Cliente.builder()
+            .nome("Bruno Oliveira")
+            .cpf("98765432100")
+            .endereco(Endereco.builder()
+                .rua("Rua da Bahia")
+                .numero(1148)
+                .bairro("Centro")
+                .cep("30160011")
+                .cidade("Belo Horizonte")
+                .estado(Estado.MG)
+                .build())
+            .build();
+
+        var cli2 = Cliente.builder()
+            .nome("Ana Souza")
+            .cpf("12345678909")
+            .endereco(Endereco.builder()
+                .rua("Avenida Paulista")
+                .numero(1578)
+                .bairro("Bela Vista")
+                .cep("01310200")
+                .cidade("São Paulo")
+                .estado(Estado.SP)
+                .build())
+            .build();
+
+        var cli3 = Cliente.builder()
+            .nome("Carla Mendes")
+            .cpf("45678912311")
+            .endereco(Endereco.builder()
+                .rua("Rua Voluntários da Pátria")
+                .numero(45)
+                .bairro("Botafogo")
+                .cep("22270000")
+                .cidade("Rio de Janeiro")
+                .estado(Estado.RJ)
+                .build())
+            .build();
+
+        List<Cliente> clientes = List.of(cli1, cli2, cli3);
+
+        List<String> nomes = clienteService.calculaNomesClientesParaCidadeEstado(
+            clientes, "Belo Horizonte", Estado.MG.name()
+        );
+
+        assertEquals(1, nomes.size());
+        assertEquals("Bruno Oliveira", nomes.getFirst());
+    }
 }

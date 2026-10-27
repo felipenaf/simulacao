@@ -5,6 +5,7 @@ import com.example.simulacao.dto.ClienteRequest;
 import com.example.simulacao.dto.ClienteResponse;
 import com.example.simulacao.entity.Cliente;
 import com.example.simulacao.entity.Endereco;
+import com.example.simulacao.entity.Estado;
 import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.exception.ClientePossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -205,5 +208,30 @@ public class ClienteServiceImpl implements ClienteService {
         }
 
         clienteRepository.delete(clienteExistente);
+    }
+
+    /**
+     * TODO: Pass this to Repository
+     * Calcula uma lista com os nomes dos clientes que moram em uma determinada cidade e estado.
+     *
+     * @param clientes lista dos clientes usados
+    como base para o cálculo
+     * @param cidade cidade dos clientes a serem
+    recuperados
+     * @param estado estado da cidade dos clientes
+    a serem recuperados
+     * @return Lista com os nomes dos clientes
+    da lista fornecida que moram na cidade e estado fornecida.
+     */
+    public List<String> calculaNomesClientesParaCidadeEstado(
+        List<Cliente> clientes,
+        String cidade,
+        String estado
+    ) {
+        return clientes.stream()
+            .filter(cliente -> cliente.getEndereco().getCidade().equals(cidade))
+            .filter(cliente -> cliente.getEndereco().getEstado().equals(Estado.valueOf(estado)))
+            .map(Cliente::getNome)
+            .toList();
     }
 }

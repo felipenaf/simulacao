@@ -8,10 +8,13 @@ import com.example.simulacao.exception.ClienteNaoEncontradoException;
 import com.example.simulacao.repository.ClienteRepository;
 import com.example.simulacao.repository.SimulacaoRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -86,5 +89,16 @@ public class SimulacaoServiceImpl implements SimulacaoService {
         return simulacaoRepository
             .findByCliente(cliente, pageable)
             .map(SimulacaoResponse::from);
+    }
+
+    // TODO
+    //Crie um metodo que calcule a primeira parcela de uma simulação com as seguintes informações:
+    //Data de vencimento: 1 mês após a data da simulação
+    //Valor de amortização: valor solicitado ÷ quantidade de meses
+    //Valor de juros: valor solicitado * taxa de juros
+    //Valor total da parcela: valor de amortização + valor de juros
+    //Saldo devedor: valor solicitado − valor de amortização
+    public ParcelaSimulacao calculaParcela(Simulacao simulacao) {
+        return null;
     }
 }
