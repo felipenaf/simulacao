@@ -55,6 +55,7 @@ public class CustomerControllerTest {
         mockMvc.perform(get("/customers/1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.cpf").value("12345678908"))
+            .andExpect(jsonPath("$.name").value("Felipe Ferreira"))
             .andExpect(content().contentType("application/json"))
         ;
 
@@ -92,7 +93,8 @@ public class CustomerControllerTest {
 
         mockMvc.perform(get("/customers"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content[0].cpf").value("12345678908"));
+            .andExpect(jsonPath("$.content[0].cpf").value("12345678908"))
+            .andExpect(jsonPath("$.content[0].name").value("Felipe Ferreira"));
 
         verify(customerService).findAll(PageRequest.of(0, 10));
     }
@@ -129,12 +131,13 @@ public class CustomerControllerTest {
             .thenReturn(response);
 
         mockMvc.perform(
-                post("/customers")
-                    .content(new ObjectMapper().writeValueAsString(request))
-                    .contentType(MediaType.APPLICATION_JSON)
-            )
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.cpf").value("12345678908"));
+            post("/customers")
+                .content(new ObjectMapper().writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.cpf").value("12345678908"))
+        .andExpect(jsonPath("$.name").value("Felipe Ferreira"));
 
         verify(customerService, times(1)).save(request);
     }
@@ -161,8 +164,8 @@ public class CustomerControllerTest {
             post("/customers")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
-            )
-            .andExpect(status().isConflict());
+        )
+        .andExpect(status().isConflict());
 
         verify(customerService, times(1)).save(request);
     }
@@ -195,10 +198,9 @@ public class CustomerControllerTest {
             patch("/customers/1")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
-            )
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("Felipe Teste"))
-        ;
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name").value("Felipe Teste"));
 
         verify(customerService, times(1)).patch(1L, request);
     }
@@ -218,9 +220,8 @@ public class CustomerControllerTest {
             patch("/customers/1")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
-            )
-            .andExpect(status().isNotFound())
-        ;
+        )
+        .andExpect(status().isNotFound());
 
         verify(customerService, times(1)).patch(1L, request);
     }
@@ -240,9 +241,8 @@ public class CustomerControllerTest {
             patch("/customers/1")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
-            )
-            .andExpect(status().isConflict())
-        ;
+        )
+        .andExpect(status().isConflict());
 
         verify(customerService, times(1)).patch(1L, request);
     }
@@ -279,12 +279,12 @@ public class CustomerControllerTest {
             .thenReturn(response);
 
         mockMvc.perform(
-                put("/customers/1")
-                    .content(new ObjectMapper().writeValueAsString(request))
-                    .contentType(MediaType.APPLICATION_JSON)
-            )
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.cpf").value("12345678908"));
+            put("/customers/1")
+                .content(new ObjectMapper().writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.cpf").value("12345678908"));
 
         verify(customerService, times(1)).put(1L, request);
     }
@@ -311,9 +311,8 @@ public class CustomerControllerTest {
             put("/customers/1")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
-            )
-            .andExpect(status().isNotFound())
-        ;
+        )
+        .andExpect(status().isNotFound());
 
         verify(customerService, times(1)).put(1L, request);
     }
@@ -340,9 +339,8 @@ public class CustomerControllerTest {
             put("/customers/1")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
-            )
-            .andExpect(status().isConflict())
-        ;
+        )
+        .andExpect(status().isConflict());
 
         verify(customerService, times(1)).put(1L, request);
     }
