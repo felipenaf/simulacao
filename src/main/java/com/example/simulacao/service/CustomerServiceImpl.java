@@ -4,7 +4,7 @@ import com.example.simulacao.dto.CustomerPatchRequest;
 import com.example.simulacao.dto.CustomerRequest;
 import com.example.simulacao.dto.CustomerResponse;
 import com.example.simulacao.entity.Customer;
-import com.example.simulacao.entity.Endereco;
+import com.example.simulacao.entity.Address;
 import com.example.simulacao.entity.Estado;
 import com.example.simulacao.exception.CustomerNaoEncontradoException;
 import com.example.simulacao.exception.CustomerPossuiSimulacoesException;
@@ -45,21 +45,21 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CpfJaCadastradoException("CPF já cadastrado");
         }
 
-        Endereco endereco = Endereco.builder()
-            .rua(request.endereco().rua())
-            .numero(request.endereco().numero())
-            .bairro(request.endereco().bairro())
-            .cep(request.endereco().cep())
-            .cidade(request.endereco().cidade())
-            .estado(request.endereco().estado())
+        Address address = Address.builder()
+            .rua(request.address().rua())
+            .numero(request.address().numero())
+            .bairro(request.address().bairro())
+            .cep(request.address().cep())
+            .cidade(request.address().cidade())
+            .estado(request.address().estado())
             .build();
 
-        log.info(endereco.toString());
+        log.info(address.toString());
 
         Customer customer = Customer.builder()
             .cpf(request.cpf())
             .name(request.name())
-            .endereco(endereco)
+            .address(address)
             .build();
 
         log.info(customer.toString());
@@ -105,55 +105,58 @@ public class CustomerServiceImpl implements CustomerService {
             throw new IllegalArgumentException("request não pode ser null");
         }
 
-        Customer customerExistente = customerRepository.findById(id)
+        Customer existingCustomer = customerRepository.findById(id)
             .orElseThrow(() ->
                 new CustomerNaoEncontradoException("Customer não encontrado: " + id)
             );
 
         if (request.cpf() != null) {
             customerRepository.findByCpf(request.cpf())
-                .filter(customer -> !customer.getId().equals(customerExistente.getId()))
+                .filter(customer -> !customer.getId().equals(existingCustomer.getId()))
                 .ifPresent(customer -> {
                     throw new CpfJaCadastradoException("CPF já cadastrado");
                 });
 
-            customerExistente.setCpf(request.cpf());
+            existingCustomer.setCpf(request.cpf());
         }
 
         if (request.name() != null) {
-            customerExistente.setName(request.name());
+            existingCustomer.setName(request.name());
         }
 
-        if (request.endereco() != null) {
-            var enderecoRequest = request.endereco();
-            var enderecoExistente = customerExistente.getEndereco();
-
-            if (enderecoRequest.rua() != null) {
-                enderecoExistente.setRua(enderecoRequest.rua());
+        if (request.address() != null) {
+            if (request.address().rua() != null) {
+                existingCustomer.getAddress()
+                    .setRua(request.address().rua());
             }
 
-            if (enderecoRequest.numero() != null) {
-                enderecoExistente.setNumero(enderecoRequest.numero());
+            if (request.address().numero() != null) {
+                existingCustomer.getAddress()
+                    .setNumero(request.address().numero());
             }
 
-            if (enderecoRequest.bairro() != null) {
-                enderecoExistente.setBairro(enderecoRequest.bairro());
+            if (request.address().bairro() != null) {
+                existingCustomer.getAddress()
+                    .setBairro(request.address().bairro());
             }
 
-            if (enderecoRequest.cep() != null) {
-                enderecoExistente.setCep(enderecoRequest.cep());
+            if (request.address().cep() != null) {
+                existingCustomer.getAddress()
+                    .setCep(request.address().cep());
             }
 
-            if (enderecoRequest.cidade() != null) {
-                enderecoExistente.setCidade(enderecoRequest.cidade());
+            if (request.address().cidade() != null) {
+                existingCustomer.getAddress()
+                    .setCidade(request.address().cidade());
             }
 
-            if (enderecoRequest.estado() != null) {
-                enderecoExistente.setEstado(enderecoRequest.estado());
+            if (request.address().estado() != null) {
+                existingCustomer.getAddress()
+                    .setEstado(request.address().estado());
             }
         }
 
-        return CustomerResponse.from(customerExistente);
+        return CustomerResponse.from(existingCustomer);
     }
 
     @Override
@@ -181,12 +184,12 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerExistente.setCpf(request.cpf());
         customerExistente.setName(request.name());
-        customerExistente.getEndereco().setRua(request.endereco().rua());
-        customerExistente.getEndereco().setNumero(request.endereco().numero());
-        customerExistente.getEndereco().setBairro(request.endereco().bairro());
-        customerExistente.getEndereco().setCep(request.endereco().cep());
-        customerExistente.getEndereco().setCidade(request.endereco().cidade());
-        customerExistente.getEndereco().setEstado(request.endereco().estado());
+        customerExistente.getAddress().setRua(request.address().rua());
+        customerExistente.getAddress().setNumero(request.address().numero());
+        customerExistente.getAddress().setBairro(request.address().bairro());
+        customerExistente.getAddress().setCep(request.address().cep());
+        customerExistente.getAddress().setCidade(request.address().cidade());
+        customerExistente.getAddress().setEstado(request.address().estado());
 
         return CustomerResponse.from(customerExistente);
     }
@@ -229,8 +232,8 @@ public class CustomerServiceImpl implements CustomerService {
         String estado
     ) {
         return customers.stream()
-            .filter(customer -> customer.getEndereco().getCidade().equals(cidade))
-            .filter(customer -> customer.getEndereco().getEstado().equals(Estado.valueOf(estado)))
+            .filter(customer -> customer.getAddress().getCidade().equals(cidade))
+            .filter(customer -> customer.getAddress().getEstado().equals(Estado.valueOf(estado)))
             .map(Customer::getName)
             .toList();
     }

@@ -23,6 +23,6 @@ public class Customer {
     private String name;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "endereco_id", nullable = false, unique = true)
-    private Endereco endereco;
+    @JoinColumn(name = "address_id", nullable = false, unique = true)
+    private Address address;
 }

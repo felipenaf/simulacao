@@ -39,7 +39,7 @@ public class CustomerControllerTest {
         CustomerResponse response = new CustomerResponse(
             "12345678908",
             "Felipe Ferreira",
-            new CustomerResponse.EnderecoResponse(
+            new CustomerResponse.AddressResponse(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -77,7 +77,7 @@ public class CustomerControllerTest {
         CustomerResponse response = new CustomerResponse(
             "12345678908",
             "Felipe Ferreira",
-            new CustomerResponse.EnderecoResponse(
+            new CustomerResponse.AddressResponse(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -103,7 +103,7 @@ public class CustomerControllerTest {
         CustomerResponse response = new CustomerResponse(
             "12345678908",
             "Felipe Ferreira",
-            new CustomerResponse.EnderecoResponse(
+            new CustomerResponse.AddressResponse(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -116,7 +116,7 @@ public class CustomerControllerTest {
         CustomerRequest request = new CustomerRequest(
             "12345678908",
             "Felipe Ferreira",
-            new CustomerRequest.EnderecoRequest(
+            new CustomerRequest.AddressRequest(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -146,7 +146,7 @@ public class CustomerControllerTest {
         CustomerRequest request = new CustomerRequest(
             "12345678908",
             "Felipe Ferreira",
-            new CustomerRequest.EnderecoRequest(
+            new CustomerRequest.AddressRequest(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -174,7 +174,7 @@ public class CustomerControllerTest {
         CustomerResponse response = new CustomerResponse(
             "12345678908",
             "Felipe Teste",
-            new CustomerResponse.EnderecoResponse(
+            new CustomerResponse.AddressResponse(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -251,7 +251,7 @@ public class CustomerControllerTest {
         CustomerResponse response = new CustomerResponse(
             "12345678908",
             "Felipe Ferreira",
-            new CustomerResponse.EnderecoResponse(
+            new CustomerResponse.AddressResponse(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -264,7 +264,7 @@ public class CustomerControllerTest {
         CustomerRequest request = new CustomerRequest(
             "12345678908",
             "Felipe Ferreira",
-            new CustomerRequest.EnderecoRequest(
+            new CustomerRequest.AddressRequest(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -293,7 +293,7 @@ public class CustomerControllerTest {
         CustomerRequest request = new CustomerRequest(
             "12345678908",
             "Felipe Ferreira",
-            new CustomerRequest.EnderecoRequest(
+            new CustomerRequest.AddressRequest(
                 "Rua das Flores",
                 100,
                 "Centro",
@@ -321,7 +321,7 @@ public class CustomerControllerTest {
         CustomerRequest request = new CustomerRequest(
             "12345678908",
             "Felipe Ferreira",
-            new CustomerRequest.EnderecoRequest(
+            new CustomerRequest.AddressRequest(
                 "Rua das Flores",
                 100,
                 "Centro",

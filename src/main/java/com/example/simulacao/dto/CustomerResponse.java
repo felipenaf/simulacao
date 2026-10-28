@@ -6,9 +6,9 @@ import com.example.simulacao.entity.Estado;
 public record CustomerResponse(
     String cpf,
     String name,
-    EnderecoResponse endereco
+    AddressResponse address
 ) {
-    public record EnderecoResponse(
+    public record AddressResponse(
         String rua,
         Integer numero,
         String bairro,
@@ -18,20 +18,17 @@ public record CustomerResponse(
     ) {}
 
     public static CustomerResponse from(Customer customer) {
-        CustomerResponse.EnderecoResponse enderecoResponse =
-            new CustomerResponse.EnderecoResponse(
-                customer.getEndereco().getRua(),
-                customer.getEndereco().getNumero(),
-                customer.getEndereco().getBairro(),
-                customer.getEndereco().getCep(),
-                customer.getEndereco().getCidade(),
-                customer.getEndereco().getEstado()
-            );
-
         return new CustomerResponse(
             customer.getCpf(),
             customer.getName(),
-            enderecoResponse
+            new AddressResponse(
+                customer.getAddress().getRua(),
+                customer.getAddress().getNumero(),
+                customer.getAddress().getBairro(),
+                customer.getAddress().getCep(),
+                customer.getAddress().getCidade(),
+                customer.getAddress().getEstado()
+            )
         );
     }
 }

@@ -6,10 +6,12 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @ToString
 @Entity
-@Table(name = "endereco")
-public class Endereco {
+@Table(name = "address")
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,21 +34,4 @@ public class Endereco {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 2)
     private Estado estado;
-
-    @Builder
-    public Endereco(
-        String rua,
-        Integer numero,
-        String bairro,
-        String cep,
-        String cidade,
-        Estado estado
-    ) {
-        this.rua = rua;
-        this.numero = numero;
-        this.bairro = bairro;
-        this.cep = cep;
-        this.cidade = cidade;
-        this.estado = estado;
-    }
 }

@@ -13,14 +13,14 @@ public record CustomerPatchRequest(
     String name,
 
     @Valid
-    EnderecoRequest endereco
+    AddressRequest address
 ) {
     public CustomerPatchRequest {
         cpf = cpf == null ? null : cpf.replaceAll("[.-]", "").trim();
         name = name == null ? null : name.trim();
     }
 
-    public record EnderecoRequest(
+    public record AddressRequest(
         @Size(max = 150, message = "Rua deve ter no máximo 150 caracteres")
         String rua,
 
@@ -38,7 +38,7 @@ public record CustomerPatchRequest(
 
         Estado estado
     ) {
-        public EnderecoRequest {
+        public AddressRequest {
             rua = rua == null ? null : rua.trim();
             bairro = bairro == null ? null : bairro.trim();
             cep = cep == null ? null : cep.replace("-", "").trim();

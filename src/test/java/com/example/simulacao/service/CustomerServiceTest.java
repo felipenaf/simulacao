@@ -4,7 +4,7 @@ import com.example.simulacao.dto.CustomerPatchRequest;
 import com.example.simulacao.dto.CustomerRequest;
 import com.example.simulacao.dto.CustomerResponse;
 import com.example.simulacao.entity.Customer;
-import com.example.simulacao.entity.Endereco;
+import com.example.simulacao.entity.Address;
 import com.example.simulacao.entity.Estado;
 import com.example.simulacao.entity.Simulacao;
 import com.example.simulacao.exception.CustomerNaoEncontradoException;
@@ -46,7 +46,7 @@ public class CustomerServiceTest {
     private ArgumentCaptor<Customer> customerCaptor;
 
     private CustomerRequest criarRequest() {
-        CustomerRequest.EnderecoRequest endereco = new CustomerRequest.EnderecoRequest(
+        CustomerRequest.AddressRequest address = new CustomerRequest.AddressRequest(
             "Rua das Flores",
             123,
             "Centro",
@@ -55,11 +55,11 @@ public class CustomerServiceTest {
             Estado.SP
         );
 
-        return new CustomerRequest("12345678900", "Felipe Ferreira", endereco);
+        return new CustomerRequest("12345678900", "Felipe Ferreira", address);
     }
 
     private Customer criarCustomer(Long id) {
-        Endereco endereco = Endereco.builder()
+        Address address = Address.builder()
             .rua("Rua Antiga")
             .numero(10)
             .bairro("Bairro Antigo")
@@ -72,7 +72,7 @@ public class CustomerServiceTest {
             .id(id)
             .cpf("11111111111")
             .name("Felipe Antigo")
-            .endereco(endereco)
+            .address(address)
             .build();
     }
 
@@ -99,12 +99,12 @@ public class CustomerServiceTest {
         assertEquals(request.cpf(), salvo.getCpf());
         assertEquals(request.name(), salvo.getName());
 
-        assertEquals(request.endereco().rua(), salvo.getEndereco().getRua());
-        assertEquals(request.endereco().numero(), salvo.getEndereco().getNumero());
-        assertEquals(request.endereco().bairro(), salvo.getEndereco().getBairro());
-        assertEquals(request.endereco().cep(), salvo.getEndereco().getCep());
-        assertEquals(request.endereco().cidade(), salvo.getEndereco().getCidade());
-        assertEquals(request.endereco().estado(), salvo.getEndereco().getEstado());
+        assertEquals(request.address().rua(), salvo.getAddress().getRua());
+        assertEquals(request.address().numero(), salvo.getAddress().getNumero());
+        assertEquals(request.address().bairro(), salvo.getAddress().getBairro());
+        assertEquals(request.address().cep(), salvo.getAddress().getCep());
+        assertEquals(request.address().cidade(), salvo.getAddress().getCidade());
+        assertEquals(request.address().estado(), salvo.getAddress().getEstado());
     }
 
     @Test
@@ -116,12 +116,12 @@ public class CustomerServiceTest {
 
         assertEquals(request.cpf(), response.cpf());
         assertEquals(request.name(), response.name());
-        assertEquals(request.endereco().rua(), response.endereco().rua());
-        assertEquals(request.endereco().numero(), response.endereco().numero());
-        assertEquals(request.endereco().bairro(), response.endereco().bairro());
-        assertEquals(request.endereco().cep(), response.endereco().cep());
-        assertEquals(request.endereco().cidade(), response.endereco().cidade());
-        assertEquals(request.endereco().estado(), response.endereco().estado());
+        assertEquals(request.address().rua(), response.address().rua());
+        assertEquals(request.address().numero(), response.address().numero());
+        assertEquals(request.address().bairro(), response.address().bairro());
+        assertEquals(request.address().cep(), response.address().cep());
+        assertEquals(request.address().cidade(), response.address().cidade());
+        assertEquals(request.address().estado(), response.address().estado());
     }
 
     @Test
@@ -163,12 +163,12 @@ public class CustomerServiceTest {
         assertNotNull(response);
         assertEquals(response.cpf(), customer.getCpf());
         assertEquals(response.name(), customer.getName());
-        assertEquals(response.endereco().rua(), customer.getEndereco().getRua());
-        assertEquals(response.endereco().numero(), customer.getEndereco().getNumero());
-        assertEquals(response.endereco().bairro(), customer.getEndereco().getBairro());
-        assertEquals(response.endereco().cep(), customer.getEndereco().getCep());
-        assertEquals(response.endereco().cidade(), customer.getEndereco().getCidade());
-        assertEquals(response.endereco().estado(), customer.getEndereco().getEstado());
+        assertEquals(response.address().rua(), customer.getAddress().getRua());
+        assertEquals(response.address().numero(), customer.getAddress().getNumero());
+        assertEquals(response.address().bairro(), customer.getAddress().getBairro());
+        assertEquals(response.address().cep(), customer.getAddress().getCep());
+        assertEquals(response.address().cidade(), customer.getAddress().getCidade());
+        assertEquals(response.address().estado(), customer.getAddress().getEstado());
     }
 
     @Test
@@ -207,21 +207,21 @@ public class CustomerServiceTest {
 
         assertEquals(response.getContent().getFirst().cpf(), customers.getFirst().getCpf());
         assertEquals(response.getContent().getFirst().name(), customers.getFirst().getName());
-        assertEquals(response.getContent().getFirst().endereco().rua(), customers.getFirst().getEndereco().getRua());
-        assertEquals(response.getContent().getFirst().endereco().numero(), customers.getFirst().getEndereco().getNumero());
-        assertEquals(response.getContent().getFirst().endereco().bairro(), customers.getFirst().getEndereco().getBairro());
-        assertEquals(response.getContent().getFirst().endereco().cep(), customers.getFirst().getEndereco().getCep());
-        assertEquals(response.getContent().getFirst().endereco().cidade(), customers.getFirst().getEndereco().getCidade());
-        assertEquals(response.getContent().getFirst().endereco().estado(), customers.getFirst().getEndereco().getEstado());
+        assertEquals(response.getContent().getFirst().address().rua(), customers.getFirst().getAddress().getRua());
+        assertEquals(response.getContent().getFirst().address().numero(), customers.getFirst().getAddress().getNumero());
+        assertEquals(response.getContent().getFirst().address().bairro(), customers.getFirst().getAddress().getBairro());
+        assertEquals(response.getContent().getFirst().address().cep(), customers.getFirst().getAddress().getCep());
+        assertEquals(response.getContent().getFirst().address().cidade(), customers.getFirst().getAddress().getCidade());
+        assertEquals(response.getContent().getFirst().address().estado(), customers.getFirst().getAddress().getEstado());
 
         assertEquals(response.getContent().getLast().cpf(), customers.getLast().getCpf());
         assertEquals(response.getContent().getLast().name(), customers.getLast().getName());
-        assertEquals(response.getContent().getLast().endereco().rua(), customers.getLast().getEndereco().getRua());
-        assertEquals(response.getContent().getLast().endereco().numero(), customers.getLast().getEndereco().getNumero());
-        assertEquals(response.getContent().getLast().endereco().bairro(), customers.getLast().getEndereco().getBairro());
-        assertEquals(response.getContent().getLast().endereco().cep(), customers.getLast().getEndereco().getCep());
-        assertEquals(response.getContent().getLast().endereco().cidade(), customers.getLast().getEndereco().getCidade());
-        assertEquals(response.getContent().getLast().endereco().estado(), customers.getLast().getEndereco().getEstado());
+        assertEquals(response.getContent().getLast().address().rua(), customers.getLast().getAddress().getRua());
+        assertEquals(response.getContent().getLast().address().numero(), customers.getLast().getAddress().getNumero());
+        assertEquals(response.getContent().getLast().address().bairro(), customers.getLast().getAddress().getBairro());
+        assertEquals(response.getContent().getLast().address().cep(), customers.getLast().getAddress().getCep());
+        assertEquals(response.getContent().getLast().address().cidade(), customers.getLast().getAddress().getCidade());
+        assertEquals(response.getContent().getLast().address().estado(), customers.getLast().getAddress().getEstado());
     }
 
     @Test
@@ -280,7 +280,7 @@ public class CustomerServiceTest {
         CustomerPatchRequest request = new CustomerPatchRequest(
             "12345678900",
             "João da Silva",
-            new CustomerPatchRequest.EnderecoRequest("Rua das Flores", 123, "Centro", "13000-000", "Campinas", Estado.SP)
+            new CustomerPatchRequest.AddressRequest("Rua das Flores", 123, "Centro", "13000-000", "Campinas", Estado.SP)
         );
 
         CustomerResponse response = customerService.patch(1L, request);
@@ -289,12 +289,12 @@ public class CustomerServiceTest {
 
         assertEquals("12345678900", existente.getCpf());
         assertEquals("João da Silva", existente.getName());
-        assertEquals("Rua das Flores", existente.getEndereco().getRua());
-        assertEquals(123, existente.getEndereco().getNumero());
-        assertEquals("Centro", existente.getEndereco().getBairro());
-        assertEquals("13000000", existente.getEndereco().getCep());
-        assertEquals("Campinas", existente.getEndereco().getCidade());
-        assertEquals(Estado.SP, existente.getEndereco().getEstado());
+        assertEquals("Rua das Flores", existente.getAddress().getRua());
+        assertEquals(123, existente.getAddress().getNumero());
+        assertEquals("Centro", existente.getAddress().getBairro());
+        assertEquals("13000000", existente.getAddress().getCep());
+        assertEquals("Campinas", existente.getAddress().getCidade());
+        assertEquals(Estado.SP, existente.getAddress().getEstado());
 
         assertEquals("12345678900", response.cpf());
         assertEquals("João da Silva", response.name());
@@ -313,8 +313,8 @@ public class CustomerServiceTest {
 
         assertEquals("Novo Nome", existente.getName());
         assertEquals("11111111111", existente.getCpf());
-        assertEquals("Rua Antiga", existente.getEndereco().getRua());
-        assertEquals("Santos", existente.getEndereco().getCidade());
+        assertEquals("Rua Antiga", existente.getAddress().getRua());
+        assertEquals("Santos", existente.getAddress().getCidade());
     }
 
     @Test
@@ -328,7 +328,7 @@ public class CustomerServiceTest {
 
         assertEquals("11111111111", existente.getCpf());
         assertEquals("Felipe Antigo", existente.getName());
-        assertEquals("Rua Antiga", existente.getEndereco().getRua());
+        assertEquals("Rua Antiga", existente.getAddress().getRua());
 
         verify(customerRepository, never()).findByCpf(any());
     }
@@ -389,12 +389,12 @@ public class CustomerServiceTest {
         assertNotNull(response);
         assertEquals(request.cpf(), existente.getCpf());
         assertEquals(request.name(), existente.getName());
-        assertEquals(request.endereco().rua(), existente.getEndereco().getRua());
-        assertEquals(request.endereco().numero(), existente.getEndereco().getNumero());
-        assertEquals(request.endereco().bairro(), existente.getEndereco().getBairro());
-        assertEquals(request.endereco().cep(), existente.getEndereco().getCep());
-        assertEquals(request.endereco().cidade(), existente.getEndereco().getCidade());
-        assertEquals(request.endereco().estado(), existente.getEndereco().getEstado());
+        assertEquals(request.address().rua(), existente.getAddress().getRua());
+        assertEquals(request.address().numero(), existente.getAddress().getNumero());
+        assertEquals(request.address().bairro(), existente.getAddress().getBairro());
+        assertEquals(request.address().cep(), existente.getAddress().getCep());
+        assertEquals(request.address().cidade(), existente.getAddress().getCidade());
+        assertEquals(request.address().estado(), existente.getAddress().getEstado());
 
         assertEquals(request.cpf(), response.cpf());
         assertEquals(request.name(), response.name());
@@ -442,7 +442,7 @@ public class CustomerServiceTest {
         CustomerRequest request = new CustomerRequest(
             "11111111112",
             "Novo Nome",
-            criarRequest().endereco()
+            criarRequest().address()
         );
 
         when(customerRepository.findById(1L))
@@ -479,7 +479,7 @@ public class CustomerServiceTest {
 
         assertEquals("11111111111", existente.getCpf());
         assertEquals("Felipe Antigo", existente.getName());
-        assertEquals("Rua Antiga", existente.getEndereco().getRua());
+        assertEquals("Rua Antiga", existente.getAddress().getRua());
     }
 
     @Test
@@ -548,7 +548,7 @@ public class CustomerServiceTest {
         var cli1 = Customer.builder()
             .name("Bruno Oliveira")
             .cpf("98765432100")
-            .endereco(Endereco.builder()
+            .address(Address.builder()
                 .rua("Rua da Bahia")
                 .numero(1148)
                 .bairro("Centro")
@@ -561,7 +561,7 @@ public class CustomerServiceTest {
         var cli2 = Customer.builder()
             .name("Ana Souza")
             .cpf("12345678909")
-            .endereco(Endereco.builder()
+            .address(Address.builder()
                 .rua("Avenida Paulista")
                 .numero(1578)
                 .bairro("Bela Vista")
@@ -574,7 +574,7 @@ public class CustomerServiceTest {
         var cli3 = Customer.builder()
             .name("Carla Mendes")
             .cpf("45678912311")
-            .endereco(Endereco.builder()
+            .address(Address.builder()
                 .rua("Rua Voluntários da Pátria")
                 .numero(45)
                 .bairro("Botafogo")

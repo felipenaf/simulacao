@@ -13,14 +13,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class CustomerRequestTest {
     private static Validator validator;
     private static ValidatorFactory validatorFactory;
-    private static CustomerRequest.EnderecoRequest enderecoCorreto;
+    private static CustomerRequest.AddressRequest correctAddress;
 
     @BeforeAll
     static void setUp() {
         validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
 
-        enderecoCorreto = new CustomerRequest.EnderecoRequest(
+        correctAddress = new CustomerRequest.AddressRequest(
             "Rua das Flores",
             123,
             "Centro",
@@ -40,7 +40,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
-            enderecoCorreto
+            correctAddress
         );
 
         var violations = validator.validate(request);
@@ -53,7 +53,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "   ",
             "Felipe Ferreira",
-            enderecoCorreto
+            correctAddress
         );
 
         var violations = validator.validate(request);
@@ -68,7 +68,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "123456789101",
             "Felipe Ferreira",
-            enderecoCorreto
+            correctAddress
         );
 
         var violations = validator.validate(request);
@@ -85,7 +85,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "1234567891",
             "Felipe Ferreira",
-            enderecoCorreto
+            correctAddress
         );
 
         var violations = validator.validate(request);
@@ -102,7 +102,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "123.456.789-03",
             "Felipe Ferreira",
-            enderecoCorreto
+            correctAddress
         );
 
         assertEquals("12345678903", request.cpf());
@@ -113,7 +113,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
-            enderecoCorreto
+            correctAddress
         );
 
         assertEquals("12345678903", request.cpf());
@@ -124,7 +124,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             null,
             "Felipe Ferreira",
-            enderecoCorreto
+            correctAddress
         );
 
         assertNull(request.cpf());
@@ -135,7 +135,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "12345678903",
             "",
-            enderecoCorreto
+            correctAddress
         );
 
         var violations = validator.validate(request);
@@ -151,7 +151,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "12345678903",
             "  Felipe Ferreira  ",
-            enderecoCorreto
+            correctAddress
         );
 
         assertEquals("Felipe Ferreira", request.name());
@@ -159,7 +159,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarNumeroNulo() {
-        var endereco = new CustomerRequest.EnderecoRequest(
+        var address = new CustomerRequest.AddressRequest(
             "Rua das Flores",
             null,
             "Centro",
@@ -171,7 +171,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
-            endereco
+            address
         );
 
         var violations = validator.validate(request);
@@ -183,7 +183,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarNumeroNaoPositivo() {
-        var endereco = new CustomerRequest.EnderecoRequest(
+        CustomerRequest.AddressRequest address = new CustomerRequest.AddressRequest(
             "Rua das Flores",
             0,
             "Centro",
@@ -195,7 +195,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
-            endereco
+            address
         );
 
         var violations = validator.validate(request);
@@ -222,7 +222,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRemoverEspacosDosCamposDoEndereco() {
-        var endereco = new CustomerRequest.EnderecoRequest(
+        var address = new CustomerRequest.AddressRequest(
             "  Rua das Flores  ",
             123,
             "  Centro  ",
@@ -231,15 +231,15 @@ class CustomerRequestTest {
             Estado.SP
         );
 
-        assertEquals("Rua das Flores", endereco.rua());
-        assertEquals("Centro", endereco.bairro());
-        assertEquals("13330000", endereco.cep());
-        assertEquals("Indaiatuba", endereco.cidade());
+        assertEquals("Rua das Flores", address.rua());
+        assertEquals("Centro", address.bairro());
+        assertEquals("13330000", address.cep());
+        assertEquals("Indaiatuba", address.cidade());
     }
 
     @Test
     void deveRejeitarRuaInvalida() {
-        var endereco = new CustomerRequest.EnderecoRequest(
+        var address = new CustomerRequest.AddressRequest(
             "",
             123,
             "Centro",
@@ -251,7 +251,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
-            endereco
+            address
         );
 
         var violations = validator.validate(request);
@@ -263,7 +263,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarBairroInvalido() {
-        var endereco = new CustomerRequest.EnderecoRequest(
+        var address = new CustomerRequest.AddressRequest(
             "Rua das Flores",
             123,
             "",
@@ -275,7 +275,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
-            endereco
+            address
         );
 
         var violations = validator.validate(request);
@@ -287,7 +287,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRemoverHifenDoCep() {
-        var endereco = new CustomerRequest.EnderecoRequest(
+        var address = new CustomerRequest.AddressRequest(
             "Rua das Flores",
             123,
             "Centro",
@@ -299,15 +299,15 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
-            endereco
+            address
         );
 
-        assertEquals("13330000", request.endereco().cep());
+        assertEquals("13330000", request.address().cep());
     }
 
     @Test
     void deveRejeitarCepInvalido() {
-        var endereco = new CustomerRequest.EnderecoRequest(
+        var address = new CustomerRequest.AddressRequest(
             "Rua das Flores",
             123,
             "Centro",
@@ -319,7 +319,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
-            endereco
+            address
         );
 
         var violations = validator.validate(request);
@@ -331,7 +331,7 @@ class CustomerRequestTest {
 
     @Test
     void deveRejeitarEstadoInvalido() {
-        var endereco = new CustomerRequest.EnderecoRequest(
+        var address = new CustomerRequest.AddressRequest(
             "Rua das Flores",
             123,
             "Centro",
@@ -343,7 +343,7 @@ class CustomerRequestTest {
         var request = new CustomerRequest(
             "12345678903",
             "Felipe Ferreira",
-            endereco
+            address
         );
 
         var violations = validator.validate(request);
