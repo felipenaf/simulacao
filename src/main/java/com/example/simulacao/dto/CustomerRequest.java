@@ -14,7 +14,7 @@ public record CustomerRequest(
 
     @NotBlank(message = "Nome inválido")
     @Size(max = 150, message = "Nome deve ter no máximo 150 caracteres")
-    String nome,
+    String name,
 
     @NotNull(message = "Endereço inválido")
     @Valid
@@ -22,7 +22,7 @@ public record CustomerRequest(
 ) {
     public CustomerRequest {
         cpf = cpf == null ? null : cpf.replaceAll("[.-]", "").trim();
-        nome = nome == null ? null : nome.trim();
+        name = name == null ? null : name.trim();
     }
 
     public record EnderecoRequest(

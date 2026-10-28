@@ -5,7 +5,7 @@ import com.example.simulacao.entity.Estado;
 
 public record CustomerResponse(
     String cpf,
-    String nome,
+    String name,
     EnderecoResponse endereco
 ) {
     public record EnderecoResponse(

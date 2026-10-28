@@ -65,7 +65,7 @@ class CustomerPatchRequestTest {
             null
         );
 
-        assertEquals("Felipe Ferreira", request.nome());
+        assertEquals("Felipe Ferreira", request.name());
     }
 
     @Test
@@ -76,7 +76,7 @@ class CustomerPatchRequestTest {
             null
         );
 
-        assertNull(request.nome());
+        assertNull(request.name());
     }
 
     @Test

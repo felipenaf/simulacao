@@ -197,7 +197,7 @@ public class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.nome").value("Felipe Teste"))
+            .andExpect(jsonPath("$.name").value("Felipe Teste"))
         ;
 
         verify(customerService, times(1)).patch(1L, request);

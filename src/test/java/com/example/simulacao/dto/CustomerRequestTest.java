@@ -154,7 +154,7 @@ class CustomerRequestTest {
             enderecoCorreto
         );
 
-        assertEquals("Felipe Ferreira", request.nome());
+        assertEquals("Felipe Ferreira", request.name());
     }
 
     @Test

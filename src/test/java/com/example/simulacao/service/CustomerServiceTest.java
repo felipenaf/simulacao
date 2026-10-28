@@ -97,7 +97,7 @@ public class CustomerServiceTest {
         Customer salvo = customerCaptor.getValue();
 
         assertEquals(request.cpf(), salvo.getCpf());
-        assertEquals(request.nome(), salvo.getName());
+        assertEquals(request.name(), salvo.getName());
 
         assertEquals(request.endereco().rua(), salvo.getEndereco().getRua());
         assertEquals(request.endereco().numero(), salvo.getEndereco().getNumero());
@@ -115,7 +115,7 @@ public class CustomerServiceTest {
         CustomerResponse response = customerService.save(request);
 
         assertEquals(request.cpf(), response.cpf());
-        assertEquals(request.nome(), response.nome());
+        assertEquals(request.name(), response.name());
         assertEquals(request.endereco().rua(), response.endereco().rua());
         assertEquals(request.endereco().numero(), response.endereco().numero());
         assertEquals(request.endereco().bairro(), response.endereco().bairro());
@@ -162,7 +162,7 @@ public class CustomerServiceTest {
 
         assertNotNull(response);
         assertEquals(response.cpf(), customer.getCpf());
-        assertEquals(response.nome(), customer.getName());
+        assertEquals(response.name(), customer.getName());
         assertEquals(response.endereco().rua(), customer.getEndereco().getRua());
         assertEquals(response.endereco().numero(), customer.getEndereco().getNumero());
         assertEquals(response.endereco().bairro(), customer.getEndereco().getBairro());
@@ -206,7 +206,7 @@ public class CustomerServiceTest {
         assertNotNull(response);
 
         assertEquals(response.getContent().getFirst().cpf(), customers.getFirst().getCpf());
-        assertEquals(response.getContent().getFirst().nome(), customers.getFirst().getName());
+        assertEquals(response.getContent().getFirst().name(), customers.getFirst().getName());
         assertEquals(response.getContent().getFirst().endereco().rua(), customers.getFirst().getEndereco().getRua());
         assertEquals(response.getContent().getFirst().endereco().numero(), customers.getFirst().getEndereco().getNumero());
         assertEquals(response.getContent().getFirst().endereco().bairro(), customers.getFirst().getEndereco().getBairro());
@@ -215,7 +215,7 @@ public class CustomerServiceTest {
         assertEquals(response.getContent().getFirst().endereco().estado(), customers.getFirst().getEndereco().getEstado());
 
         assertEquals(response.getContent().getLast().cpf(), customers.getLast().getCpf());
-        assertEquals(response.getContent().getLast().nome(), customers.getLast().getName());
+        assertEquals(response.getContent().getLast().name(), customers.getLast().getName());
         assertEquals(response.getContent().getLast().endereco().rua(), customers.getLast().getEndereco().getRua());
         assertEquals(response.getContent().getLast().endereco().numero(), customers.getLast().getEndereco().getNumero());
         assertEquals(response.getContent().getLast().endereco().bairro(), customers.getLast().getEndereco().getBairro());
@@ -297,7 +297,7 @@ public class CustomerServiceTest {
         assertEquals(Estado.SP, existente.getEndereco().getEstado());
 
         assertEquals("12345678900", response.cpf());
-        assertEquals("João da Silva", response.nome());
+        assertEquals("João da Silva", response.name());
     }
 
     @Test
@@ -388,7 +388,7 @@ public class CustomerServiceTest {
 
         assertNotNull(response);
         assertEquals(request.cpf(), existente.getCpf());
-        assertEquals(request.nome(), existente.getName());
+        assertEquals(request.name(), existente.getName());
         assertEquals(request.endereco().rua(), existente.getEndereco().getRua());
         assertEquals(request.endereco().numero(), existente.getEndereco().getNumero());
         assertEquals(request.endereco().bairro(), existente.getEndereco().getBairro());
@@ -397,7 +397,7 @@ public class CustomerServiceTest {
         assertEquals(request.endereco().estado(), existente.getEndereco().getEstado());
 
         assertEquals(request.cpf(), response.cpf());
-        assertEquals(request.nome(), response.nome());
+        assertEquals(request.name(), response.name());
     }
 
     @Test
