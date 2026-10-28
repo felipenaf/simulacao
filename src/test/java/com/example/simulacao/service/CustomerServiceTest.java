@@ -5,7 +5,7 @@ import com.example.simulacao.dto.CustomerRequest;
 import com.example.simulacao.dto.CustomerResponse;
 import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Address;
-import com.example.simulacao.entity.Estado;
+import com.example.simulacao.entity.State;
 import com.example.simulacao.entity.Simulacao;
 import com.example.simulacao.exception.CustomerNaoEncontradoException;
 import com.example.simulacao.exception.CustomerPossuiSimulacoesException;
@@ -52,7 +52,7 @@ public class CustomerServiceTest {
             "Centro",
             "13000-000",
             "Campinas",
-            Estado.SP
+            State.SP
         );
 
         return new CustomerRequest("12345678900", "Felipe Ferreira", address);
@@ -65,7 +65,7 @@ public class CustomerServiceTest {
             .bairro("Bairro Antigo")
             .cep("11111-111")
             .cidade("Santos")
-            .estado(Estado.PA)
+            .state(State.PA)
             .build();
 
         return Customer.builder()
@@ -104,7 +104,7 @@ public class CustomerServiceTest {
         assertEquals(request.address().bairro(), salvo.getAddress().getBairro());
         assertEquals(request.address().cep(), salvo.getAddress().getCep());
         assertEquals(request.address().cidade(), salvo.getAddress().getCidade());
-        assertEquals(request.address().estado(), salvo.getAddress().getEstado());
+        assertEquals(request.address().state(), salvo.getAddress().getState());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class CustomerServiceTest {
         assertEquals(request.address().bairro(), response.address().bairro());
         assertEquals(request.address().cep(), response.address().cep());
         assertEquals(request.address().cidade(), response.address().cidade());
-        assertEquals(request.address().estado(), response.address().estado());
+        assertEquals(request.address().state(), response.address().state());
     }
 
     @Test
@@ -168,7 +168,7 @@ public class CustomerServiceTest {
         assertEquals(response.address().bairro(), customer.getAddress().getBairro());
         assertEquals(response.address().cep(), customer.getAddress().getCep());
         assertEquals(response.address().cidade(), customer.getAddress().getCidade());
-        assertEquals(response.address().estado(), customer.getAddress().getEstado());
+        assertEquals(response.address().state(), customer.getAddress().getState());
     }
 
     @Test
@@ -212,7 +212,7 @@ public class CustomerServiceTest {
         assertEquals(response.getContent().getFirst().address().bairro(), customers.getFirst().getAddress().getBairro());
         assertEquals(response.getContent().getFirst().address().cep(), customers.getFirst().getAddress().getCep());
         assertEquals(response.getContent().getFirst().address().cidade(), customers.getFirst().getAddress().getCidade());
-        assertEquals(response.getContent().getFirst().address().estado(), customers.getFirst().getAddress().getEstado());
+        assertEquals(response.getContent().getFirst().address().state(), customers.getFirst().getAddress().getState());
 
         assertEquals(response.getContent().getLast().cpf(), customers.getLast().getCpf());
         assertEquals(response.getContent().getLast().name(), customers.getLast().getName());
@@ -221,7 +221,7 @@ public class CustomerServiceTest {
         assertEquals(response.getContent().getLast().address().bairro(), customers.getLast().getAddress().getBairro());
         assertEquals(response.getContent().getLast().address().cep(), customers.getLast().getAddress().getCep());
         assertEquals(response.getContent().getLast().address().cidade(), customers.getLast().getAddress().getCidade());
-        assertEquals(response.getContent().getLast().address().estado(), customers.getLast().getAddress().getEstado());
+        assertEquals(response.getContent().getLast().address().state(), customers.getLast().getAddress().getState());
     }
 
     @Test
@@ -280,7 +280,7 @@ public class CustomerServiceTest {
         CustomerPatchRequest request = new CustomerPatchRequest(
             "12345678900",
             "João da Silva",
-            new CustomerPatchRequest.AddressRequest("Rua das Flores", 123, "Centro", "13000-000", "Campinas", Estado.SP)
+            new CustomerPatchRequest.AddressRequest("Rua das Flores", 123, "Centro", "13000-000", "Campinas", State.SP)
         );
 
         CustomerResponse response = customerService.patch(1L, request);
@@ -294,7 +294,7 @@ public class CustomerServiceTest {
         assertEquals("Centro", existente.getAddress().getBairro());
         assertEquals("13000000", existente.getAddress().getCep());
         assertEquals("Campinas", existente.getAddress().getCidade());
-        assertEquals(Estado.SP, existente.getAddress().getEstado());
+        assertEquals(State.SP, existente.getAddress().getState());
 
         assertEquals("12345678900", response.cpf());
         assertEquals("João da Silva", response.name());
@@ -394,7 +394,7 @@ public class CustomerServiceTest {
         assertEquals(request.address().bairro(), existente.getAddress().getBairro());
         assertEquals(request.address().cep(), existente.getAddress().getCep());
         assertEquals(request.address().cidade(), existente.getAddress().getCidade());
-        assertEquals(request.address().estado(), existente.getAddress().getEstado());
+        assertEquals(request.address().state(), existente.getAddress().getState());
 
         assertEquals(request.cpf(), response.cpf());
         assertEquals(request.name(), response.name());
@@ -554,7 +554,7 @@ public class CustomerServiceTest {
                 .bairro("Centro")
                 .cep("30160011")
                 .cidade("Belo Horizonte")
-                .estado(Estado.MG)
+                .state(State.MG)
                 .build())
             .build();
 
@@ -567,7 +567,7 @@ public class CustomerServiceTest {
                 .bairro("Bela Vista")
                 .cep("01310200")
                 .cidade("São Paulo")
-                .estado(Estado.SP)
+                .state(State.SP)
                 .build())
             .build();
 
@@ -580,14 +580,14 @@ public class CustomerServiceTest {
                 .bairro("Botafogo")
                 .cep("22270000")
                 .cidade("Rio de Janeiro")
-                .estado(Estado.RJ)
+                .state(State.RJ)
                 .build())
             .build();
 
         List<Customer> customers = List.of(cli1, cli2, cli3);
 
         List<String> names = customerService.calculaNomesCustomersParaCidadeEstado(
-            customers, "Belo Horizonte", Estado.MG.name()
+            customers, "Belo Horizonte", State.MG.name()
         );
 
         assertEquals(1, names.size());

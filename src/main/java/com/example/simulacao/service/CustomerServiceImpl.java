@@ -5,7 +5,7 @@ import com.example.simulacao.dto.CustomerRequest;
 import com.example.simulacao.dto.CustomerResponse;
 import com.example.simulacao.entity.Customer;
 import com.example.simulacao.entity.Address;
-import com.example.simulacao.entity.Estado;
+import com.example.simulacao.entity.State;
 import com.example.simulacao.exception.CustomerNaoEncontradoException;
 import com.example.simulacao.exception.CustomerPossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
@@ -51,7 +51,7 @@ public class CustomerServiceImpl implements CustomerService {
             .bairro(request.address().bairro())
             .cep(request.address().cep())
             .cidade(request.address().cidade())
-            .estado(request.address().estado())
+            .state(request.address().state())
             .build();
 
         log.info(address.toString());
@@ -150,9 +150,9 @@ public class CustomerServiceImpl implements CustomerService {
                     .setCidade(request.address().cidade());
             }
 
-            if (request.address().estado() != null) {
+            if (request.address().state() != null) {
                 existingCustomer.getAddress()
-                    .setEstado(request.address().estado());
+                    .setState(request.address().state());
             }
         }
 
@@ -189,7 +189,7 @@ public class CustomerServiceImpl implements CustomerService {
         customerExistente.getAddress().setBairro(request.address().bairro());
         customerExistente.getAddress().setCep(request.address().cep());
         customerExistente.getAddress().setCidade(request.address().cidade());
-        customerExistente.getAddress().setEstado(request.address().estado());
+        customerExistente.getAddress().setState(request.address().state());
 
         return CustomerResponse.from(customerExistente);
     }
@@ -233,7 +233,7 @@ public class CustomerServiceImpl implements CustomerService {
     ) {
         return customers.stream()
             .filter(customer -> customer.getAddress().getCidade().equals(cidade))
-            .filter(customer -> customer.getAddress().getEstado().equals(Estado.valueOf(estado)))
+            .filter(customer -> customer.getAddress().getState().equals(State.valueOf(estado)))
             .map(Customer::getName)
             .toList();
     }

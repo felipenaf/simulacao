@@ -1,7 +1,7 @@
 package com.example.simulacao.dto;
 
 import com.example.simulacao.entity.Customer;
-import com.example.simulacao.entity.Estado;
+import com.example.simulacao.entity.State;
 
 public record CustomerResponse(
     String cpf,
@@ -14,7 +14,7 @@ public record CustomerResponse(
         String bairro,
         String cep,
         String cidade,
-        Estado estado
+        State state
     ) {}
 
     public static CustomerResponse from(Customer customer) {
@@ -27,7 +27,7 @@ public record CustomerResponse(
                 customer.getAddress().getBairro(),
                 customer.getAddress().getCep(),
                 customer.getAddress().getCidade(),
-                customer.getAddress().getEstado()
+                customer.getAddress().getState()
             )
         );
     }

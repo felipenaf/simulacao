@@ -33,5 +33,5 @@ public class Address {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 2)
-    private Estado estado;
+    private State state;
 }

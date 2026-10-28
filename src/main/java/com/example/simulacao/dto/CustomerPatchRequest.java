@@ -1,6 +1,6 @@
 package com.example.simulacao.dto;
 
-import com.example.simulacao.entity.Estado;
+import com.example.simulacao.entity.State;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -36,7 +36,7 @@ public record CustomerPatchRequest(
         @Size(max = 100, message = "Cidade deve ter no máximo 100 caracteres")
         String cidade,
 
-        Estado estado
+        State state
     ) {
         public AddressRequest {
             rua = rua == null ? null : rua.trim();

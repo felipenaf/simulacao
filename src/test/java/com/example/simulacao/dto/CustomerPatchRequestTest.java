@@ -126,7 +126,7 @@ class CustomerPatchRequestTest {
         assertNull(address.bairro());
         assertNull(address.cep());
         assertNull(address.cidade());
-        assertNull(address.estado());
+        assertNull(address.state());
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.example.simulacao.dto;
 
-import com.example.simulacao.entity.Estado;
+import com.example.simulacao.entity.State;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -26,7 +26,7 @@ class CustomerRequestTest {
             "Centro",
             "13330000",
             "Indaiatuba",
-            Estado.SP
+            State.SP
         );
     }
 
@@ -165,7 +165,7 @@ class CustomerRequestTest {
             "Centro",
             "13330000",
             "Indaiatuba",
-            Estado.SP
+            State.SP
         );
 
         var request = new CustomerRequest(
@@ -189,7 +189,7 @@ class CustomerRequestTest {
             "Centro",
             "13330000",
             "Indaiatuba",
-            Estado.SP
+            State.SP
         );
 
         var request = new CustomerRequest(
@@ -228,7 +228,7 @@ class CustomerRequestTest {
             "  Centro  ",
             " 13330000 ",
             " Indaiatuba ",
-            Estado.SP
+            State.SP
         );
 
         assertEquals("Rua das Flores", address.rua());
@@ -245,7 +245,7 @@ class CustomerRequestTest {
             "Centro",
             "13330000",
             "Indaiatuba",
-            Estado.SP
+            State.SP
         );
 
         var request = new CustomerRequest(
@@ -269,7 +269,7 @@ class CustomerRequestTest {
             "",
             "13330000",
             "Indaiatuba",
-            Estado.SP
+            State.SP
         );
 
         var request = new CustomerRequest(
@@ -293,7 +293,7 @@ class CustomerRequestTest {
             "Centro",
             "13330-000",
             "Indaiatuba",
-            Estado.SP
+            State.SP
         );
 
         var request = new CustomerRequest(
@@ -313,7 +313,7 @@ class CustomerRequestTest {
             "Centro",
             "133300001",
             "Indaiatuba",
-            Estado.SP
+            State.SP
         );
 
         var request = new CustomerRequest(

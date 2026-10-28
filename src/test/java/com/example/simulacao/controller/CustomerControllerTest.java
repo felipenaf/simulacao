@@ -3,7 +3,7 @@ package com.example.simulacao.controller;
 import com.example.simulacao.dto.CustomerPatchRequest;
 import com.example.simulacao.dto.CustomerRequest;
 import com.example.simulacao.dto.CustomerResponse;
-import com.example.simulacao.entity.Estado;
+import com.example.simulacao.entity.State;
 import com.example.simulacao.exception.CustomerNaoEncontradoException;
 import com.example.simulacao.exception.CustomerPossuiSimulacoesException;
 import com.example.simulacao.exception.CpfJaCadastradoException;
@@ -45,7 +45,7 @@ public class CustomerControllerTest {
                 "Centro",
                 "13330000",
                 "Indaiatuba",
-                Estado.SP
+                State.SP
             )
         );
 
@@ -83,7 +83,7 @@ public class CustomerControllerTest {
                 "Centro",
                 "13330000",
                 "Indaiatuba",
-                Estado.SP
+                State.SP
             )
         );
 
@@ -109,7 +109,7 @@ public class CustomerControllerTest {
                 "Centro",
                 "13330000",
                 "Indaiatuba",
-                Estado.SP
+                State.SP
             )
         );
 
@@ -122,7 +122,7 @@ public class CustomerControllerTest {
                 "Centro",
                 "13330000",
                 "Indaiatuba",
-                Estado.SP
+                State.SP
             )
         );
 
@@ -152,7 +152,7 @@ public class CustomerControllerTest {
                 "Centro",
                 "13330000",
                 "Indaiatuba",
-                Estado.SP
+                State.SP
             )
         );
 
@@ -180,7 +180,7 @@ public class CustomerControllerTest {
                 "Centro",
                 "13330000",
                 "Indaiatuba",
-                Estado.SP
+                State.SP
             )
         );
 
@@ -257,7 +257,7 @@ public class CustomerControllerTest {
                 "Centro",
                 "13330000",
                 "Indaiatuba",
-                Estado.SP
+                State.SP
             )
         );
 
@@ -270,7 +270,7 @@ public class CustomerControllerTest {
                 "Centro",
                 "13330000",
                 "Indaiatuba",
-                Estado.SP
+                State.SP
             )
         );
 
@@ -299,7 +299,7 @@ public class CustomerControllerTest {
                 "Centro",
                 "13330000",
                 "Indaiatuba",
-                Estado.SP
+                State.SP
             )
         );
 
@@ -327,7 +327,7 @@ public class CustomerControllerTest {
                 "Centro",
                 "13330000",
                 "Indaiatuba",
-                Estado.SP
+                State.SP
             )
         );
 

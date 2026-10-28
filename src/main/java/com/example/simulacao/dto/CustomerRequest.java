@@ -1,6 +1,6 @@
 package com.example.simulacao.dto;
 
-import com.example.simulacao.entity.Estado;
+import com.example.simulacao.entity.State;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -47,7 +47,7 @@ public record CustomerRequest(
         String cidade,
 
         @NotNull(message = "Estado inválido")
-        Estado estado
+        State state
     ) {
         public AddressRequest {
             rua = rua == null ? null : rua.trim();
