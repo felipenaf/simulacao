@@ -56,8 +56,7 @@ public class CustomerControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.cpf").value("12345678908"))
             .andExpect(jsonPath("$.name").value("Felipe Ferreira"))
-            .andExpect(content().contentType("application/json"))
-        ;
+            .andExpect(content().contentType("application/json"));
 
         verify(customerService).findById(1L);
     }
