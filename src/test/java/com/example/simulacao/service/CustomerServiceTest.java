@@ -586,11 +586,11 @@ public class CustomerServiceTest {
 
         List<Customer> customers = List.of(cli1, cli2, cli3);
 
-        List<String> nomes = customerService.calculaNomesCustomersParaCidadeEstado(
+        List<String> names = customerService.calculaNomesCustomersParaCidadeEstado(
             customers, "Belo Horizonte", Estado.MG.name()
         );
 
-        assertEquals(1, nomes.size());
-        assertEquals("Bruno Oliveira", nomes.getFirst());
+        assertEquals(1, names.size());
+        assertEquals("Bruno Oliveira", names.getFirst());
     }
 }
