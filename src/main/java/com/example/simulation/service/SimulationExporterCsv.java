@@ -12,14 +12,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
-public class ExportadorSimulacaoCsv implements ExportadorSimulacao{
+public class SimulationExporterCsv implements SimulationExporter {
     private final CsvMapper csvMapper = CsvMapper.builder()
         .addModule(new JavaTimeModule())
         .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         .build();
 
     @Override
-    public String formato() {
+    public String format() {
         return "csv";
     }
 
@@ -29,12 +29,12 @@ public class ExportadorSimulacaoCsv implements ExportadorSimulacao{
     }
 
     @Override
-    public String nomeArquivo(Long customerId) {
-        return "simulacoes_customer_" + customerId + "." +  this.formato();
+    public String filename(Long customerId) {
+        return "simulacoes_customer_" + customerId + "." +  this.format();
     }
 
     @Override
-    public byte[] exportar(
+    public byte[] export(
         List<SimulationResponse> simulations
     ) throws IOException {
         CsvSchema schema = csvMapper

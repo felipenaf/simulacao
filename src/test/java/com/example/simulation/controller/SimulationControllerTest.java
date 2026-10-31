@@ -84,7 +84,7 @@ class SimulationControllerTest {
             .thenReturn(new PageImpl<>(List.of(simulation)));
 
         when(exportadorFactory.buscar(eq(FormatoExportacao.CSV)))
-            .thenReturn(Optional.of(new ExportadorSimulacaoCsv()));
+            .thenReturn(Optional.of(new SimulationExporterCsv()));
 
         mockMvc.perform(get("/simulations/customers/1?formato=CSV&pagina=1"))
             .andExpect(status().isOk())
@@ -117,7 +117,7 @@ class SimulationControllerTest {
             .thenReturn(new PageImpl<>(List.of(simulation)));
 
         when(exportadorFactory.buscar(eq(FormatoExportacao.TXT)))
-            .thenReturn(Optional.of(new ExportadorSimulacaoTxt(new ExportadorSimulacaoCsv())));
+            .thenReturn(Optional.of(new SimulationExporterTxt(new SimulationExporterCsv())));
 
         mockMvc.perform(get("/simulations/customers/1?formato=TXT&pagina=1"))
             .andExpect(status().isOk())

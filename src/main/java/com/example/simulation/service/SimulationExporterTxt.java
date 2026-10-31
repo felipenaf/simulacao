@@ -7,15 +7,15 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class ExportadorSimulacaoTxt implements ExportadorSimulacao{
-    private final ExportadorSimulacaoCsv exportadorSimulacaoCsv;
+public class SimulationExporterTxt implements SimulationExporter {
+    private final SimulationExporterCsv exportadorSimulacaoCsv;
 
-    public ExportadorSimulacaoTxt(ExportadorSimulacaoCsv exportadorSimulacaoCsv) {
+    public SimulationExporterTxt(SimulationExporterCsv exportadorSimulacaoCsv) {
         this.exportadorSimulacaoCsv = exportadorSimulacaoCsv;
     }
 
     @Override
-    public String formato() {
+    public String format() {
         return "txt";
     }
 
@@ -25,14 +25,14 @@ public class ExportadorSimulacaoTxt implements ExportadorSimulacao{
     }
 
     @Override
-    public String nomeArquivo(Long customerId) {
-        return "simulacoes_customer_" + customerId + "." +  this.formato();
+    public String filename(Long customerId) {
+        return "simulacoes_customer_" + customerId + "." +  this.format();
     }
 
     @Override
-    public byte[] exportar(
+    public byte[] export(
         List<SimulationResponse> simulations
     ) throws IOException {
-        return exportadorSimulacaoCsv.exportar(simulations);
+        return exportadorSimulacaoCsv.export(simulations);
     }
 }

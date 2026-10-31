@@ -3,7 +3,7 @@ package com.example.simulation.controller;
 import com.example.simulation.dto.*;
 import com.example.simulation.enums.FormatoExportacao;
 import com.example.simulation.exception.CustomerNotFoundException;
-import com.example.simulation.service.ExportadorSimulacao;
+import com.example.simulation.service.SimulationExporter;
 import com.example.simulation.service.ExportadorSimulacaoFactory;
 import com.example.simulation.service.SimulationService;
 import jakarta.validation.Valid;
@@ -116,20 +116,20 @@ public class SimulationController {
         Long customerId,
         FormatoExportacao formato
     ) throws IOException {
-        Optional<ExportadorSimulacao> resultado = exportadorFactory.buscar(formato);
+        Optional<SimulationExporter> resultado = exportadorFactory.buscar(formato);
 
         if (resultado.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
-        ExportadorSimulacao exportador = resultado.get();
+        SimulationExporter exportador = resultado.get();
 
         return ResponseEntity.ok()
             .contentType(MediaType.parseMediaType(exportador.contentType()))
             .header(
                 HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + exportador.nomeArquivo(customerId) + "\""
+                "attachment; filename=\"" + exportador.filename(customerId) + "\""
             )
-            .body(exportador.exportar(simulations.getContent()));
+            .body(exportador.export(simulations.getContent()));
     }
 }
