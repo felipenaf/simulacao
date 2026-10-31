@@ -38,7 +38,7 @@ class SimulationControllerTest {
     private SimulationService simulationService;
 
     @MockitoBean
-    private ExportadorSimulacaoFactory exportadorFactory;
+    private SimulationExporterFactory exportadorFactory;
 
     // GET /simulations/customers/{id}
 

@@ -4,7 +4,7 @@ import com.example.simulation.dto.*;
 import com.example.simulation.enums.ExportFormat;
 import com.example.simulation.exception.CustomerNotFoundException;
 import com.example.simulation.service.SimulationExporter;
-import com.example.simulation.service.ExportadorSimulacaoFactory;
+import com.example.simulation.service.SimulationExporterFactory;
 import com.example.simulation.service.SimulationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -28,11 +28,11 @@ import java.util.Optional;
 @RequestMapping("/simulations")
 public class SimulationController {
     private final SimulationService simulationService;
-    private final ExportadorSimulacaoFactory exportadorFactory;
+    private final SimulationExporterFactory exportadorFactory;
 
     public SimulationController(
         SimulationService simulationService,
-        ExportadorSimulacaoFactory exportadorFactory
+        SimulationExporterFactory exportadorFactory
     ) {
         this.simulationService = simulationService;
         this.exportadorFactory = exportadorFactory;

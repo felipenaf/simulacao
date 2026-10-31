@@ -11,10 +11,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
-public class ExportadorSimulacaoFactory {
+public class SimulationExporterFactory {
     private final Map<String, SimulationExporter> exportadores;
 
-    public ExportadorSimulacaoFactory(
+    public SimulationExporterFactory(
         List<SimulationExporter> exportadores
     ) {
         this.exportadores = exportadores.stream()
