@@ -8,10 +8,10 @@ import java.util.List;
 
 @Component
 public class SimulationExporterTxt implements SimulationExporter {
-    private final SimulationExporterCsv exportadorSimulacaoCsv;
+    private final SimulationExporterCsv simulationExporterCsv;
 
-    public SimulationExporterTxt(SimulationExporterCsv exportadorSimulacaoCsv) {
-        this.exportadorSimulacaoCsv = exportadorSimulacaoCsv;
+    public SimulationExporterTxt(SimulationExporterCsv simulationExporterCsv) {
+        this.simulationExporterCsv = simulationExporterCsv;
     }
 
     @Override
@@ -33,6 +33,6 @@ public class SimulationExporterTxt implements SimulationExporter {
     public byte[] export(
         List<SimulationResponse> simulations
     ) throws IOException {
-        return exportadorSimulacaoCsv.export(simulations);
+        return simulationExporterCsv.export(simulations);
     }
 }
