@@ -12,26 +12,26 @@ import java.util.stream.Collectors;
 
 @Component
 public class SimulationExporterFactory {
-    private final Map<String, SimulationExporter> exportadores;
+    private final Map<String, SimulationExporter> exporters;
 
     public SimulationExporterFactory(
-        List<SimulationExporter> exportadores
+        List<SimulationExporter> exporters
     ) {
-        this.exportadores = exportadores.stream()
+        this.exporters = exporters.stream()
             .collect(Collectors.toMap(
-                exportador -> exportador.format().toLowerCase(Locale.ROOT),
-                // Function.identity() é a mesma coisa que exportador -> exportador
+                exporter -> exporter.format().toLowerCase(Locale.ROOT),
+                // Function.identity() is the same that exporter -> exporter
                 Function.identity()
             ));
     }
 
-    public Optional<SimulationExporter> buscar(ExportFormat formato) {
-        if (formato == null) {
+    public Optional<SimulationExporter> find(ExportFormat format) {
+        if (format == null) {
             return Optional.empty();
         }
 
         return Optional.ofNullable(
-            exportadores.get(formato.name().toLowerCase(Locale.ROOT))
+            exporters.get(format.name().toLowerCase(Locale.ROOT))
         );
     }
 }

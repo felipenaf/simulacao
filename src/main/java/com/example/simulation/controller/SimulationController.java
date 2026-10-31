@@ -116,7 +116,7 @@ public class SimulationController {
         Long customerId,
         ExportFormat formato
     ) throws IOException {
-        Optional<SimulationExporter> resultado = exportadorFactory.buscar(formato);
+        Optional<SimulationExporter> resultado = exportadorFactory.find(formato);
 
         if (resultado.isEmpty()) {
             return ResponseEntity.badRequest().build();

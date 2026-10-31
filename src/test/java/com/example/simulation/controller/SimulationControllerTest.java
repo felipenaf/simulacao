@@ -83,7 +83,7 @@ class SimulationControllerTest {
         when(simulationService.findByCustomerId(eq(1L), any(Pageable.class)))
             .thenReturn(new PageImpl<>(List.of(simulation)));
 
-        when(exportadorFactory.buscar(eq(ExportFormat.CSV)))
+        when(exportadorFactory.find(eq(ExportFormat.CSV)))
             .thenReturn(Optional.of(new SimulationExporterCsv()));
 
         mockMvc.perform(get("/simulations/customers/1?formato=CSV&pagina=1"))
@@ -116,7 +116,7 @@ class SimulationControllerTest {
         when(simulationService.findByCustomerId(eq(1L), any(Pageable.class)))
             .thenReturn(new PageImpl<>(List.of(simulation)));
 
-        when(exportadorFactory.buscar(eq(ExportFormat.TXT)))
+        when(exportadorFactory.find(eq(ExportFormat.TXT)))
             .thenReturn(Optional.of(new SimulationExporterTxt(new SimulationExporterCsv())));
 
         mockMvc.perform(get("/simulations/customers/1?formato=TXT&pagina=1"))
