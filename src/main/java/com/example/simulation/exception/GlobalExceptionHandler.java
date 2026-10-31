@@ -1,7 +1,7 @@
 package com.example.simulation.exception;
 
 import com.example.simulation.dto.ErrorResponse;
-import com.example.simulation.enums.FormatoExportacao;
+import com.example.simulation.enums.ExportFormat;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +30,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<?> handleValidation(MethodArgumentTypeMismatchException e) {
-        if (e.getRequiredType() == FormatoExportacao.class) {
-            String formatosPermitidos = Arrays.stream(FormatoExportacao.values())
+        if (e.getRequiredType() == ExportFormat.class) {
+            String formatosPermitidos = Arrays.stream(ExportFormat.values())
                 .map(Enum::name)
                 .collect(Collectors.joining(", "));
 

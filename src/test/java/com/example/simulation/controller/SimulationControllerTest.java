@@ -2,7 +2,7 @@ package com.example.simulation.controller;
 
 import com.example.simulation.dto.SimulationRequest;
 import com.example.simulation.dto.SimulationResponse;
-import com.example.simulation.enums.FormatoExportacao;
+import com.example.simulation.enums.ExportFormat;
 import com.example.simulation.exception.CustomerNotFoundException;
 import com.example.simulation.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -83,7 +83,7 @@ class SimulationControllerTest {
         when(simulationService.findByCustomerId(eq(1L), any(Pageable.class)))
             .thenReturn(new PageImpl<>(List.of(simulation)));
 
-        when(exportadorFactory.buscar(eq(FormatoExportacao.CSV)))
+        when(exportadorFactory.buscar(eq(ExportFormat.CSV)))
             .thenReturn(Optional.of(new SimulationExporterCsv()));
 
         mockMvc.perform(get("/simulations/customers/1?formato=CSV&pagina=1"))
@@ -116,7 +116,7 @@ class SimulationControllerTest {
         when(simulationService.findByCustomerId(eq(1L), any(Pageable.class)))
             .thenReturn(new PageImpl<>(List.of(simulation)));
 
-        when(exportadorFactory.buscar(eq(FormatoExportacao.TXT)))
+        when(exportadorFactory.buscar(eq(ExportFormat.TXT)))
             .thenReturn(Optional.of(new SimulationExporterTxt(new SimulationExporterCsv())));
 
         mockMvc.perform(get("/simulations/customers/1?formato=TXT&pagina=1"))

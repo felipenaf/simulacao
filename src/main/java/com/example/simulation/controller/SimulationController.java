@@ -1,7 +1,7 @@
 package com.example.simulation.controller;
 
 import com.example.simulation.dto.*;
-import com.example.simulation.enums.FormatoExportacao;
+import com.example.simulation.enums.ExportFormat;
 import com.example.simulation.exception.CustomerNotFoundException;
 import com.example.simulation.service.SimulationExporter;
 import com.example.simulation.service.ExportadorSimulacaoFactory;
@@ -74,7 +74,7 @@ public class SimulationController {
         @PathVariable Long customerId,
 
         @RequestParam(defaultValue = "JSON")
-        FormatoExportacao formato,
+        ExportFormat formato,
 
         @RequestParam(defaultValue = "1")
         @Min(value = 1, message = "A página deve ser maior ou igual a 1")
@@ -114,7 +114,7 @@ public class SimulationController {
     private ResponseEntity<byte[]> montaRespostaExportacao(
         Page<SimulationResponse> simulations,
         Long customerId,
-        FormatoExportacao formato
+        ExportFormat formato
     ) throws IOException {
         Optional<SimulationExporter> resultado = exportadorFactory.buscar(formato);
 

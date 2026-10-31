@@ -1,6 +1,6 @@
 package com.example.simulation.service;
 
-import com.example.simulation.enums.FormatoExportacao;
+import com.example.simulation.enums.ExportFormat;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class ExportadorSimulacaoFactory {
             ));
     }
 
-    public Optional<SimulationExporter> buscar(FormatoExportacao formato) {
+    public Optional<SimulationExporter> buscar(ExportFormat formato) {
         if (formato == null) {
             return Optional.empty();
         }
