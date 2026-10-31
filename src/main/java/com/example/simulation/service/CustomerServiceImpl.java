@@ -46,11 +46,11 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         Address address = Address.builder()
-            .rua(request.address().rua())
-            .numero(request.address().numero())
-            .bairro(request.address().bairro())
-            .cep(request.address().cep())
-            .cidade(request.address().cidade())
+            .street(request.address().street())
+            .number(request.address().number())
+            .neighborhood(request.address().neighborhood())
+            .postalCode(request.address().postalCode())
+            .city(request.address().city())
             .state(request.address().state())
             .build();
 
@@ -125,29 +125,29 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         if (request.address() != null) {
-            if (request.address().rua() != null) {
+            if (request.address().street() != null) {
                 existingCustomer.getAddress()
-                    .setRua(request.address().rua());
+                    .setStreet(request.address().street());
             }
 
-            if (request.address().numero() != null) {
+            if (request.address().number() != null) {
                 existingCustomer.getAddress()
-                    .setNumero(request.address().numero());
+                    .setNumber(request.address().number());
             }
 
-            if (request.address().bairro() != null) {
+            if (request.address().neighborhood() != null) {
                 existingCustomer.getAddress()
-                    .setBairro(request.address().bairro());
+                    .setNeighborhood(request.address().neighborhood());
             }
 
-            if (request.address().cep() != null) {
+            if (request.address().postalCode() != null) {
                 existingCustomer.getAddress()
-                    .setCep(request.address().cep());
+                    .setPostalCode(request.address().postalCode());
             }
 
-            if (request.address().cidade() != null) {
+            if (request.address().city() != null) {
                 existingCustomer.getAddress()
-                    .setCidade(request.address().cidade());
+                    .setCity(request.address().city());
             }
 
             if (request.address().state() != null) {
@@ -184,11 +184,11 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerExistente.setCpf(request.cpf());
         customerExistente.setName(request.name());
-        customerExistente.getAddress().setRua(request.address().rua());
-        customerExistente.getAddress().setNumero(request.address().numero());
-        customerExistente.getAddress().setBairro(request.address().bairro());
-        customerExistente.getAddress().setCep(request.address().cep());
-        customerExistente.getAddress().setCidade(request.address().cidade());
+        customerExistente.getAddress().setStreet(request.address().street());
+        customerExistente.getAddress().setNumber(request.address().number());
+        customerExistente.getAddress().setNeighborhood(request.address().neighborhood());
+        customerExistente.getAddress().setPostalCode(request.address().postalCode());
+        customerExistente.getAddress().setCity(request.address().city());
         customerExistente.getAddress().setState(request.address().state());
 
         return CustomerResponse.from(customerExistente);
@@ -215,16 +215,16 @@ public class CustomerServiceImpl implements CustomerService {
 
     /**
      * TODO: Pass this to Repository
-     * Calcula uma lista com os nomes dos customers que moram em uma determinada cidade e estado.
+     * Calcula uma lista com os nomes dos customers que moram em uma determinada city e estado.
      *
      * @param customers lista dos customers usados
     como base para o cálculo
-     * @param cidade cidade dos customers a serem
+     * @param cidade city dos customers a serem
     recuperados
-     * @param estado estado da cidade dos customers
+     * @param estado estado da city dos customers
     a serem recuperados
      * @return Lista com os nomes dos customers
-    da lista fornecida que moram na cidade e estado fornecida.
+    da lista fornecida que moram na city e estado fornecida.
      */
     public List<String> calculaNomesCustomersParaCidadeEstado(
         List<Customer> customers,
@@ -232,7 +232,7 @@ public class CustomerServiceImpl implements CustomerService {
         String estado
     ) {
         return customers.stream()
-            .filter(customer -> customer.getAddress().getCidade().equals(cidade))
+            .filter(customer -> customer.getAddress().getCity().equals(cidade))
             .filter(customer -> customer.getAddress().getState().equals(State.valueOf(estado)))
             .map(Customer::getName)
             .toList();

@@ -9,11 +9,11 @@ public record CustomerResponse(
     AddressResponse address
 ) {
     public record AddressResponse(
-        String rua,
-        Integer numero,
-        String bairro,
-        String cep,
-        String cidade,
+        String street,
+        Integer number,
+        String neighborhood,
+        String postalCode,
+        String city,
         State state
     ) {}
 
@@ -22,11 +22,11 @@ public record CustomerResponse(
             customer.getCpf(),
             customer.getName(),
             new AddressResponse(
-                customer.getAddress().getRua(),
-                customer.getAddress().getNumero(),
-                customer.getAddress().getBairro(),
-                customer.getAddress().getCep(),
-                customer.getAddress().getCidade(),
+                customer.getAddress().getStreet(),
+                customer.getAddress().getNumber(),
+                customer.getAddress().getNeighborhood(),
+                customer.getAddress().getPostalCode(),
+                customer.getAddress().getCity(),
                 customer.getAddress().getState()
             )
         );

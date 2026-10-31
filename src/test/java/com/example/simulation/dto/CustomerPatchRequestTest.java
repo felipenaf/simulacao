@@ -90,10 +90,10 @@ class CustomerPatchRequestTest {
             null
         );
 
-        assertEquals("Rua das Flores", address.rua());
-        assertEquals("Centro", address.bairro());
-        assertEquals("13330000", address.cep());
-        assertEquals("Indaiatuba", address.cidade());
+        assertEquals("Rua das Flores", address.street());
+        assertEquals("Centro", address.neighborhood());
+        assertEquals("13330000", address.postalCode());
+        assertEquals("Indaiatuba", address.city());
     }
 
     @Test
@@ -107,7 +107,7 @@ class CustomerPatchRequestTest {
             null
         );
 
-        assertEquals("13330000", address.cep());
+        assertEquals("13330000", address.postalCode());
     }
 
     @Test
@@ -121,11 +121,11 @@ class CustomerPatchRequestTest {
             null
         );
 
-        assertNull(address.rua());
-        assertNull(address.numero());
-        assertNull(address.bairro());
-        assertNull(address.cep());
-        assertNull(address.cidade());
+        assertNull(address.street());
+        assertNull(address.number());
+        assertNull(address.neighborhood());
+        assertNull(address.postalCode());
+        assertNull(address.city());
         assertNull(address.state());
     }
 

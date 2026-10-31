@@ -57,11 +57,11 @@ public class CustomerServiceTest {
 
     private Customer criarCustomer(Long id) {
         Address address = Address.builder()
-            .rua("Rua Antiga")
-            .numero(10)
-            .bairro("Bairro Antigo")
-            .cep("11111-111")
-            .cidade("Santos")
+            .street("Rua Antiga")
+            .number(10)
+            .neighborhood("Bairro Antigo")
+            .postalCode("11111-111")
+            .city("Santos")
             .state(State.PA)
             .build();
 
@@ -96,11 +96,11 @@ public class CustomerServiceTest {
         assertEquals(request.cpf(), salvo.getCpf());
         assertEquals(request.name(), salvo.getName());
 
-        assertEquals(request.address().rua(), salvo.getAddress().getRua());
-        assertEquals(request.address().numero(), salvo.getAddress().getNumero());
-        assertEquals(request.address().bairro(), salvo.getAddress().getBairro());
-        assertEquals(request.address().cep(), salvo.getAddress().getCep());
-        assertEquals(request.address().cidade(), salvo.getAddress().getCidade());
+        assertEquals(request.address().street(), salvo.getAddress().getStreet());
+        assertEquals(request.address().number(), salvo.getAddress().getNumber());
+        assertEquals(request.address().neighborhood(), salvo.getAddress().getNeighborhood());
+        assertEquals(request.address().postalCode(), salvo.getAddress().getPostalCode());
+        assertEquals(request.address().city(), salvo.getAddress().getCity());
         assertEquals(request.address().state(), salvo.getAddress().getState());
     }
 
@@ -113,11 +113,11 @@ public class CustomerServiceTest {
 
         assertEquals(request.cpf(), response.cpf());
         assertEquals(request.name(), response.name());
-        assertEquals(request.address().rua(), response.address().rua());
-        assertEquals(request.address().numero(), response.address().numero());
-        assertEquals(request.address().bairro(), response.address().bairro());
-        assertEquals(request.address().cep(), response.address().cep());
-        assertEquals(request.address().cidade(), response.address().cidade());
+        assertEquals(request.address().street(), response.address().street());
+        assertEquals(request.address().number(), response.address().number());
+        assertEquals(request.address().neighborhood(), response.address().neighborhood());
+        assertEquals(request.address().postalCode(), response.address().postalCode());
+        assertEquals(request.address().city(), response.address().city());
         assertEquals(request.address().state(), response.address().state());
     }
 
@@ -160,11 +160,11 @@ public class CustomerServiceTest {
         assertNotNull(response);
         assertEquals(response.cpf(), customer.getCpf());
         assertEquals(response.name(), customer.getName());
-        assertEquals(response.address().rua(), customer.getAddress().getRua());
-        assertEquals(response.address().numero(), customer.getAddress().getNumero());
-        assertEquals(response.address().bairro(), customer.getAddress().getBairro());
-        assertEquals(response.address().cep(), customer.getAddress().getCep());
-        assertEquals(response.address().cidade(), customer.getAddress().getCidade());
+        assertEquals(response.address().street(), customer.getAddress().getStreet());
+        assertEquals(response.address().number(), customer.getAddress().getNumber());
+        assertEquals(response.address().neighborhood(), customer.getAddress().getNeighborhood());
+        assertEquals(response.address().postalCode(), customer.getAddress().getPostalCode());
+        assertEquals(response.address().city(), customer.getAddress().getCity());
         assertEquals(response.address().state(), customer.getAddress().getState());
     }
 
@@ -204,20 +204,20 @@ public class CustomerServiceTest {
 
         assertEquals(response.getContent().getFirst().cpf(), customers.getFirst().getCpf());
         assertEquals(response.getContent().getFirst().name(), customers.getFirst().getName());
-        assertEquals(response.getContent().getFirst().address().rua(), customers.getFirst().getAddress().getRua());
-        assertEquals(response.getContent().getFirst().address().numero(), customers.getFirst().getAddress().getNumero());
-        assertEquals(response.getContent().getFirst().address().bairro(), customers.getFirst().getAddress().getBairro());
-        assertEquals(response.getContent().getFirst().address().cep(), customers.getFirst().getAddress().getCep());
-        assertEquals(response.getContent().getFirst().address().cidade(), customers.getFirst().getAddress().getCidade());
+        assertEquals(response.getContent().getFirst().address().street(), customers.getFirst().getAddress().getStreet());
+        assertEquals(response.getContent().getFirst().address().number(), customers.getFirst().getAddress().getNumber());
+        assertEquals(response.getContent().getFirst().address().neighborhood(), customers.getFirst().getAddress().getNeighborhood());
+        assertEquals(response.getContent().getFirst().address().postalCode(), customers.getFirst().getAddress().getPostalCode());
+        assertEquals(response.getContent().getFirst().address().city(), customers.getFirst().getAddress().getCity());
         assertEquals(response.getContent().getFirst().address().state(), customers.getFirst().getAddress().getState());
 
         assertEquals(response.getContent().getLast().cpf(), customers.getLast().getCpf());
         assertEquals(response.getContent().getLast().name(), customers.getLast().getName());
-        assertEquals(response.getContent().getLast().address().rua(), customers.getLast().getAddress().getRua());
-        assertEquals(response.getContent().getLast().address().numero(), customers.getLast().getAddress().getNumero());
-        assertEquals(response.getContent().getLast().address().bairro(), customers.getLast().getAddress().getBairro());
-        assertEquals(response.getContent().getLast().address().cep(), customers.getLast().getAddress().getCep());
-        assertEquals(response.getContent().getLast().address().cidade(), customers.getLast().getAddress().getCidade());
+        assertEquals(response.getContent().getLast().address().street(), customers.getLast().getAddress().getStreet());
+        assertEquals(response.getContent().getLast().address().number(), customers.getLast().getAddress().getNumber());
+        assertEquals(response.getContent().getLast().address().neighborhood(), customers.getLast().getAddress().getNeighborhood());
+        assertEquals(response.getContent().getLast().address().postalCode(), customers.getLast().getAddress().getPostalCode());
+        assertEquals(response.getContent().getLast().address().city(), customers.getLast().getAddress().getCity());
         assertEquals(response.getContent().getLast().address().state(), customers.getLast().getAddress().getState());
     }
 
@@ -286,11 +286,11 @@ public class CustomerServiceTest {
 
         assertEquals("12345678900", existente.getCpf());
         assertEquals("João da Silva", existente.getName());
-        assertEquals("Rua das Flores", existente.getAddress().getRua());
-        assertEquals(123, existente.getAddress().getNumero());
-        assertEquals("Centro", existente.getAddress().getBairro());
-        assertEquals("13000000", existente.getAddress().getCep());
-        assertEquals("Campinas", existente.getAddress().getCidade());
+        assertEquals("Rua das Flores", existente.getAddress().getStreet());
+        assertEquals(123, existente.getAddress().getNumber());
+        assertEquals("Centro", existente.getAddress().getNeighborhood());
+        assertEquals("13000000", existente.getAddress().getPostalCode());
+        assertEquals("Campinas", existente.getAddress().getCity());
         assertEquals(State.SP, existente.getAddress().getState());
 
         assertEquals("12345678900", response.cpf());
@@ -310,8 +310,8 @@ public class CustomerServiceTest {
 
         assertEquals("Novo Nome", existente.getName());
         assertEquals("11111111111", existente.getCpf());
-        assertEquals("Rua Antiga", existente.getAddress().getRua());
-        assertEquals("Santos", existente.getAddress().getCidade());
+        assertEquals("Rua Antiga", existente.getAddress().getStreet());
+        assertEquals("Santos", existente.getAddress().getCity());
     }
 
     @Test
@@ -325,7 +325,7 @@ public class CustomerServiceTest {
 
         assertEquals("11111111111", existente.getCpf());
         assertEquals("Felipe Antigo", existente.getName());
-        assertEquals("Rua Antiga", existente.getAddress().getRua());
+        assertEquals("Rua Antiga", existente.getAddress().getStreet());
 
         verify(customerRepository, never()).findByCpf(any());
     }
@@ -386,11 +386,11 @@ public class CustomerServiceTest {
         assertNotNull(response);
         assertEquals(request.cpf(), existente.getCpf());
         assertEquals(request.name(), existente.getName());
-        assertEquals(request.address().rua(), existente.getAddress().getRua());
-        assertEquals(request.address().numero(), existente.getAddress().getNumero());
-        assertEquals(request.address().bairro(), existente.getAddress().getBairro());
-        assertEquals(request.address().cep(), existente.getAddress().getCep());
-        assertEquals(request.address().cidade(), existente.getAddress().getCidade());
+        assertEquals(request.address().street(), existente.getAddress().getStreet());
+        assertEquals(request.address().number(), existente.getAddress().getNumber());
+        assertEquals(request.address().neighborhood(), existente.getAddress().getNeighborhood());
+        assertEquals(request.address().postalCode(), existente.getAddress().getPostalCode());
+        assertEquals(request.address().city(), existente.getAddress().getCity());
         assertEquals(request.address().state(), existente.getAddress().getState());
 
         assertEquals(request.cpf(), response.cpf());
@@ -476,7 +476,7 @@ public class CustomerServiceTest {
 
         assertEquals("11111111111", existente.getCpf());
         assertEquals("Felipe Antigo", existente.getName());
-        assertEquals("Rua Antiga", existente.getAddress().getRua());
+        assertEquals("Rua Antiga", existente.getAddress().getStreet());
     }
 
     @Test
@@ -546,11 +546,11 @@ public class CustomerServiceTest {
             .name("Bruno Oliveira")
             .cpf("98765432100")
             .address(Address.builder()
-                .rua("Rua da Bahia")
-                .numero(1148)
-                .bairro("Centro")
-                .cep("30160011")
-                .cidade("Belo Horizonte")
+                .street("Rua da Bahia")
+                .number(1148)
+                .neighborhood("Centro")
+                .postalCode("30160011")
+                .city("Belo Horizonte")
                 .state(State.MG)
                 .build())
             .build();
@@ -559,11 +559,11 @@ public class CustomerServiceTest {
             .name("Ana Souza")
             .cpf("12345678909")
             .address(Address.builder()
-                .rua("Avenida Paulista")
-                .numero(1578)
-                .bairro("Bela Vista")
-                .cep("01310200")
-                .cidade("São Paulo")
+                .street("Avenida Paulista")
+                .number(1578)
+                .neighborhood("Bela Vista")
+                .postalCode("01310200")
+                .city("São Paulo")
                 .state(State.SP)
                 .build())
             .build();
@@ -572,11 +572,11 @@ public class CustomerServiceTest {
             .name("Carla Mendes")
             .cpf("45678912311")
             .address(Address.builder()
-                .rua("Rua Voluntários da Pátria")
-                .numero(45)
-                .bairro("Botafogo")
-                .cep("22270000")
-                .cidade("Rio de Janeiro")
+                .street("Rua Voluntários da Pátria")
+                .number(45)
+                .neighborhood("Botafogo")
+                .postalCode("22270000")
+                .city("Rio de Janeiro")
                 .state(State.RJ)
                 .build())
             .build();

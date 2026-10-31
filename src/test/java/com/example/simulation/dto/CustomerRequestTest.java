@@ -231,10 +231,10 @@ class CustomerRequestTest {
             State.SP
         );
 
-        assertEquals("Rua das Flores", address.rua());
-        assertEquals("Centro", address.bairro());
-        assertEquals("13330000", address.cep());
-        assertEquals("Indaiatuba", address.cidade());
+        assertEquals("Rua das Flores", address.street());
+        assertEquals("Centro", address.neighborhood());
+        assertEquals("13330000", address.postalCode());
+        assertEquals("Indaiatuba", address.city());
     }
 
     @Test
@@ -302,7 +302,7 @@ class CustomerRequestTest {
             address
         );
 
-        assertEquals("13330000", request.address().cep());
+        assertEquals("13330000", request.address().postalCode());
     }
 
     @Test

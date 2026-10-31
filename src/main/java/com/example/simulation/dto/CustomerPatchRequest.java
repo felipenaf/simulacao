@@ -22,27 +22,27 @@ public record CustomerPatchRequest(
 
     public record AddressRequest(
         @Size(max = 150, message = "Rua deve ter no máximo 150 caracteres")
-        String rua,
+        String street,
 
         @Positive(message = "Número deve ser positivo")
-        Integer numero,
+        Integer number,
 
         @Size(max = 100, message = "Bairro deve ter no máximo 100 caracteres")
-        String bairro,
+        String neighborhood,
 
         @Size(min = 8, max = 8, message = "CEP deve conter exatamente 8 caracteres")
-        String cep,
+        String postalCode,
 
         @Size(max = 100, message = "Cidade deve ter no máximo 100 caracteres")
-        String cidade,
+        String city,
 
         State state
     ) {
         public AddressRequest {
-            rua = rua == null ? null : rua.trim();
-            bairro = bairro == null ? null : bairro.trim();
-            cep = cep == null ? null : cep.replace("-", "").trim();
-            cidade = cidade == null ? null : cidade.trim();
+            street = street == null ? null : street.trim();
+            neighborhood = neighborhood == null ? null : neighborhood.trim();
+            postalCode = postalCode == null ? null : postalCode.replace("-", "").trim();
+            city = city == null ? null : city.trim();
         }
     }
 }
