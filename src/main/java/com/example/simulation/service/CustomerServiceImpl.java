@@ -8,7 +8,7 @@ import com.example.simulation.entity.Address;
 import com.example.simulation.entity.State;
 import com.example.simulation.exception.CustomerNaoEncontradoException;
 import com.example.simulation.exception.CustomerHaveSimulationsException;
-import com.example.simulation.exception.CpfJaCadastradoException;
+import com.example.simulation.exception.CpfAlreadyAssociatedException;
 import com.example.simulation.repository.CustomerRepository;
 import com.example.simulation.repository.SimulationRepository;
 import jakarta.transaction.Transactional;
@@ -42,7 +42,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         if (customerRepository.findByCpf(request.cpf()).isPresent()) {
-            throw new CpfJaCadastradoException("CPF já cadastrado");
+            throw new CpfAlreadyAssociatedException("CPF já cadastrado");
         }
 
         Address address = Address.builder()
@@ -114,7 +114,7 @@ public class CustomerServiceImpl implements CustomerService {
             customerRepository.findByCpf(request.cpf())
                 .filter(customer -> !customer.getId().equals(existingCustomer.getId()))
                 .ifPresent(customer -> {
-                    throw new CpfJaCadastradoException("CPF já cadastrado");
+                    throw new CpfAlreadyAssociatedException("CPF já cadastrado");
                 });
 
             existingCustomer.setCpf(request.cpf());
@@ -179,7 +179,7 @@ public class CustomerServiceImpl implements CustomerService {
             // Quando o id é diferente ele mantém na lista
             .filter(customerCpf -> !customerCpf.getId().equals(customerExistente.getId()))
             .ifPresent(customerCpf -> {
-                throw new CpfJaCadastradoException("CPF já cadastrado");
+                throw new CpfAlreadyAssociatedException("CPF já cadastrado");
             });
 
         customerExistente.setCpf(request.cpf());

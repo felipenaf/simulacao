@@ -6,7 +6,7 @@ import com.example.simulation.dto.CustomerResponse;
 import com.example.simulation.entity.State;
 import com.example.simulation.exception.CustomerNaoEncontradoException;
 import com.example.simulation.exception.CustomerHaveSimulationsException;
-import com.example.simulation.exception.CpfJaCadastradoException;
+import com.example.simulation.exception.CpfAlreadyAssociatedException;
 import com.example.simulation.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -157,7 +157,7 @@ public class CustomerControllerTest {
         );
 
         when(customerService.save(any(CustomerRequest.class)))
-            .thenThrow(CpfJaCadastradoException.class);
+            .thenThrow(CpfAlreadyAssociatedException.class);
 
         mockMvc.perform(
             post("/customers")
@@ -234,7 +234,7 @@ public class CustomerControllerTest {
         );
 
         when(customerService.patch(eq(1L), any(CustomerPatchRequest.class)))
-            .thenThrow(CpfJaCadastradoException.class);
+            .thenThrow(CpfAlreadyAssociatedException.class);
 
         mockMvc.perform(
             patch("/customers/1")
@@ -332,7 +332,7 @@ public class CustomerControllerTest {
         );
 
         when(customerService.put(eq(1L), any(CustomerRequest.class)))
-            .thenThrow(CpfJaCadastradoException.class);
+            .thenThrow(CpfAlreadyAssociatedException.class);
 
         mockMvc.perform(
             put("/customers/1")

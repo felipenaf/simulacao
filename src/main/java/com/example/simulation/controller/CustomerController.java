@@ -3,7 +3,7 @@ package com.example.simulation.controller;
 import com.example.simulation.dto.*;
 import com.example.simulation.exception.CustomerNaoEncontradoException;
 import com.example.simulation.exception.CustomerHaveSimulationsException;
-import com.example.simulation.exception.CpfJaCadastradoException;
+import com.example.simulation.exception.CpfAlreadyAssociatedException;
 import com.example.simulation.service.CustomerService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -35,7 +35,7 @@ public class CustomerController {
             return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
-        } catch (CpfJaCadastradoException e) {
+        } catch (CpfAlreadyAssociatedException e) {
             return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(e.getMessage()));
@@ -108,7 +108,7 @@ public class CustomerController {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .build();
-        } catch (CpfJaCadastradoException e) {
+        } catch (CpfAlreadyAssociatedException e) {
             log.error(e.getMessage());
 
             return ResponseEntity
@@ -137,7 +137,7 @@ public class CustomerController {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .build();
-        } catch (CpfJaCadastradoException e) {
+        } catch (CpfAlreadyAssociatedException e) {
             log.error(e.getMessage());
 
             return ResponseEntity

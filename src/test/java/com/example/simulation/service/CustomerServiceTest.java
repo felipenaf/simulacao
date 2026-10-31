@@ -6,7 +6,7 @@ import com.example.simulation.dto.CustomerResponse;
 import com.example.simulation.entity.*;
 import com.example.simulation.exception.CustomerNaoEncontradoException;
 import com.example.simulation.exception.CustomerHaveSimulationsException;
-import com.example.simulation.exception.CpfJaCadastradoException;
+import com.example.simulation.exception.CpfAlreadyAssociatedException;
 import com.example.simulation.repository.CustomerRepository;
 import com.example.simulation.repository.SimulationRepository;
 import org.junit.jupiter.api.Test;
@@ -128,8 +128,8 @@ public class CustomerServiceTest {
         when(customerRepository.findByCpf(request.cpf()))
             .thenReturn(Optional.of(Customer.builder().cpf(request.cpf()).build()));
 
-        CpfJaCadastradoException ex = assertThrows(
-            CpfJaCadastradoException.class,
+        CpfAlreadyAssociatedException ex = assertThrows(
+            CpfAlreadyAssociatedException.class,
             () -> customerService.save(request)
         );
 
@@ -361,7 +361,7 @@ public class CustomerServiceTest {
         CustomerPatchRequest request = new CustomerPatchRequest("99999999999", "Novo Nome", null);
 
         assertThrows(
-            CpfJaCadastradoException.class,
+            CpfAlreadyAssociatedException.class,
             () -> customerService.patch(1L, request)
         );
 
@@ -470,7 +470,7 @@ public class CustomerServiceTest {
             .thenReturn(Optional.of(outro));
 
         assertThrows(
-            CpfJaCadastradoException.class,
+            CpfAlreadyAssociatedException.class,
             () -> customerService.put(1L, request)
         );
 
