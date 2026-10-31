@@ -3,7 +3,7 @@ package com.example.simulation.controller;
 import com.example.simulation.dto.SimulationRequest;
 import com.example.simulation.dto.SimulationResponse;
 import com.example.simulation.enums.FormatoExportacao;
-import com.example.simulation.exception.CustomerNaoEncontradoException;
+import com.example.simulation.exception.CustomerNotFoundException;
 import com.example.simulation.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -169,7 +169,7 @@ class SimulationControllerTest {
     @Test
     void deveRetornarNotFoundEmCasoDeCustomerNaoExisteNoGet() throws Exception {
         when(simulationService.findByCustomerId(eq(1L), any(Pageable.class)))
-            .thenThrow(new CustomerNaoEncontradoException("Customer não encontrado"));
+            .thenThrow(new CustomerNotFoundException("Customer não encontrado"));
 
         mockMvc.perform(get("/simulations/customers/1"))
             .andExpect(status().isNotFound());
@@ -228,7 +228,7 @@ class SimulationControllerTest {
             .toList();
 
         when(simulationService.save(eq(1L), anyList()))
-            .thenThrow(new CustomerNaoEncontradoException("Customer não encontrado"));
+            .thenThrow(new CustomerNotFoundException("Customer não encontrado"));
 
         mockMvc.perform(post("/simulations/customers/1")
             .content(new ObjectMapper().writeValueAsString(requests))

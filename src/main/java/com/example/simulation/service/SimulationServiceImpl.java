@@ -4,7 +4,7 @@ import com.example.simulation.dto.SimulationRequest;
 import com.example.simulation.dto.SimulationResponse;
 import com.example.simulation.entity.Customer;
 import com.example.simulation.entity.Simulation;
-import com.example.simulation.exception.CustomerNaoEncontradoException;
+import com.example.simulation.exception.CustomerNotFoundException;
 import com.example.simulation.repository.CustomerRepository;
 import com.example.simulation.repository.SimulationRepository;
 import jakarta.transaction.Transactional;
@@ -43,7 +43,7 @@ public class SimulationServiceImpl implements SimulationService {
 
         Customer customer = customerRepository.findById(customerId)
             .orElseThrow(() ->
-                new CustomerNaoEncontradoException("Customer não encontrado")
+                new CustomerNotFoundException("Customer não encontrado")
             );
 
         List<Simulation> simulations = requests.stream()
@@ -80,7 +80,7 @@ public class SimulationServiceImpl implements SimulationService {
 
         Customer customer = customerRepository.findById(customerId)
             .orElseThrow(() ->
-                new CustomerNaoEncontradoException("Customer não encontrado")
+                new CustomerNotFoundException("Customer não encontrado")
             );
 
         return simulationRepository

@@ -6,7 +6,7 @@ import com.example.simulation.dto.CustomerResponse;
 import com.example.simulation.entity.Customer;
 import com.example.simulation.entity.Address;
 import com.example.simulation.entity.State;
-import com.example.simulation.exception.CustomerNaoEncontradoException;
+import com.example.simulation.exception.CustomerNotFoundException;
 import com.example.simulation.exception.CustomerHaveSimulationsException;
 import com.example.simulation.exception.CpfAlreadyAssociatedException;
 import com.example.simulation.repository.CustomerRepository;
@@ -77,7 +77,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customer = customerRepository.findById(id)
             .orElseThrow(() ->
-                new CustomerNaoEncontradoException("Customer não encontrado: " + id)
+                new CustomerNotFoundException("Customer não encontrado: " + id)
             );
 
         return CustomerResponse.from(customer);
@@ -107,7 +107,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer existingCustomer = customerRepository.findById(id)
             .orElseThrow(() ->
-                new CustomerNaoEncontradoException("Customer não encontrado: " + id)
+                new CustomerNotFoundException("Customer não encontrado: " + id)
             );
 
         if (request.cpf() != null) {
@@ -172,7 +172,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customerExistente = customerRepository.findById(id)
             .orElseThrow(() ->
-                new CustomerNaoEncontradoException("Customer não encontrado: " + id)
+                new CustomerNotFoundException("Customer não encontrado: " + id)
             );
 
         customerRepository.findByCpf(request.cpf())
@@ -203,7 +203,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customerExistente = customerRepository.findById(id)
             .orElseThrow(() ->
-                new CustomerNaoEncontradoException("Customer não encontrado: " + id)
+                new CustomerNotFoundException("Customer não encontrado: " + id)
             );
 
         if (!simulationRepository.findByCustomer(customerExistente, PageRequest.of(0, 1)).isEmpty()) {

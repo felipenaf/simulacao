@@ -1,7 +1,7 @@
 package com.example.simulation.controller;
 
 import com.example.simulation.dto.*;
-import com.example.simulation.exception.CustomerNaoEncontradoException;
+import com.example.simulation.exception.CustomerNotFoundException;
 import com.example.simulation.exception.CustomerHaveSimulationsException;
 import com.example.simulation.exception.CpfAlreadyAssociatedException;
 import com.example.simulation.service.CustomerService;
@@ -52,7 +52,7 @@ public class CustomerController {
     public ResponseEntity<CustomerResponse> findById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(customerService.findById(id));
-        } catch (CustomerNaoEncontradoException e) {
+        } catch (CustomerNotFoundException e) {
             log.error(e.getMessage());
 
             return ResponseEntity
@@ -102,7 +102,7 @@ public class CustomerController {
         try {
             CustomerResponse response = customerService.patch(id, request);
             return ResponseEntity.ok().body(response);
-        } catch (CustomerNaoEncontradoException e) {
+        } catch (CustomerNotFoundException e) {
             log.error(e.getMessage());
 
             return ResponseEntity
@@ -131,7 +131,7 @@ public class CustomerController {
         try {
             CustomerResponse response = customerService.put(id, request);
             return ResponseEntity.ok().body(response);
-        } catch (CustomerNaoEncontradoException e) {
+        } catch (CustomerNotFoundException e) {
             log.error(e.getMessage());
 
             return ResponseEntity
@@ -157,7 +157,7 @@ public class CustomerController {
         try {
             customerService.delete(id);
             return ResponseEntity.noContent().build();
-        } catch (CustomerNaoEncontradoException e) {
+        } catch (CustomerNotFoundException e) {
             log.error(e.getMessage());
 
             return ResponseEntity

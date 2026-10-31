@@ -4,7 +4,7 @@ import com.example.simulation.dto.SimulationRequest;
 import com.example.simulation.dto.SimulationResponse;
 import com.example.simulation.entity.Customer;
 import com.example.simulation.entity.Simulation;
-import com.example.simulation.exception.CustomerNaoEncontradoException;
+import com.example.simulation.exception.CustomerNotFoundException;
 import com.example.simulation.repository.CustomerRepository;
 import com.example.simulation.repository.SimulationRepository;
 import org.junit.jupiter.api.Test;
@@ -196,7 +196,7 @@ public class SimulationServiceTest {
             .thenReturn(Optional.empty());
 
         assertThrows(
-            CustomerNaoEncontradoException.class,
+            CustomerNotFoundException.class,
             () -> simulationService.save(1L, requests)
         );
 
@@ -209,7 +209,7 @@ public class SimulationServiceTest {
             .thenReturn(Optional.empty());
 
         assertThrows(
-            CustomerNaoEncontradoException.class,
+            CustomerNotFoundException.class,
             () -> simulationService.save(1L, List.of())
         );
 
@@ -305,7 +305,7 @@ public class SimulationServiceTest {
     @Test
     void deveLancarCustomerNaoEncontradoExceptionAoConsultarSimulacao() {
         assertThrows(
-            CustomerNaoEncontradoException.class,
+            CustomerNotFoundException.class,
             () -> simulationService.findByCustomerId(1L, PageRequest.of(0, 10))
         );
     }

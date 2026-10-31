@@ -4,7 +4,7 @@ import com.example.simulation.dto.CustomerPatchRequest;
 import com.example.simulation.dto.CustomerRequest;
 import com.example.simulation.dto.CustomerResponse;
 import com.example.simulation.entity.State;
-import com.example.simulation.exception.CustomerNaoEncontradoException;
+import com.example.simulation.exception.CustomerNotFoundException;
 import com.example.simulation.exception.CustomerHaveSimulationsException;
 import com.example.simulation.exception.CpfAlreadyAssociatedException;
 import com.example.simulation.service.CustomerService;
@@ -64,7 +64,7 @@ public class CustomerControllerTest {
     @Test
     void deveRetornarNotFoundAoListarCustomer() throws Exception {
         when(customerService.findById(1L))
-            .thenThrow(CustomerNaoEncontradoException.class);
+            .thenThrow(CustomerNotFoundException.class);
 
         mockMvc.perform(get("/customers/1"))
             .andExpect(status().isNotFound());
@@ -213,7 +213,7 @@ public class CustomerControllerTest {
         );
 
         when(customerService.patch(eq(1L), any(CustomerPatchRequest.class)))
-            .thenThrow(CustomerNaoEncontradoException.class);
+            .thenThrow(CustomerNotFoundException.class);
 
         mockMvc.perform(
             patch("/customers/1")
@@ -304,7 +304,7 @@ public class CustomerControllerTest {
         );
 
         when(customerService.put(eq(1L), any(CustomerRequest.class)))
-            .thenThrow(CustomerNaoEncontradoException.class);
+            .thenThrow(CustomerNotFoundException.class);
 
         mockMvc.perform(
             put("/customers/1")
@@ -368,7 +368,7 @@ public class CustomerControllerTest {
 
     @Test
     void deveRetornarNotFoundAoDeletarCustomer() throws Exception {
-        doThrow(CustomerNaoEncontradoException.class)
+        doThrow(CustomerNotFoundException.class)
             .when(customerService).delete(1L);
 
         mockMvc.perform(delete("/customers/1"))

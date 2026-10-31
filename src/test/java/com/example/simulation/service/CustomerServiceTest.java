@@ -4,7 +4,7 @@ import com.example.simulation.dto.CustomerPatchRequest;
 import com.example.simulation.dto.CustomerRequest;
 import com.example.simulation.dto.CustomerResponse;
 import com.example.simulation.entity.*;
-import com.example.simulation.exception.CustomerNaoEncontradoException;
+import com.example.simulation.exception.CustomerNotFoundException;
 import com.example.simulation.exception.CustomerHaveSimulationsException;
 import com.example.simulation.exception.CpfAlreadyAssociatedException;
 import com.example.simulation.repository.CustomerRepository;
@@ -173,7 +173,7 @@ public class CustomerServiceTest {
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(
-            CustomerNaoEncontradoException.class,
+            CustomerNotFoundException.class,
             () -> customerService.findById(1L)
         );
 
@@ -259,7 +259,7 @@ public class CustomerServiceTest {
         CustomerPatchRequest request = new CustomerPatchRequest(null, "Novo Nome", null);
 
         assertThrows(
-            CustomerNaoEncontradoException.class,
+            CustomerNotFoundException.class,
             () -> customerService.patch(99L, request)
         );
     }
@@ -427,7 +427,7 @@ public class CustomerServiceTest {
         CustomerRequest request = criarRequest();
 
         assertThrows(
-            CustomerNaoEncontradoException.class,
+            CustomerNotFoundException.class,
             () -> customerService.put(99L, request)
         );
     }
@@ -510,7 +510,7 @@ public class CustomerServiceTest {
             .thenReturn(Optional.empty());
 
         assertThrows(
-            CustomerNaoEncontradoException.class,
+            CustomerNotFoundException.class,
             () -> customerService.delete(99L)
         );
 
