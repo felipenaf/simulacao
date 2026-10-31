@@ -58,10 +58,10 @@ public class SimulationServiceTest {
             .map(request ->
                 Simulation.builder()
                     .customer(customer)
-                    .valorSolicitado(request.valorSolicitado())
-                    .valorGarantia(request.valorGarantia())
-                    .quantidadeMeses(request.quantidadeMeses())
-                    .taxaJurosMensal(request.taxaJurosMensal())
+                    .amount(request.amount())
+                    .assuranceAmount(request.assuranceAmount())
+                    .months(request.months())
+                    .interestRate(request.interestRate())
                     .build()
             ).toList();
 
@@ -97,10 +97,10 @@ public class SimulationServiceTest {
             .map(request ->
                 Simulation.builder()
                     .customer(customer)
-                    .valorSolicitado(request.valorSolicitado())
-                    .valorGarantia(request.valorGarantia())
-                    .quantidadeMeses(request.quantidadeMeses())
-                    .taxaJurosMensal(request.taxaJurosMensal())
+                    .amount(request.amount())
+                    .assuranceAmount(request.assuranceAmount())
+                    .months(request.months())
+                    .interestRate(request.interestRate())
                     .build()
             ).toList();
 
@@ -128,17 +128,17 @@ public class SimulationServiceTest {
 
         assertEquals(
             new BigDecimal("30000"),
-            simulationsSalvas.get(0).getValorSolicitado()
+            simulationsSalvas.get(0).getAmount()
         );
 
         assertEquals(
             new BigDecimal("30001"),
-            simulationsSalvas.get(1).getValorSolicitado()
+            simulationsSalvas.get(1).getAmount()
         );
 
         assertEquals(
             new BigDecimal("30002"),
-            simulationsSalvas.get(2).getValorSolicitado()
+            simulationsSalvas.get(2).getAmount()
         );
     }
 
@@ -157,10 +157,10 @@ public class SimulationServiceTest {
             .map(request ->
                 Simulation.builder()
                     .customer(customer)
-                    .valorSolicitado(request.valorSolicitado())
-                    .valorGarantia(request.valorGarantia())
-                    .quantidadeMeses(request.quantidadeMeses())
-                    .taxaJurosMensal(request.taxaJurosMensal())
+                    .amount(request.amount())
+                    .assuranceAmount(request.assuranceAmount())
+                    .months(request.months())
+                    .interestRate(request.interestRate())
                     .build()
             ).toList();
 
@@ -239,10 +239,10 @@ public class SimulationServiceTest {
             .mapToObj(i ->
                 Simulation.builder()
                     .customer(customer)
-                    .valorSolicitado(new BigDecimal("30000").add(new BigDecimal(i)))
-                    .valorGarantia(new BigDecimal("50000.50"))
-                    .quantidadeMeses(420)
-                    .taxaJurosMensal(new BigDecimal("2.5"))
+                    .amount(new BigDecimal("30000").add(new BigDecimal(i)))
+                    .assuranceAmount(new BigDecimal("50000.50"))
+                    .months(420)
+                    .interestRate(new BigDecimal("2.5"))
                     .build()
             ).toList();
 

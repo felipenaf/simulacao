@@ -24,11 +24,11 @@ public record SimulationResponse(
 ) {
     public static SimulationResponse from(Simulation simulation) {
         return new SimulationResponse(
-            simulation.getDataHora(),
-            simulation.getValorSolicitado(),
-            simulation.getValorGarantia(),
-            simulation.getQuantidadeMeses(),
-            simulation.getTaxaJurosMensal()
+            simulation.getDateTime(),
+            simulation.getAmount(),
+            simulation.getAssuranceAmount(),
+            simulation.getMonths(),
+            simulation.getInterestRate()
         );
     }
 }

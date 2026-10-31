@@ -50,10 +50,10 @@ public class SimulationServiceImpl implements SimulationService {
             .map(request ->
                 Simulation.builder()
                     .customer(customer)
-                    .valorSolicitado(request.valorSolicitado())
-                    .valorGarantia(request.valorGarantia())
-                    .quantidadeMeses(request.quantidadeMeses())
-                    .taxaJurosMensal(request.taxaJurosMensal())
+                    .amount(request.amount())
+                    .assuranceAmount(request.assuranceAmount())
+                    .months(request.months())
+                    .interestRate(request.interestRate())
                     .build()
             ).toList();
 

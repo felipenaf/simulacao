@@ -24,24 +24,24 @@ public class Simulation {
     private Customer customer;
 
     @Column(nullable = false)
-    private LocalDateTime dataHora;
+    private LocalDateTime dateTime;
 
     @Column(nullable = false, precision = 11, scale = 2)
-    private BigDecimal valorSolicitado;
+    private BigDecimal amount;
 
     @Column(nullable = false, precision = 11, scale = 2)
-    private BigDecimal valorGarantia;
+    private BigDecimal assuranceAmount;
 
     @Column(nullable = false)
-    private Integer quantidadeMeses;
+    private Integer months;
 
     @Column(nullable = false, precision = 4, scale = 2)
-    private BigDecimal taxaJurosMensal;
+    private BigDecimal interestRate;
 
     @PrePersist
     protected void prePersist() {
-        if (dataHora == null) {
-            dataHora = LocalDateTime.now();
+        if (dateTime == null) {
+            dateTime = LocalDateTime.now();
         }
     }
 }
