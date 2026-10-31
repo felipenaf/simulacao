@@ -2,7 +2,7 @@ package com.example.simulation.controller;
 
 import com.example.simulation.dto.*;
 import com.example.simulation.exception.CustomerNaoEncontradoException;
-import com.example.simulation.exception.CustomerPossuiSimulacoesException;
+import com.example.simulation.exception.CustomerHaveSimulationsException;
 import com.example.simulation.exception.CpfJaCadastradoException;
 import com.example.simulation.service.CustomerService;
 import jakarta.validation.constraints.Max;
@@ -163,7 +163,7 @@ public class CustomerController {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .build();
-        } catch (CustomerPossuiSimulacoesException e) {
+        } catch (CustomerHaveSimulationsException e) {
             log.error(e.getMessage());
 
             return ResponseEntity

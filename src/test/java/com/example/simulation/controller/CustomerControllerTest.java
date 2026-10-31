@@ -5,7 +5,7 @@ import com.example.simulation.dto.CustomerRequest;
 import com.example.simulation.dto.CustomerResponse;
 import com.example.simulation.entity.State;
 import com.example.simulation.exception.CustomerNaoEncontradoException;
-import com.example.simulation.exception.CustomerPossuiSimulacoesException;
+import com.example.simulation.exception.CustomerHaveSimulationsException;
 import com.example.simulation.exception.CpfJaCadastradoException;
 import com.example.simulation.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -357,7 +357,7 @@ public class CustomerControllerTest {
 
     @Test
     void deveRetornarConflictAoDeletarCustomer() throws Exception {
-        doThrow(CustomerPossuiSimulacoesException.class)
+        doThrow(CustomerHaveSimulationsException.class)
             .when(customerService).delete(1L);
 
         mockMvc.perform(delete("/customers/1"))

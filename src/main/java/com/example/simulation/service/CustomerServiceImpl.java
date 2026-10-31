@@ -7,7 +7,7 @@ import com.example.simulation.entity.Customer;
 import com.example.simulation.entity.Address;
 import com.example.simulation.entity.State;
 import com.example.simulation.exception.CustomerNaoEncontradoException;
-import com.example.simulation.exception.CustomerPossuiSimulacoesException;
+import com.example.simulation.exception.CustomerHaveSimulationsException;
 import com.example.simulation.exception.CpfJaCadastradoException;
 import com.example.simulation.repository.CustomerRepository;
 import com.example.simulation.repository.SimulationRepository;
@@ -207,7 +207,7 @@ public class CustomerServiceImpl implements CustomerService {
             );
 
         if (!simulationRepository.findByCustomer(customerExistente, PageRequest.of(0, 1)).isEmpty()) {
-            throw new CustomerPossuiSimulacoesException("Customer não pode ser removido pois possui simulações associadas a ele");
+            throw new CustomerHaveSimulationsException("Customer não pode ser removido pois possui simulações associadas a ele");
         }
 
         customerRepository.delete(customerExistente);

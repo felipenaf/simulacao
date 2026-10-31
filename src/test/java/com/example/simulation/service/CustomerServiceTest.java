@@ -5,7 +5,7 @@ import com.example.simulation.dto.CustomerRequest;
 import com.example.simulation.dto.CustomerResponse;
 import com.example.simulation.entity.*;
 import com.example.simulation.exception.CustomerNaoEncontradoException;
-import com.example.simulation.exception.CustomerPossuiSimulacoesException;
+import com.example.simulation.exception.CustomerHaveSimulationsException;
 import com.example.simulation.exception.CpfJaCadastradoException;
 import com.example.simulation.repository.CustomerRepository;
 import com.example.simulation.repository.SimulationRepository;
@@ -533,7 +533,7 @@ public class CustomerServiceTest {
             .thenReturn(comSimulacao);
 
         assertThrows(
-            CustomerPossuiSimulacoesException.class,
+            CustomerHaveSimulationsException.class,
             () -> customerService.delete(1L)
         );
 
