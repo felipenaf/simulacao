@@ -40,7 +40,7 @@ public class SimulationServiceTest {
     private SimulationServiceImpl simulationService;
 
     @Captor
-    private ArgumentCaptor<List<Simulation>> simulacoesCaptor;
+    private ArgumentCaptor<List<Simulation>> simulationsCaptor;
 
     @Test
     void deveCadastrarSimulacao() {
@@ -118,27 +118,27 @@ public class SimulationServiceTest {
         assertEquals(new BigDecimal("30002"), response.get(2).valorSolicitado());
 
         verify(customerRepository).findById(1L);
-        verify(simulationRepository).saveAll(simulacoesCaptor.capture());
+        verify(simulationRepository).saveAll(simulationsCaptor.capture());
 
-        List<List<Simulation>> capturedValues = simulacoesCaptor.getAllValues();
+        List<List<Simulation>> capturedValues = simulationsCaptor.getAllValues();
         assertEquals(1, capturedValues.size());
 
-        List<Simulation> simulacoesSalvas = capturedValues.getFirst();
-        assertEquals(3, simulacoesSalvas.size());
+        List<Simulation> simulationsSalvas = capturedValues.getFirst();
+        assertEquals(3, simulationsSalvas.size());
 
         assertEquals(
             new BigDecimal("30000"),
-            simulacoesSalvas.get(0).getValorSolicitado()
+            simulationsSalvas.get(0).getValorSolicitado()
         );
 
         assertEquals(
             new BigDecimal("30001"),
-            simulacoesSalvas.get(1).getValorSolicitado()
+            simulationsSalvas.get(1).getValorSolicitado()
         );
 
         assertEquals(
             new BigDecimal("30002"),
-            simulacoesSalvas.get(2).getValorSolicitado()
+            simulationsSalvas.get(2).getValorSolicitado()
         );
     }
 

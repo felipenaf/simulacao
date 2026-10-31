@@ -26,7 +26,7 @@ public class SimulationExporterTxt implements SimulationExporter {
 
     @Override
     public String filename(Long customerId) {
-        return "simulacoes_customer_" + customerId + "." +  this.format();
+        return "customer_simulations_" + customerId + "." +  this.format();
     }
 
     @Override
