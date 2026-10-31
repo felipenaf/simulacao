@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @AllArgsConstructor
-public class ParcelaSimulacao {
+public class SimulationInstallmentAmount {
     private BigDecimal valorAmortizacao;
     private LocalDate dataVencimento;
     private BigDecimal valorJuros;

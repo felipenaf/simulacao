@@ -95,7 +95,7 @@ public class SimulationServiceImpl implements SimulationService {
     //Valor de juros: valor solicitado * taxa de juros
     //Valor total da parcela: valor de amortização + valor de juros
     //Saldo devedor: valor solicitado − valor de amortização
-    public ParcelaSimulacao calculaParcela(Simulation simulation) {
+    public SimulationInstallmentAmount calculateInstallment(Simulation simulation) {
         return null;
     }
 }
