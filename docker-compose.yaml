@@ -1,9 +1,9 @@
 services:
   postgres:
     image: postgres:18
-    container_name: simulacao-postgres
+    container_name: simulation-postgres
     environment:
-      POSTGRES_DB: simulacao
+      POSTGRES_DB: simulation
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d simulacao"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d simulation"]
       interval: 5s
       timeout: 5s
       retries: 5
