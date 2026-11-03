@@ -3,6 +3,7 @@ package com.example.simulation.controller;
 import com.example.simulation.dto.*;
 import com.example.simulation.enums.ExportFormat;
 import com.example.simulation.exception.CustomerNotFoundException;
+import com.example.simulation.service.MessageHelper;
 import com.example.simulation.service.SimulationExporter;
 import com.example.simulation.service.SimulationExporterFactory;
 import com.example.simulation.service.SimulationService;
@@ -61,7 +62,7 @@ public class SimulationController {
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
-            log.error("Erro ao criar simulações: {}", requests, e);
+            log.error("{} {}", MessageHelper.get("internal.server.error.customer.simulation"), requests, e);
 
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -77,18 +78,18 @@ public class SimulationController {
         ExportFormat formato,
 
         @RequestParam(defaultValue = "1")
-        @Min(value = 1, message = "A página deve ser maior ou igual a 1")
+        @Min(value = 1)
         int pagina,
 
         @RequestParam(name = "quantidade_por_pagina", defaultValue = "10")
-        @Min(value = 1, message = "A quantidade por página deve ser maior ou igual a 1")
-        @Max(value = 100, message = "A quantidade máxima por página é 100")
+        @Min(value = 1)
+        @Max(value = 100)
         int quantidadePorPagina
     ) {
         try {
             Page<SimulationResponse> simulations = simulationService.findByCustomerId(
                 customerId,
-                // O índice da paginação inicia em zero
+                // The pagination index starts on zero
                 PageRequest.of(pagina - 1, quantidadePorPagina)
             );
 
@@ -103,7 +104,7 @@ public class SimulationController {
                 .status(HttpStatus.NOT_FOUND)
                 .build();
         } catch (Exception e) {
-            log.error("Erro ao obter simulations do customer: {}", customerId, e);
+            log.error("{} {}", MessageHelper.get("internal.server.error.customer.simulation"), customerId, e);
 
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)

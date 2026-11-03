@@ -5,9 +5,11 @@ import com.example.simulation.exception.CustomerNotFoundException;
 import com.example.simulation.exception.CustomerHaveSimulationsException;
 import com.example.simulation.exception.CpfAlreadyAssociatedException;
 import com.example.simulation.service.CustomerService;
+import com.example.simulation.service.MessageHelper;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -70,12 +72,12 @@ public class CustomerController {
     @GetMapping()
     public ResponseEntity<?> findAll(
         @RequestParam(defaultValue = "1")
-        @Min(value = 1, message = "A página deve ser maior ou igual a 1")
+        @Min(value = 1)
         int pagina,
 
         @RequestParam(name = "quantidade_por_pagina", defaultValue = "10")
-        @Min(value = 1, message = "A quantidade por página deve ser maior ou igual a 1")
-        @Max(value = 100, message = "A quantidade máxima por página é 100")
+        @Min(value = 1)
+        @Max(value = 100)
         int quantidadePorPagina
     ) {
         try {
