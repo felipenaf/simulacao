@@ -1,4 +1,4 @@
-# Simulation Service
+# Simulation
 
 ## Overview
 This API manages customer records and credit/financial simulations. It provides full CRUD operations for customer profiles (including address details and custom CPF validation) and calculates loan/financing simulations based on customer data. The application also supports exporting simulation results in multiple formats (CSV, TXT) via the Factory Design Pattern.
